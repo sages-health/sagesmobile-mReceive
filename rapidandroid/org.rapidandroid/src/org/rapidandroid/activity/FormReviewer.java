@@ -91,6 +91,7 @@ public class FormReviewer extends Activity {
 	private static final int MENU_DUMP_CSV = Menu.FIRST + 2;
 	private static final int MENU_HTTP_UPLOAD = Menu.FIRST + 3;
 	private static final int MENU_INJECT_DEBUG = Menu.FIRST + 4;
+	private static final int MENU_SCHEDULE_DUMP_CSV = Menu.FIRST + 5;
 
 	public static final int ACTIVITY_FILE_BROWSE = 0;
 
@@ -161,6 +162,8 @@ public class FormReviewer extends Activity {
 		menu.add(0, MENU_FORMAT, 0, R.string.formreview_menu_format).setIcon(android.R.drawable.ic_menu_info_details);
 
 		menu.add(0, MENU_DUMP_CSV, 0, R.string.formreview_dump_csv).setIcon(android.R.drawable.ic_menu_save);
+		
+		menu.add(0, MENU_SCHEDULE_DUMP_CSV, 0, R.string.formreview_schedule_dump_csv).setIcon(android.R.drawable.ic_menu_agenda);
 
 //		menu.add(0, MENU_HTTP_UPLOAD, 0, R.string.formreview_upload_csv).setIcon(android.R.drawable.ic_menu_upload);
 
@@ -201,6 +204,12 @@ public class FormReviewer extends Activity {
 				}
 
 				outputCSV();
+				break;
+			case MENU_SCHEDULE_DUMP_CSV:
+				Intent i;
+				i = new Intent(this, CsvOutputScheduler.class);
+				i.putExtra(FormReviewer.CallParams.REVIEW_FORM, mForm.getFormId());
+				startActivity(i);
 				break;
 			case MENU_HTTP_UPLOAD:
 				chooseFile();
@@ -333,6 +342,33 @@ public class FormReviewer extends Activity {
 				ParsedDataReporter.exportFormDataToCSV(getBaseContext(), mForm, then, now);
 				mDebugHandler.post(mCsvSaveCompleted);
 
+			}
+		};
+		t.start();
+	}
+	
+	/**
+	 * TODO: POKU move into service class
+	 */
+	public void outputCSV(int formId) {
+		final Form form = ModelTranslator.getFormById(formId);
+		/*
+		 *  TODO: POKU this broke it
+		 *  Toast.makeText(getApplicationContext(), "CSV output job has begun", Toast.LENGTH_LONG).show();
+		 */		
+		// Fire off a thread to do some work that we shouldn't do directly in
+		// the UI thread
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				Calendar now = Calendar.getInstance();
+				Calendar then = Calendar.getInstance();
+				then.set(Calendar.YEAR, 1990);
+				ParsedDataReporter.exportFormDataToCSV(getBaseContext(), form, then, now);
+				 /*
+				  * TODO: POKU remove this toast since it doesnt show anyway from service 
+				    mDebugHandler.post(mCsvSaveCompleted);
+				  */
 			}
 		};
 		t.start();

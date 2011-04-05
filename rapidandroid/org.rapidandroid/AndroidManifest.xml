@@ -19,7 +19,7 @@
 				<action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
 			</intent-filter>
 			<intent-filter>
-        		<action android:name="android.intent.action.VIEW" />
+        				<action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.EDIT" />
                 <action android:name="android.intent.action.PICK" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -48,19 +48,44 @@
 		
 		<activity android:name=".activity.FormCreator"></activity>
 		
+		<activity android:name=".activity.CsvOutputScheduler">
+			<intent-filter>
+				<action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
+			</intent-filter>
+			<intent-filter>
+				<action android:name="org.rapidandroid.intents.SMS_SAVED"></action>
+			</intent-filter>
+		</activity>
+		<service android:name=".service.CsvOutputService">
+			<intent-filter>
+				<action android:name="org.rapidandroid.service.CsvOutputService"></action>
+			</intent-filter>
+		  <intent-filter>
+		  	<action android:name="org.rapidandroid.intents.SMS_REPLY_CSV_GO"></action>
+	  	</intent-filter>
+		</service>
 
 		<uses-library android:name="android.test.runner" />
 
-	<receiver android:name=".receiver.SmsParseReceiver"><intent-filter><action android:name="org.rapidandroid.intents.SMS_SAVED"></action>
-</intent-filter>
-</receiver>
+	<receiver android:name=".receiver.CsvReceiver">
+		<intent-filter>
+		 	<action android:name="org.rapidandroid.intents.SMS_REPLY_CSV_GO"></action>
+	  </intent-filter>
+	</receiver>
+
+	<receiver android:name=".receiver.SmsParseReceiver">
+		<intent-filter>
+			<action android:name="org.rapidandroid.intents.SMS_SAVED"></action>
+		</intent-filter>
+	</receiver>
 <activity android:name=".activity.ChartData"></activity>
 <activity android:name=".activity.AddField" android:theme="@android:style/Theme.Dialog"></activity>
 <activity android:name=".activity.FileBrowser"></activity>
 <activity android:name=".activity.DateRange"></activity>
 <receiver android:name=".receiver.SmsReplyReceiver">
-<intent-filter><action android:name="org.rapidandroid.intents.SMS_REPLY"></action>
-</intent-filter>
+	<intent-filter>
+		<action android:name="org.rapidandroid.intents.SMS_REPLY"></action>
+	</intent-filter>
 </receiver>
 <activity android:name=".activity.GlobalSettings"></activity>
 </application>

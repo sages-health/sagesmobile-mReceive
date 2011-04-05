@@ -36,6 +36,7 @@ import org.rapidsms.java.core.parser.service.ParsingService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -119,6 +120,12 @@ public class SmsParseReceiver extends BroadcastReceiver {
 			}
 			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
 			ParsedDataTranslator.InsertFormData(context, form, msgid, results);
+
+			Intent broadcast2 = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
+			broadcast2.putExtra("formId", form.getFormId());
+			broadcast2.putExtra("formName", form.getFormName());
+			broadcast2.putExtra("formPrefix", form.getPrefix());
+			context.sendBroadcast(broadcast2);
 		}
 	}
 }

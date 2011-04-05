@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<TextView android:text="Set frequency in seconds" android:id="@+id/textView1"
+		android:layout_width="wrap_content" android:layout_height="wrap_content">
+	</TextView>
+
+	<EditText android:layout_marginBottom="30dip"
+		android:layout_height="wrap_content" android:id="@+id/editText1"
+		android:numeric="integer" android:layout_width="fill_parent"
+		android:hint="@string/numberHint">
+	</EditText>
+
+	<ToggleButton android:layout_width="wrap_content"
+		android:text="ToggleButton" android:layout_height="wrap_content"
+		android:id="@+id/toggleButton1">
+	</ToggleButton>
+	
+	<Button 
+		android:text="Update" 
+		android:id="@+id/button1"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"></Button>
+</LinearLayout>
