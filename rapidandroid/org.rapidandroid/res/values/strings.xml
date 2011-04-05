@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, rapidandroid</string>
-    <string name="app_name">RapidAndroid</string>
+<string name="hello">Hello World, rapidandroid</string>
+<string name="app_name">RapidAndroid</string>
 <string name="lbl_formname">Name</string>
 <string name="lbl_description">Description</string>
 <string name="lbl_formprefix">Prefix</string>
@@ -29,6 +29,7 @@
 <string name="chart_menu_change_variable">Change Variable</string>
 <string name="chart_menu_change_parameters">Change Date Range</string>
 <string name="formreview_dump_csv">Output CSV</string>
+<string name="formreview_schedule_dump_csv">Schedule Output CSV</string>
 <string name="formreview_upload_csv">Upload Report</string>
 <string name="lbl_enddate">End date:</string>
 <string name="lbl_startdate">Start date:</string>
@@ -53,4 +54,6 @@
 <string name="glb_chk_parse_text">Reply on successful parses</string>
 <string name="glbsettings_heading">Global reply settings</string>
 <string name="glb_lbl_activeall">Activate all SMS features</string>
+
+<string name="numberHint">Integer values through 55?</string>
 </resources>
