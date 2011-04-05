@@ -138,7 +138,8 @@ public class ParsedDataReporter {
 		query.append(" rapidandroid_message.time < '" + endDate.get(Calendar.YEAR) + "-"
 				+ (1 + endDate.get(Calendar.MONTH)) + "-" + endDate.get(Calendar.DATE) + "';");
 
-		Cursor cr = mHelper.getReadableDatabase().rawQuery(query.toString(), null);
+		SQLiteDatabase db = mHelper.getReadableDatabase();
+		Cursor cr = db.rawQuery(query.toString(), null);
 		FileOutputStream fOut = null;
 		
 		try {
@@ -185,6 +186,7 @@ public class ParsedDataReporter {
 			e.printStackTrace();
 		} finally {
 			cr.close();
+			db.close();
 			mHelper.close();
 			if (fOut != null) {
 				try {
