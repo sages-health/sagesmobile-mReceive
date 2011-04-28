@@ -2,18 +2,14 @@
  * 
  */
 package org.rapidandroid.activity;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.rapidandroid.R;
-import org.rapidandroid.content.translation.ModelTranslator;
-import org.rapidsms.java.core.model.Form;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,10 +17,14 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 /**
- * @author POKUAM1
+ * Scheduling activity for automatic csv output whenever an sms is received matching the prefix
+ * for the registered form(s)
+ * 
+ * @author Adjoa Poku adjoa.poku@jhuapl.edu
  * @created Mar 23, 2011
  */
 public class CsvOutputScheduler extends Activity {
@@ -33,12 +33,11 @@ public class CsvOutputScheduler extends Activity {
 	    public static final String FREQUENCY_VAR = "_autoCsvFrequency";
 	    public static final String sharedPreferenceFilename = "RapidAndroidSettings";
 	    
-//TODO IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SCHEDULER.
+//TODO IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
 	    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // The activity is being created.
         setTitle("RapidAndroid :: Schedule CSV Output");
         setContentView(R.layout.schedule_csv_output);
         Bundle extras = getIntent().getExtras();
@@ -50,16 +49,55 @@ public class CsvOutputScheduler extends Activity {
         int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 1);
         
         
-        final EditText frequencyTextField = (EditText)findViewById(R.id.editText1);
+        final EditText frequencyTextField = (EditText)findViewById(R.id.etx_outputFreq);
         frequencyTextField.setText(String.valueOf(autoCsvFrequency));
+        frequencyTextField.addTextChangedListener(new TextWatcher() {
+
+        	final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle);
+        	final Button update = (Button) findViewById(R.id.updateButton);
+			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// nothing to do
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// nothing to do
+			}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// validate that value is 1 to 55
+				String strvalue = arg0.toString();
+				Integer intvalue;
+				boolean exceptionOccured = false;
+				try {
+					intvalue = Integer.valueOf(strvalue);
+					if (intvalue > 55 || intvalue < 1){
+						toggle.setEnabled(false);
+						update.setEnabled(false);
+					} else {
+						toggle.setEnabled(true);
+						update.setEnabled(true);
+					}
+				} catch (NumberFormatException e) {
+					exceptionOccured = true;
+				}
+				if (exceptionOccured) {
+					toggle.setEnabled(false);
+					update.setEnabled(false);
+				}
+			}
+		});
         
-        final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton1);
+        final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle);
         toggle.setChecked(isAutoCsvOn);
         toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-				// toggle on/off if the output should be automatic 
+				// toggle on/off if the csv output should be automatic 
 				System.out.println("on checked changed for toggle.");
 				System.out.println("arg: " + arg1);
 				toggle.setChecked(arg1);
@@ -70,28 +108,21 @@ public class CsvOutputScheduler extends Activity {
 		});
     
         
-        Button updateButton = (Button) findViewById(R.id.button1);
+        Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View view) {
 				// set frequency value into UserSettings
-				System.out.println("saving frequency to user settings.");
+				Log.d("Button.CsvOutputScheduler","saving frequency to user settings.");
 				Log.d("Button.CsvOutputScheduler", "arg: " + view);
-				EditText frequencyVal = (EditText)findViewById(R.id.editText1);
+				EditText frequencyVal = (EditText)findViewById(R.id.etx_outputFreq);
 				Editor editor = preferences.edit();
 				editor.putInt(formId + FREQUENCY_VAR, Integer.parseInt(frequencyVal.getText().toString()));
 				editor.commit();
+				
+				Toast.makeText(getApplicationContext(), getString(R.string.settings_saved), Toast.LENGTH_SHORT).show();
 			}
 		});
-    }
-    
-    @Override
-    //TODO  
-    protected void onPause() {
-    	super.onPause();
-        // Another activity is taking focus (this activity is about to be "paused").
-        System.out.println("this activity is about to be 'paused'");
-        
     }
 }

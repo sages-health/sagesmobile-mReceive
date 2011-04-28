@@ -111,21 +111,44 @@ public class SmsParseReceiver extends BroadcastReceiver {
 		} else {
 			Monitor mon = MessageTranslator.GetMonitorAndInsertIfNew(context, intent.getStringExtra("from"));
 			// if(mon.getReplyPreference()) {
-			if (ApplicationGlobals.doReplyOnParse()) {
+			if (ApplicationGlobals.doReplyOnParseInProgress()) {
+				// for debug purposes, we'll just ack every time.
+				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
+				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
+				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseInProgressText());
+				context.sendBroadcast(broadcast);
+			}
+			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
+
+			// parse success reply
+			if (ApplicationGlobals.doReplyOnParse() && results != null) {
 				// for debug purposes, we'll just ack every time.
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
 				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
 				context.sendBroadcast(broadcast);
 			}
-			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
+			
+			// parse failure reply
+			// results would be null after the result of a StrictParser
+			if (results == null) {
+				if (ApplicationGlobals.doReplyOnFail()){
+					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
+					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
+					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseFailText(form));
+					context.sendBroadcast(broadcast);
+				}
+				return;
+			}
+			
 			ParsedDataTranslator.InsertFormData(context, form, msgid, results);
 
-			Intent broadcast2 = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
-			broadcast2.putExtra("formId", form.getFormId());
-			broadcast2.putExtra("formName", form.getFormName());
-			broadcast2.putExtra("formPrefix", form.getPrefix());
-			context.sendBroadcast(broadcast2);
+			// broadcast for the automatic csv output service
+			Intent broadcastStartCsvOutput = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
+			broadcastStartCsvOutput.putExtra("formId", form.getFormId());
+			broadcastStartCsvOutput.putExtra("formName", form.getFormName());
+			broadcastStartCsvOutput.putExtra("formPrefix", form.getPrefix());
+			context.sendBroadcast(broadcastStartCsvOutput);
 		}
 	}
 }

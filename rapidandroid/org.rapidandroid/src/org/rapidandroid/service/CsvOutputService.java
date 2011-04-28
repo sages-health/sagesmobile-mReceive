@@ -19,7 +19,7 @@ import android.util.Log;
  * @author Adjoa Poku
  * @created March 22, 2011
  * 
- * 		Configurable Service that outputs CSV files without doing so through the FormViewer 
+ * Configurable Service that automatically outputs CSV files upon successful parsing of an SMS into rapidandroid. 
  */
 public class CsvOutputService extends IntentService {
 
@@ -34,46 +34,31 @@ public class CsvOutputService extends IntentService {
 	
 	@Override
 	public void onStart(Intent intent, int startId){
-		Log.d("CsvOutputService","Poku's service is being started");
+		Log.d("CsvOutputService","service is being started");
 		//TODO create the "in use indicator file"
 		preferences = getSharedPreferences("RapidAndroidSettings", MODE_PRIVATE);
-		if (intent != null){
-			Log.d("CsvOutputService","Poku's service is being started: " + intent.getAction());
-		}
+
 		int formId = intent.getExtras().getInt("formId");
 		String formPrefix = intent.getExtras().getString("formPrefix");
 		
 		if (preferences.getBoolean(formId + "_isAutoCsvOn", false)) {
 			
-			// delete the old csv files for this form
+			// delete the old csv files for this form - don't want them to accumulate  on sdcard
 			File sdcard = Environment.getExternalStorageDirectory();
+			String state = Environment.getExternalStorageState();
 			File destinationdir = new File(sdcard, "rapidandroid/exports");
 			File[] files = destinationdir.listFiles(new FormPrefixFilter(formPrefix));
-			for (File file: files) {
-				file.delete();
+			
+			if (files != null) {
+				for (File file: files) {
+					file.delete();
+				}
 			}
 			super.onStart(intent, startId);
 		} else {
 			stopSelf();
 		}
 	}
-	
-	public class FormPrefixFilter implements FilenameFilter {
-
-		String formPrefix;
-		public FormPrefixFilter(String formPrefix){
-			this.formPrefix = "formdata_" + formPrefix;
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
-		 */
-		@Override
-		public boolean accept(File dir, String filename) {
-			// TODO POKU Auto-generated method stub
-			return filename.startsWith(formPrefix);
-		}}
-	
 	
 	/* (non-Javadoc)
 	 * 
@@ -107,4 +92,25 @@ public class CsvOutputService extends IntentService {
 		//TODO POKU remove the "in use indicator file"
 		Log.d("CsvOutputService","completed running and ran at intervals of " + autoCsvFrequency + " seconds.");
 	}
+	
+	/**
+	 * Filters files based on file names. Recall file names are based on the form prefix
+	 * 
+	 * @author Adjoa Poku adjoa.pouk@jhuapl.edu
+	 * @created Apr 1, 2011
+	 */
+	public class FormPrefixFilter implements FilenameFilter {
+
+		String formPrefix;
+		public FormPrefixFilter(String formPrefix){
+			this.formPrefix = "formdata_" + formPrefix;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+		 */
+		@Override
+		public boolean accept(File dir, String filename) {
+			return filename.startsWith(formPrefix);
+		}}
 }
