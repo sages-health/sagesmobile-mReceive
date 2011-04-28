@@ -37,6 +37,9 @@ import org.rapidandroid.view.adapter.FieldViewAdapter;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
+import org.rapidsms.java.core.parser.IMessageParser;
+import org.rapidsms.java.core.parser.SimpleRegexParser;
+import org.rapidsms.java.core.parser.StrictRegexParser;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
@@ -46,20 +49,21 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Activity window for creating a new form.
@@ -102,10 +106,13 @@ public class FormCreator extends Activity {
 	private static final String STATE_FORMNAME = "formname";
 	private static final String STATE_PREFIX = "prefix";
 	private static final String STATE_DESC = "desc";
+	private static final String STATE_PARSER= "parser";
 
 	private Vector<Field> mCurrentFields;
 	private String[] fieldStrings;
 
+	private IMessageParser[] mAllParsers = {new SimpleRegexParser(), new StrictRegexParser()};
+	private IMessageParser mChosenParser;
 	private boolean mClosing = false;
 
 	private int selectedFieldPosition = -1;
@@ -147,6 +154,23 @@ public class FormCreator extends Activity {
 		noFields.setText("No fields");
 		lsv.setEmptyView(noFields);
 		updateFieldList();
+		
+		initParserSpinner();
+		// Set the event listeners for the spinner and the listview
+		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
+		spin_forms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View theview, int position, long rowid) {
+				spinnerItemSelected(position);
+			}
+
+			public void onNothingSelected(AdapterView<?> parent) {
+				// blow away the listview's items
+				mChosenParser = null;
+				//resetCursor = true;
+				//loadListViewWithFormData();
+			}
+		});
+
 	}
 
 	@Override
@@ -172,13 +196,13 @@ public class FormCreator extends Activity {
 		EditText etxFormName = (EditText) findViewById(R.id.etx_formname);
 		EditText etxFormPrefix = (EditText) findViewById(R.id.etx_formprefix);
 		EditText etxDescription = (EditText) findViewById(R.id.etx_description);
-
 		ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
 
 		try {
 			savedstate.put(STATE_FORMNAME, etxFormName.getText().toString());
 			savedstate.put(STATE_PREFIX, etxFormPrefix.getText().toString());
 			savedstate.put(STATE_DESC, etxDescription.getText().toString());
+			savedstate.put(STATE_PARSER, mChosenParser.getName());
 
 			if (mCurrentFields != null) {
 				int numFields = this.mCurrentFields.size();
@@ -356,6 +380,32 @@ public class FormCreator extends Activity {
 		lsv.setAdapter(new FieldViewAdapter(this, fieldArray));
 	}
 
+	
+	// This is a call to the DB to get all the forms that this form can support.
+	private void initParserSpinner() {
+		// The steps:
+		// get the spinner control from the layouts
+		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
+		// Get an array of forms from the DB
+		// in the current iteration, it's mForms
+		//this.mAllParsers = ModelTranslator.getAllForms();
+		
+
+		String[] monitors = new String[mAllParsers.length];
+
+		for (int i = 0; i < mAllParsers.length; i++) {
+			monitors[i] = "Parse Mode: " + mAllParsers[i].getName();
+		}
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, monitors);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// apply it to the spinner
+		spin_forms.setAdapter(adapter);
+	}
+	
+	private void spinnerItemSelected(int position) {
+		mChosenParser = mAllParsers[position];
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -452,18 +502,21 @@ public class FormCreator extends Activity {
 		EditText etxFormName = (EditText) findViewById(R.id.etx_formname);
 		EditText etxFormPrefix = (EditText) findViewById(R.id.etx_formprefix);
 		EditText etxDescription = (EditText) findViewById(R.id.etx_description);
-
+		Spinner spinnerParserType = (Spinner) findViewById(R.id.spinner_formparser);
+		int parserPosition = spinnerParserType.getSelectedItemPosition();
+		
+		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
+		
 		Form formToSave = new Form();
 		formToSave.setFormName(etxFormName.getText().toString());
 		formToSave.setPrefix(etxFormPrefix.getText().toString());
 		formToSave.setDescription(etxDescription.getText().toString());
-
+		formToSave.setParserType(parserType);
 		// (Message[])parsedMessages.keySet().toArray(new
 		// Message[parsedMessages.keySet().size()]);
 		Field[] fieldArray = this.mCurrentFields.toArray(new Field[mCurrentFields.size()]);
 		formToSave.setFields(fieldArray);
 
-		formToSave.setParserType(ParserType.SIMPLEREGEX);
 		try {
 			ModelTranslator.addFormToDatabase(formToSave);
 		} catch (Exception ex) {

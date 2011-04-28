@@ -137,13 +137,13 @@ public class FormReviewer extends Activity {
 			TextView txv_formname = (TextView) findViewById(R.id.txv_formname);
 			TextView txv_prefix = (TextView) findViewById(R.id.txv_formprefix);
 			TextView txv_description = (TextView) findViewById(R.id.txv_description);
-
+			TextView txv_parsertype = (TextView) findViewById(R.id.txv_parsertype);
 			ListView lsv_fields = (ListView) findViewById(R.id.lsv_fields);
 
 			txv_formname.setText(mForm.getFormName());
 			txv_prefix.setText(mForm.getPrefix());
 			txv_description.setText(mForm.getDescription());
-
+			txv_parsertype.setText(mForm.getParserType().toString());
 			int len = mForm.getFields().length;
 
 			// lsv_fields.setAdapter(new ArrayAdapter<String>(this,

@@ -22,6 +22,7 @@ import java.util.Vector;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.parser.IParseResult;
 import org.rapidsms.java.core.parser.SimpleRegexParser;
+import org.rapidsms.java.core.parser.StrictRegexParser;
 
 /**
  * 
@@ -34,10 +35,40 @@ import org.rapidsms.java.core.parser.SimpleRegexParser;
 public class ParsingService {
 
 	public enum ParserType {
-		SIMPLEREGEX
+		
+		SIMPLEREGEX("simpleregex"), STRICTREGEX("strictregex");
+		
+		private String jsonConfigVal;
+		
+		/**
+		 * constructor for Enum 
+		 * @param jsonConfigVal string used in json config and database 
+		 */
+		private ParserType(String jsonConfigVal) {
+			this.jsonConfigVal = jsonConfigVal;
+		}
+		
+		/**
+		 * 
+		 * @return the value to use in json config and database
+		 */
+		public String getJsonConfigVal(){
+			return this.jsonConfigVal;
+		}
+		
+		/**
+		 * Gets the enum type for the config value
+		 * 
+		 * @param jsonConfigVal
+		 * @return the enum corresponding to the json config or database value
+		 */
+		public static ParserType getTypeFromConfig(String jsonConfigVal){
+			return ParserType.valueOf(jsonConfigVal.toUpperCase());
+		}
 	};
-
+	
 	private static SimpleRegexParser simpleRegexParser = new SimpleRegexParser();
+	private static StrictRegexParser strictRegexParser = new StrictRegexParser();
 
 	/**
 	 * For a given message, call the appropriate parsing class and return the
@@ -51,8 +82,13 @@ public class ParsingService {
 		switch (form.getParserType()) {
 			case SIMPLEREGEX:
 				return simpleRegexParser.ParseMessage(form, message);
+			case STRICTREGEX:
+				return strictRegexParser.ParseMessage(form, message);
 			default:
 				throw new IllegalArgumentException("that parser does not exist");
 		}
 	}
+	
+	
+
 }

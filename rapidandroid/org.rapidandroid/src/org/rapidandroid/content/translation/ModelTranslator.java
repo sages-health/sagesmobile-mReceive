@@ -26,6 +26,7 @@ import org.rapidandroid.receiver.SmsParseReceiver;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
+import org.rapidsms.java.core.parser.service.ParsingService;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
@@ -109,10 +110,8 @@ public class ModelTranslator {
 			typecv.put(BaseColumns._ID, f.getFormId());
 		}
 		typecv.put(RapidSmsDBConstants.Form.FORMNAME, f.getFormName());
-		typecv.put(RapidSmsDBConstants.Form.PARSEMETHOD, "simpleregex"); // eww,
-																			// hacky
-																			// magic
-																			// string
+		typecv.put(RapidSmsDBConstants.Form.PARSEMETHOD, f.getParserType().getJsonConfigVal()); 
+		
 		typecv.put(RapidSmsDBConstants.Form.PREFIX, f.getPrefix());
 		typecv.put(RapidSmsDBConstants.Form.DESCRIPTION, f.getDescription());
 
@@ -220,11 +219,10 @@ public class ModelTranslator {
 																					.get(
 																							RapidSmsDBConstants.Form.PARSEMETHOD)
 																					.intValue());
-
 			// Field[] fields = getFieldsForForm(provider, id); // hack way
 			Field[] fields = getFieldsForForm(id); // real way
 
-			Form theForm = new Form(id, name, prefix, description, fields, ParserType.SIMPLEREGEX);
+			Form theForm = new Form(id, name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
 
 			formIdCache.put(idInt, theForm);
 			ret[i] = theForm;
@@ -285,7 +283,7 @@ public class ModelTranslator {
 		// Field[] fields = getFieldsForForm(provider, id); // hack way
 		Field[] fields = getFieldsForForm(id); // real way
 
-		Form ret = new Form(formCursor.getInt(0), name, prefix, description, fields, ParserType.SIMPLEREGEX);
+		Form ret = new Form(formCursor.getInt(0), name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
 		formIdCache.put(Integer.valueOf(id), ret);
 		formCursor.close();
 		return ret;
