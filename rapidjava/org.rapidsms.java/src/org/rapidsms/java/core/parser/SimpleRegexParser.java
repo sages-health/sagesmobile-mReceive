@@ -70,14 +70,8 @@ public class SimpleRegexParser implements IMessageParser {
 
 		// ok, for this iteration, we're going to greedily determine if this is
 		// a message we can fracking parse.
-
-		String prefix = f.getPrefix();
-		// System.out.println("what's the fracking form prefix: " + prefix);
-		input = input.toLowerCase().trim();
-		if (input.startsWith(prefix + " ")) {
-
-			input = input.substring(prefix.length()).trim();
-		} else {
+		input = ParsingUtils.parsePrefix(f, input);
+		if (input == null){
 			return null;
 		}
 
@@ -95,6 +89,9 @@ public class SimpleRegexParser implements IMessageParser {
 			// if at all possible.
 			if (res != null) {
 				String justParsedToken = res.getParsedToken();
+				if (".".equals(justParsedToken)){
+					res = null;
+				}
 				int tokLen = justParsedToken.length();
 				// System.out.println("Parsed input:" + input);
 				// System.out.println("Just parsed:" + justParsedToken + "##");
@@ -112,12 +109,22 @@ public class SimpleRegexParser implements IMessageParser {
 				String newInput = input.substring(0, tokStart) + input.substring(tokLen);
 
 				input = newInput.trim();
+			} else {
+				if (exitOnNullResult(res)) return null;
 			}
 			results.add(res);
 		}
 		return results;
 	}
 
+	/**
+	 * can be overridden
+	 * @param res the result just parsed
+	 * @return false - should not exit parsing on a null result
+	 */
+	protected boolean exitOnNullResult(IParseResult res){
+		return false;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
