@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.rapidandroid.ApplicationGlobals;
 import org.rapidandroid.R;
+import org.rapidandroid.receiver.SmsParseReceiver;
 
 import android.app.Activity;
 import android.content.Context;
@@ -37,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
@@ -60,16 +62,22 @@ public class GlobalSettings extends Activity {
 	private static final int MENU_DONE = Menu.FIRST;
 	
 	private CheckBox mActiveSwitch;
+	private CheckBox mParseInProgressCheckbox;
+	private EditText mParseInProgressReplyText;
 	private CheckBox mParseCheckbox;
 	private EditText mParseReplyText;
 	private CheckBox mNoparseCheckBox;
 	private EditText mNoparseReplyText;
+	private Button mCacheRefreshButton;
 	
 	
 	private OnClickListener mCheckChangeListener = new OnClickListener() {
 
 		public void onClick(View v) {
 			if(v.equals(mActiveSwitch)) {
+				mParseInProgressCheckbox.setEnabled(mActiveSwitch.isChecked());
+				mParseInProgressReplyText.setEnabled(mActiveSwitch.isChecked());
+				
 				mParseReplyText.setEnabled(mActiveSwitch.isChecked());
 				mNoparseReplyText.setEnabled(mActiveSwitch.isChecked());
 				
@@ -84,6 +92,16 @@ public class GlobalSettings extends Activity {
 					mNoparseReplyText.setEnabled(mNoparseCheckBox.isChecked());
 				}
 			} 
+		}
+	};
+	
+	private OnClickListener mCacheRefreshButtonListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			if (v.equals(mCacheRefreshButton)) {
+				SmsParseReceiver.initFormCache();
+			}
 		}
 	};
 
@@ -104,6 +122,10 @@ public class GlobalSettings extends Activity {
 		mActiveSwitch = (CheckBox) findViewById(R.id.glb_chk_activeall);
 		mActiveSwitch.setOnClickListener(mCheckChangeListener);
 		
+		mParseInProgressCheckbox = (CheckBox) findViewById(R.id.glb_chk_inprogress);
+		mParseInProgressCheckbox.setOnClickListener(mCheckChangeListener);
+		this.mParseInProgressReplyText = (EditText) findViewById(R.id.glb_etx_inprogress);
+		
 		mParseCheckbox = (CheckBox) findViewById(R.id.glb_chk_parse);
 		mParseCheckbox.setOnClickListener(mCheckChangeListener);
 		this.mParseReplyText = (EditText) findViewById(R.id.glb_etx_success);
@@ -119,6 +141,9 @@ public class GlobalSettings extends Activity {
 		
 		mParseCheckbox.setEnabled(mActiveSwitch.isChecked());
 		mNoparseCheckBox.setEnabled(mActiveSwitch.isChecked());
+		
+		mCacheRefreshButton = (Button) findViewById(R.id.glbsettings_bttn_cache);
+		mCacheRefreshButton.setOnClickListener(mCacheRefreshButtonListener);
 	}
 
 	/**
@@ -175,11 +200,13 @@ public class GlobalSettings extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		ApplicationGlobals.saveGlobalSettings(this,mActiveSwitch.isChecked(),mParseCheckbox.isChecked(), 
-		                                      mParseReplyText.getText().toString(), 
+		ApplicationGlobals.saveGlobalSettings(this,mActiveSwitch.isChecked(),
+											  mParseInProgressCheckbox.isChecked(),
+											  mParseInProgressReplyText.getText().toString(),
+											  mParseCheckbox.isChecked(), 
+											  mParseReplyText.getText().toString(), 
 		                                      mNoparseCheckBox.isChecked(), 
 		                                      mNoparseReplyText.getText().toString());
-		
 	}
 
 	

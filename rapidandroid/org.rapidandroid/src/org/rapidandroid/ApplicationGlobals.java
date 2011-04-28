@@ -26,7 +26,8 @@ import java.io.InputStreamReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.rapidandroid.receiver.SmsParseReceiver;
+import org.rapidsms.java.core.model.Field;
+import org.rapidsms.java.core.model.Form;
 
 import android.content.Context;
 import android.util.Log;
@@ -38,13 +39,17 @@ import android.util.Log;
  */
 public class ApplicationGlobals {
 
+
+
 	private static boolean globalsLoaded = false;
 	
 	private static boolean mActive = false; 
 	private static boolean mReplyParse = false;
+	private static boolean mReplyInProgress = false;
 	private static boolean mReplyFail = false;
 	
 	private static String mReplyParseText = "";
+	private static String mReplyParseInProgressText = "";
 	private static String mReplyFailText = "";
 	
 	
@@ -60,8 +65,10 @@ public class ApplicationGlobals {
 					mActive = false;
 				}
 				mReplyParse = globals.getBoolean(KEY_PARSE_REPLY);
+				mReplyInProgress = globals.getBoolean(KEY_INPROGRESS_REPLY);
 				mReplyFail = globals.getBoolean(KEY_FAILED_REPLY);
 				mReplyParseText = globals.getString(KEY_PARSE_REPLY_TEXT);
+				mReplyParseInProgressText = globals.getString(KEY_PARSE_INPROGRESS_TEXT);
 				mReplyFailText = globals.getString(KEY_FAILED_REPLY_TEXT);
 				globalsLoaded = true;
 			} catch (JSONException e) {
@@ -88,12 +95,33 @@ public class ApplicationGlobals {
 		}
 	}
 	
+	
+	public static boolean doReplyOnParseInProgress() {
+		if(mActive) {
+			return mReplyInProgress;
+		} else {
+			return false;
+		}
+	}
+	
 	public static String getParseSuccessText() {
 		return mReplyParseText;
 	}
 	
+	public static String getParseInProgressText() {
+		return mReplyParseInProgressText;
+	}
+	
 	public static String getParseFailText() {
 		return mReplyFailText;
+	}
+	
+	public static String getParseFailText(Form form) {
+		StringBuilder failReply = new StringBuilder(form.getPrefix()).append(" "); 
+		for (Field field : form.getFields()){
+			failReply.append(field.getName()).append("_").append(field.getFieldType().getReadableName()).append(" ");
+		}
+		return mReplyFailText + ": " + failReply.toString();
 	}
 	
 	
@@ -106,7 +134,7 @@ public class ApplicationGlobals {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			saveGlobalSettings(context, false, false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
+			saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
 			
 		}
 	}
@@ -133,7 +161,14 @@ public class ApplicationGlobals {
 	 * 
 	 */
 	public static final String KEY_PARSE_REPLY = "ParseReply";
-	
+	/**
+	 * 
+	 */
+	public static final String KEY_PARSE_INPROGRESS_TEXT = "ParseInProgressReplyText";
+	/**
+	 * 
+	 */
+	public static final String KEY_INPROGRESS_REPLY = "ParseInProgressReply";
 	/**
 	 * 
 	 */
@@ -201,11 +236,14 @@ public class ApplicationGlobals {
 	/**
 	 * 
 	 */
-	public static void saveGlobalSettings(Context context,boolean activateAll, boolean parseReply, String parseReplyText, boolean failedReply, String failedReplyText) {		
+	public static void saveGlobalSettings(Context context,boolean activateAll, boolean inProgressReply, String inProgressReplyText, boolean parseReply, String parseReplyText, boolean failedReply, String failedReplyText) {		
 		JSONObject settingsObj = new JSONObject();
 		FileOutputStream fos = null;
 		try {
 			settingsObj.put(KEY_ACTIVE_ALL, activateAll);
+			settingsObj.put(KEY_INPROGRESS_REPLY, inProgressReply);
+			settingsObj.put(KEY_PARSE_INPROGRESS_TEXT, inProgressReplyText);
+			settingsObj.put(KEY_FAILED_REPLY, failedReply);
 			settingsObj.put(KEY_PARSE_REPLY, parseReply);
 			settingsObj.put(KEY_PARSE_REPLY_TEXT, parseReplyText);
 			settingsObj.put(KEY_FAILED_REPLY, failedReply);

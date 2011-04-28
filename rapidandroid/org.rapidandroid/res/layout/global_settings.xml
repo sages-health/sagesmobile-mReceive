@@ -4,41 +4,57 @@
     android:layout_height="wrap_content"
     android:scrollbars="none">
 
-<LinearLayout
-android:id="@+id/widget48"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:orientation="vertical"
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:scrollbars="vertical">
-<TextView android:id="@+id/TextView02" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/glbsettings_heading" style="?android:attr/listSeparatorTextViewStyle">
-</TextView><CheckBox android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/glb_chk_activeall" android:text="@string/glb_lbl_activeall"></CheckBox>
+	<LinearLayout android:id="@+id/widget48"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:scrollbars="vertical" android:orientation="vertical">
+		<TextView android:id="@+id/TextView02" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="@string/glbsettings_heading"
+			style="?android:attr/listSeparatorTextViewStyle">
+		</TextView>
+		<CheckBox android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/glb_chk_activeall"
+			android:text="@string/glb_lbl_activeall"></CheckBox>
 
-<CheckBox
-android:id="@+id/glb_chk_parse"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:text="@string/glb_chk_parse_text"
->
-</CheckBox><TextView android:id="@+id/TextView02" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/glbsettings_parse_ack" style="?android:attr/listSeparatorTextViewStyle">
-</TextView>
+		<CheckBox android:id="@+id/glb_chk_inprogress"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/glb_chk_inprogress_text">
+		</CheckBox>
+		<TextView android:id="@+id/TextView02" android:text="@string/glbsettings_inprogress_ack"
+			style="?android:attr/listSeparatorTextViewStyle" android:layout_height="fill_parent" android:layout_width="fill_parent">
+		</TextView>
+		<EditText android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/glb_etx_inprogress"></EditText>
 
-
-<EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/glb_etx_success"></EditText>
-<CheckBox
-android:id="@+id/glb_chk_noparse"
-android:layout_width="fill_parent"
-android:layout_height="wrap_content"
-android:text="@string/glb_chk_noparse_text"
->
-</CheckBox><TextView android:id="@+id/TextView01" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/glbsettings_noparse_ack" style="?android:attr/listSeparatorTextViewStyle">
-</TextView>
-
-
-<EditText android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/glb_etx_failed"></EditText>
+		<CheckBox android:id="@+id/glb_chk_parse"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/glb_chk_parse_text">
+		</CheckBox>
+		<TextView android:id="@+id/TextView02" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="@string/glbsettings_parse_ack"
+			style="?android:attr/listSeparatorTextViewStyle">
+		</TextView>
 
 
+		<EditText android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/glb_etx_success"></EditText>
+		<CheckBox android:id="@+id/glb_chk_noparse"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:text="@string/glb_chk_noparse_text">
+		</CheckBox>
+		<TextView android:id="@+id/TextView01" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="@string/glbsettings_noparse_ack"
+			style="?android:attr/listSeparatorTextViewStyle">
+		</TextView>
 
-</LinearLayout>
+
+		<EditText android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/glb_etx_failed"></EditText>
+
+		<TextView android:layout_width="wrap_content" android:id="@+id/textView1"
+			android:layout_height="wrap_content" android:text="@string/refresh_cache"></TextView>
+		<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/refresh" android:id="@+id/glbsettings_bttn_cache"></Button>
+
+	</LinearLayout>
 
 </ScrollView>

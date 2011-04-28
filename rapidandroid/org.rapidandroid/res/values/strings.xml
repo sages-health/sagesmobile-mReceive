@@ -6,6 +6,7 @@
 <string name="lbl_description">Description</string>
 <string name="lbl_formprefix">Prefix</string>
 <string name="lbl_formchoose">Forms:</string>
+<string name="lbl_formparser">Parser Type</string>
 <string name="lbl_dashboardmessages">Recent Messages:</string>
 <string name="dashboard_menu_create">Create Form</string>
 <string name="dashboard_menu_edit">View Form</string>
@@ -48,12 +49,20 @@
 <string name="rad_last100">Last 100</string>
 <string name="rad_last500">Last 500</string>
 <string name="rad_all">All</string>
+<string name="glbsettings_inprogress_ack">In Progress Parse Reply</string>
 <string name="glbsettings_parse_ack">Successful Parse Reply</string>
 <string name="glbsettings_noparse_ack">Failed Parse Reply</string>
 <string name="glb_chk_noparse_text">Reply on failed parses</string>
 <string name="glb_chk_parse_text">Reply on successful parses</string>
+<string name="glb_chk_inprogress_text">Reply on in progress parses</string>
 <string name="glbsettings_heading">Global reply settings</string>
 <string name="glb_lbl_activeall">Activate all SMS features</string>
 
-<string name="numberHint">Integer values through 55?</string>
+<string name="numberHint">Integers 1 to 55 are valid</string>
+<string name="lbl_outputFreq">Set frequency of CSV output in seconds (1 to 55 are valid values)</string>
+<string name="settings_saved">Changes Saved</string>
+<string name="refresh_cache">Refresh the cache</string>
+
+<string name="refresh">Refresh</string>
+
 </resources>
