@@ -6,7 +6,7 @@ package org.rapidsms.java.core.parser;
 
 /**
  * @author Adjoa Poku adjoa.poku@jhuapl.edu
- * @created Apr 12, 2011 
+ * @created Apr 12, 2011
  * 
  * 
  *          This is the second instance of a message parser for RapidAndroid

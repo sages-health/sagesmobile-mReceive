@@ -4,7 +4,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "word", 
-			"regex": "^([A-Za-z]+)($|\\s)", 
+			"regex": "^(([A-Za-z]+)|(\\.))($|\\s)", 
 			"name": "Word"
 			}
 	}, 
@@ -13,7 +13,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "number", 
-			"regex": "^(\\d+)($|\\s)", 
+			"regex": "^((\\d+)|(\\.))($|\\s)", 
 			"name": "Number"
 		}
 	}, 
@@ -57,7 +57,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "boolean", 
-			"regex": "^(t|f|true|false|y|no|yes|n|n0)(\\s|$)", 
+			"regex": "^((t|f|true|false|y|no|yes|n|n0)|(\\.))(\\s|$)", 
 			"name": "Yes/No"
 		}
 	}
