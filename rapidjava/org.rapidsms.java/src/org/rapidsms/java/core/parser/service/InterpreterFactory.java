@@ -23,6 +23,7 @@
 package org.rapidsms.java.core.parser.service;
 
 import org.rapidsms.java.core.parser.interpreter.BooleanInterpreter;
+import org.rapidsms.java.core.parser.interpreter.DateInterpreter;
 import org.rapidsms.java.core.parser.interpreter.FloatInterpreter;
 import org.rapidsms.java.core.parser.interpreter.IParseInterpreter;
 import org.rapidsms.java.core.parser.interpreter.IntegerInterpreter;
@@ -30,13 +31,14 @@ import org.rapidsms.java.core.parser.interpreter.StringInterpreter;
 
 public class InterpreterFactory {
 	public enum InterpreterType {
-		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD
+		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD, DATE
 	}
 
 	private static IntegerInterpreter integerInterpreter = new IntegerInterpreter();
 	private static BooleanInterpreter booleanInterpreter = new BooleanInterpreter();
 	private static StringInterpreter stringInterpreter = new StringInterpreter();
 	private static FloatInterpreter floatInterpreter = new FloatInterpreter();
+	private static DateInterpreter dateInterpreter = new DateInterpreter();
 
 	public static IParseInterpreter GetParseInterpreter(String typename) {
 		if (typename.equals("boolean"))
@@ -49,6 +51,11 @@ public class InterpreterFactory {
 			return floatInterpreter;
 		if (typename.equals("integer"))
 			return integerInterpreter;
+		if (typename.equals("date224"))
+			return dateInterpreter;
+		if (typename.equals("datemdy"))
+			return dateInterpreter;
+		
 
 		throw new IllegalArgumentException("that parser does not exist " + typename);
 
@@ -70,6 +77,8 @@ public class InterpreterFactory {
 				return floatInterpreter;
 			case WORD:
 				return stringInterpreter;
+			case DATE:
+				return dateInterpreter;
 			default:
 				throw new IllegalArgumentException("that parser does not exist " + type.ordinal());
 		}
