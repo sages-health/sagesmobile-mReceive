@@ -60,5 +60,14 @@
 			"regex": "^((t|f|true|false|y|no|yes|n|n0)|(\\.))(\\s|$)", 
 			"name": "Yes/No"
 		}
+	}, 
+	{
+		"pk": 8, 
+		"model": "rapidandroid.fieldtype", 
+		"fields": {
+			"datatype": "date224", 
+			"regex": "^((\\d{2,2}\\.{1,1}){2,2}\\d{4,4})|((\\d{2,2}\\/{1,1}){2,2}\\d{4,4})|((\\d{2,2}\\-{1,1}){2,2}\\d{4,4})(\\s|$)",
+			"name": "Date/dd.dd.dddd"
+		}
 	}
 ]
