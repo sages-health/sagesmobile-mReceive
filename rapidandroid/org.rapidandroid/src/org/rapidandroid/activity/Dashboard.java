@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.rapidandroid.R;
 import org.rapidandroid.content.translation.ModelTranslator;
+import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.data.controller.DashboardDataLayer;
 import org.rapidandroid.data.controller.MessageDataReporter;
 import org.rapidandroid.data.controller.ParsedDataReporter;
@@ -40,17 +41,21 @@ import org.rapidsms.java.core.model.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -59,7 +64,6 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * Main entry point activity for RapidAndroid. It is a simple view with a
@@ -119,6 +123,7 @@ public class Dashboard extends Activity {
 	private static final int MENU_CHANGE_DATERANGE = Menu.FIRST + 2;
 	private static final int MENU_CHARTS_ID = Menu.FIRST + 3;
 	private static final int MENU_GLOBAL_SETTINGS = Menu.FIRST + 4;
+	private static final int MENU_ERASE_DATA = Menu.FIRST + 5;
 	// private static final int MENU_SHOW_REPORTS = Menu.FIRST + 3;
 	// private static final int MENU_EXIT = Menu.FIRST + 3; //waitaminute, we
 	// don't want to exit this thing, do we?
@@ -242,8 +247,49 @@ public class Dashboard extends Activity {
 			public void onItemClick(AdapterView<?> adapter, View view, int position, long row) {
 				if (adapter.getAdapter().getClass().equals(SummaryCursorAdapter.class)) {
 					((SummaryCursorAdapter) adapter.getAdapter()).toggle(position);
-				}
+				} 
 			}
+		});
+		
+		lsv.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long row) {
+				if (adapter.getAdapter().getClass().equals(FormDataGridCursorAdapter.class)){
+					
+					Object obj = adapter.getItemAtPosition(position);
+					long objlong = adapter.getItemIdAtPosition(position);
+					obj.toString();
+					
+					SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+					final SQLiteDatabase db = dbHelper.getWritableDatabase();
+					final String table = "formdata_" + mChosenForm.getPrefix();
+					final String whereClause = "_id = ?";
+					final String[] whereArgs = {String.valueOf(objlong)};
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+					builder.setMessage("Are you sure you want to delete?")
+					       .setCancelable(false)
+					       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					               //Dashboard.this.finish();
+					               int rows = db.delete(table, whereClause, whereArgs);
+					               mListviewCursor = null;
+					               beginListViewReload();
+					           }
+					       })
+					       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					
+					AlertDialog alert = builder.create();
+					builder.show();
+				}
+				return false;
+			}
+			
 		});
 		rb100 = (RadioButton) findViewById(R.id.dashboard_rad_100);
 		rb100.setOnClickListener(radioClickListener);
@@ -425,6 +471,7 @@ public class Dashboard extends Activity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_CREATE_ID, 0, R.string.dashboard_menu_create).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, MENU_FORM_REVIEW_ID, 0, R.string.dashboard_menu_edit).setIcon(android.R.drawable.ic_menu_agenda);
+		menu.add(0, MENU_ERASE_DATA, 0, R.string.dashboard_erase_data).setIcon(android.R.drawable.ic_input_delete);
 		// menu.add(0, MENU_CHANGE_DATERANGE, 0,
 		// R.string.chart_menu_change_parameters.setIcon(android.R.drawable.ic_menu_recent_history);
 		menu.add(0, MENU_CHARTS_ID, 0, R.string.dashboard_menu_view).setIcon(android.R.drawable.ic_menu_sort_by_size);
@@ -444,6 +491,9 @@ public class Dashboard extends Activity {
 				return true;
 			case MENU_FORM_REVIEW_ID:
 				startActivityFormReview();
+				return true;
+			case MENU_ERASE_DATA:
+				startDialogEraseData();
 				return true;
 
 				// case MENU_CHANGE_DATERANGE:
@@ -551,6 +601,35 @@ public class Dashboard extends Activity {
 		startActivityForResult(i, ACTIVITY_CREATE);
 	}
 
+	// Start the dialoge erase/delete ALL data for the selected form
+	private void startDialogEraseData(){
+		Builder eraseDataDialog = new AlertDialog.Builder(this);
+		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		final String table = "formdata_" + mChosenForm.getPrefix();
+		final String whereClause = null;
+		final String[] whereArgs = null;
+		
+		eraseDataDialog.setMessage("Are you sure you want to delete?")
+	       .setCancelable(false)
+	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	               //Dashboard.this.finish();
+	               int rows = db.delete(table, whereClause, whereArgs);
+	               mListviewCursor = null;
+	               beginListViewReload();
+	           }
+	       })
+	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	                dialog.cancel();
+	           }
+	       });
+	
+		AlertDialog alert = eraseDataDialog.create();
+		eraseDataDialog.show();
+	}
+	
 	private void startActivityChart() {
 		// Debug.stopMethodTracing();
 		if (mListviewCursor == null) {
