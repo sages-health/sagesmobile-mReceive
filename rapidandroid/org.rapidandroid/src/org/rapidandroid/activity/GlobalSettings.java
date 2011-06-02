@@ -90,6 +90,8 @@ public class GlobalSettings extends Activity {
 					mParseReplyText.setEnabled(mParseCheckbox.isChecked());
 				} else if (v.equals(mNoparseCheckBox)) {
 					mNoparseReplyText.setEnabled(mNoparseCheckBox.isChecked());
+				} else if (v.equals(mParseInProgressCheckbox)) {
+					mParseInProgressReplyText.setEnabled(mParseInProgressCheckbox.isChecked());
 				}
 			} 
 		}
@@ -138,9 +140,12 @@ public class GlobalSettings extends Activity {
 		
 		mParseReplyText.setEnabled(mActiveSwitch.isChecked());
 		mNoparseReplyText.setEnabled(mActiveSwitch.isChecked());
+		mParseInProgressReplyText.setEnabled(mActiveSwitch.isChecked());
 		
 		mParseCheckbox.setEnabled(mActiveSwitch.isChecked());
 		mNoparseCheckBox.setEnabled(mActiveSwitch.isChecked());
+		mParseInProgressCheckbox.setEnabled(mActiveSwitch.isChecked());
+		
 		
 		mCacheRefreshButton = (Button) findViewById(R.id.glbsettings_bttn_cache);
 		mCacheRefreshButton.setOnClickListener(mCacheRefreshButtonListener);
@@ -158,6 +163,8 @@ public class GlobalSettings extends Activity {
 			mParseReplyText.setText(globals.getString(ApplicationGlobals.KEY_PARSE_REPLY_TEXT));
 			mNoparseCheckBox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_FAILED_REPLY));
 			mNoparseReplyText.setText(globals.getString(ApplicationGlobals.KEY_FAILED_REPLY_TEXT));
+			mParseInProgressCheckbox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_INPROGRESS_REPLY));
+			mParseInProgressReplyText.setText(globals.getString(ApplicationGlobals.KEY_PARSE_INPROGRESS_TEXT));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
