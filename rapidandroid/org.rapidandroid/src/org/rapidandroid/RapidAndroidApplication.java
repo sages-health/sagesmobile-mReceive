@@ -17,7 +17,19 @@
 
 package org.rapidandroid;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.json.JSONObject;
+import org.rapidandroid.activity.CsvOutputScheduler;
+
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Debug;
 import android.util.Log;
 
@@ -42,5 +54,83 @@ public class RapidAndroidApplication extends Application {
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
 
 	}
+	
+	
+	public static void copyFileAtoB(Context context, File fromFile, File toFile){
+		// copy from /data/data over into config
+		FileInputStream fin = null;
+		InputStreamReader irdr = null;
+		FileOutputStream fout = null;
+		
+		try {
+			//fin = context.openFileInput(fromFile.getAbsolutePath());
+			fin = new FileInputStream(fromFile.getAbsolutePath());
+			irdr = new InputStreamReader(fin);
+			fout = new FileOutputStream(toFile.getAbsolutePath());
+			int i = 0;
+			while ((i = irdr.read()) != -1) {
+				fout.write(i);
+			}
+		} catch (FileNotFoundException e) {
+			
+		} catch (IOException e) {
+			
+		}finally {
+			try {
+		      if (fin != null) {
+	                fin.close();
+	            }
+	            if (irdr != null) {
+	            	irdr.close();
+	            }
+	            if (fout != null) {
+	            	fout.close();
+	            }
+			} catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
+	/* (non-Javadoc)
+	 * @see android.app.Application#onLowMemory()
+	 */
+	@Override
+	public void onLowMemory() {
+		// TODO Auto-generated method stub
+		super.onLowMemory();
+		SharedPreferences prefs = this.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
+		boolean fileExists = privateFile.exists();
+		
+		File sdcardFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
+		boolean savedFileExists = sdcardFile.exists();
+		
+		copyFileAtoB(this, privateFile, sdcardFile);
+	}
 
+	public static SharedPreferences loadPreferences(Context context){
+		
+		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
+		boolean privateFileExists = privateFile.exists();
+		
+		File sdFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
+		boolean sdFileExists = sdFile.exists();
+		
+		if (privateFileExists && sdFileExists){
+			SharedPreferences prefs = context.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+			return prefs;
+		} else if (!privateFileExists && !sdFileExists){
+			SharedPreferences prefs = context.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+			return prefs;
+		} else if (!privateFileExists && sdFileExists){
+			//copy file from SDCARD to private shared prefs (needed on a new install or upgrade) 
+			copyFileAtoB(context, sdFile, privateFile);
+			return context.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+		} else if (privateFileExists && !sdFileExists){
+			copyFileAtoB(context, privateFile, sdFile);
+			return context.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+		}
+		else return context.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+	}
 }
