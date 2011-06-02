@@ -1,5 +1,6 @@
-/**
- * 
+/*
+ * Copyright (©) 2011 The Johns Hopkins University Applied Physics Laboratory.
+ * All Rights Reserved.  
  */
 package org.rapidandroid.receiver;
 

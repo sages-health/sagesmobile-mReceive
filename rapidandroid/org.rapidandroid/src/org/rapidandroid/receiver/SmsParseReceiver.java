@@ -15,16 +15,12 @@
  *
  */
 
-/**
- * 
- */
 package org.rapidandroid.receiver;
 
 import java.util.Vector;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.rapidandroid.ApplicationGlobals;
+import org.rapidandroid.activity.CsvOutputScheduler;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.content.translation.ParsedDataTranslator;
@@ -36,7 +32,7 @@ import org.rapidsms.java.core.parser.service.ParsingService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -118,6 +114,9 @@ public class SmsParseReceiver extends BroadcastReceiver {
 				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseInProgressText());
 				context.sendBroadcast(broadcast);
 			}
+			
+			// TODO POKU "body" is the sms that we want to pass along
+			SharedPreferences pref = context.getSharedPreferences(CsvOutputScheduler.sharedPreferenceFilename, Context.MODE_PRIVATE);
 			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
 
 			// parse success reply
@@ -149,6 +148,19 @@ public class SmsParseReceiver extends BroadcastReceiver {
 			broadcastStartCsvOutput.putExtra("formName", form.getFormName());
 			broadcastStartCsvOutput.putExtra("formPrefix", form.getPrefix());
 			context.sendBroadcast(broadcastStartCsvOutput);
+			
+			// broadcast for the SMS Forwarding Activity
+			final int formId = form.getFormId();
+			boolean isFwdOn = pref.getBoolean(formId + CsvOutputScheduler.FORWARDING_VAR, false);
+			if (isFwdOn){
+				Intent broadcastForwardSMS= new Intent("org.rapidandroid.intents.SMS_FORWARD");
+				//broadcastForwardSMS.putExtra("formId", formId);
+				//broadcastForwardSMS.putExtra("formName", form.getFormName());
+				//broadcastForwardSMS.putExtra("formPrefix", form.getPrefix());
+				broadcastForwardSMS.putExtra("msg", body);
+				broadcastForwardSMS.putExtra("forwardNums", pref.getString(form.getFormId() + CsvOutputScheduler.FORWARDING_NUMS, "").split(",")); 
+				context.sendBroadcast(broadcastForwardSMS);
+			}
 		}
 	}
 }
