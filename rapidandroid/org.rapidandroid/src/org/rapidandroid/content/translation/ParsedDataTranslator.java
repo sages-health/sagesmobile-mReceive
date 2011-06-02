@@ -125,6 +125,8 @@ public class ParsedDataTranslator {
 					parsedValue = cursor.getFloat(i + Message.COL_PARSED_FIELDS_OFFSET);
 				} else if (type.equals("integer")) {
 					parsedValue = cursor.getInt(i + Message.COL_PARSED_FIELDS_OFFSET);
+				} else if (type.equals("datemdy")) {
+					parsedValue = cursor.getLong(i + Message.COL_PARSED_FIELDS_OFFSET);
 				}
 
 				SimpleParseResult res = new SimpleParseResult(formFields[i].getFieldType(), null, parsedValue);
