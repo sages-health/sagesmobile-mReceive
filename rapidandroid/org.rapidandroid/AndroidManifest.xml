@@ -73,6 +73,12 @@
 	  </intent-filter>
 	</receiver>
 
+	<receiver android:name=".receiver.SmsForwardReceiver">
+		<intent-filter>
+		 	<action android:name="org.rapidandroid.intents.SMS_FORWARD"></action>
+	  </intent-filter>
+	</receiver>
+
 	<receiver android:name=".receiver.SmsParseReceiver">
 		<intent-filter>
 			<action android:name="org.rapidandroid.intents.SMS_SAVED"></action>
