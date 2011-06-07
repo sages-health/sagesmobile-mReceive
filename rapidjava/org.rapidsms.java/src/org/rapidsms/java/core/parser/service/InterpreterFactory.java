@@ -22,6 +22,7 @@
  */
 package org.rapidsms.java.core.parser.service;
 
+import org.rapidsms.java.core.parser.interpreter.AlphaNumericInterpreter;
 import org.rapidsms.java.core.parser.interpreter.BooleanInterpreter;
 import org.rapidsms.java.core.parser.interpreter.DateInterpreter;
 import org.rapidsms.java.core.parser.interpreter.FloatInterpreter;
@@ -31,7 +32,7 @@ import org.rapidsms.java.core.parser.interpreter.StringInterpreter;
 
 public class InterpreterFactory {
 	public enum InterpreterType {
-		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD, DATE
+		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD, ALPHANUMERIC, DATE
 	}
 
 	private static IntegerInterpreter integerInterpreter = new IntegerInterpreter();
@@ -39,6 +40,7 @@ public class InterpreterFactory {
 	private static StringInterpreter stringInterpreter = new StringInterpreter();
 	private static FloatInterpreter floatInterpreter = new FloatInterpreter();
 	private static DateInterpreter dateInterpreter = new DateInterpreter();
+	private static AlphaNumericInterpreter alphanumericInterpreter = new AlphaNumericInterpreter();
 
 	public static IParseInterpreter GetParseInterpreter(String typename) {
 		if (typename.equals("boolean"))
@@ -47,6 +49,8 @@ public class InterpreterFactory {
 			return floatInterpreter;
 		if (typename.equals("word"))
 			return stringInterpreter;
+		if (typename.equals("alphanumeric"))
+			return alphanumericInterpreter;
 		if (typename.equals("float"))
 			return floatInterpreter;
 		if (typename.equals("integer"))
@@ -77,6 +81,8 @@ public class InterpreterFactory {
 				return floatInterpreter;
 			case WORD:
 				return stringInterpreter;
+			case ALPHANUMERIC:
+				return alphanumericInterpreter;
 			case DATE:
 				return dateInterpreter;
 			default:

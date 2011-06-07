@@ -69,5 +69,14 @@
 			"regex": "^((\\d{2,2}\\.{1,1}){2,2}\\d{4,4})|((\\d{2,2}\\/{1,1}){2,2}\\d{4,4})|((\\d{2,2}\\-{1,1}){2,2}\\d{4,4})(\\s|$)",
 			"name": "Date/dd.dd.dddd"
 		}
+	}, 
+	{
+		"pk": 9, 
+		"model": "rapidandroid.fieldtype", 
+		"fields": {
+			"datatype": "alphanumeric", 
+			"regex": "^(([A-Za-z\\d]+)|(\\.))($|\\s)",
+			"name": "AlphaNumeric"
+		}
 	}
 ]
