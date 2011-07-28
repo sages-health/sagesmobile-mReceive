@@ -17,6 +17,9 @@
 
 package org.rapidandroid;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -30,6 +33,7 @@ import org.json.JSONObject;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
+import org.rapidandroid.data.RapidSmsDBConstants.FieldType;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
@@ -57,7 +61,9 @@ public class ModelBootstrap {
 	public static void InitApplicationDatabase(Context context) {
 		mContext = context;
 		// check existence of tables and forms
-		if (isFieldTypeTableEmpty()) {
+		//TODO: pokuam1
+		if (true) {
+		//if (isFieldTypeTableEmpty()) {
 			applicationInitialFormFieldTypesBootstrap();
 		}
 		MessageTranslator.updateMonitorHash(context);
@@ -80,6 +86,35 @@ public class ModelBootstrap {
 		try {
 			InputStream is = mContext.getAssets().open(filename);
 
+			int size = is.available();
+
+			// Read the entire asset into a local byte buffer.
+			byte[] buffer = new byte[size];
+			is.read(buffer);
+			is.close();
+
+			// Convert the buffer into a Java string.
+			String text = new String(buffer);
+
+			return text;
+
+		} catch (IOException e) {
+			// Should never happen!
+			throw new RuntimeException(e);
+		}
+	}
+	
+	//TODO: make less code repeat
+	private static String loadSdCardFile(String filename) {
+		// InputStream is = mContext.getAssets().open(filename);
+		File file = new File(filename);
+		if (!file.exists()){
+			return null;
+		}
+		
+		InputStream is = null;
+		try {
+			is = new BufferedInputStream(new FileInputStream(file));
 			int size = is.available();
 
 			// Read the entire asset into a local byte buffer.
@@ -120,9 +155,9 @@ public class ModelBootstrap {
 			Map.Entry<Integer, SimpleFieldType> pairs = (Map.Entry<Integer, SimpleFieldType>) it.next();
 			SimpleFieldType thetype = pairs.getValue();
 			// make the URI and insert for the Fieldtype
-
 			Uri fieldtypeUri = Uri.parse(RapidSmsDBConstants.FieldType.CONTENT_URI_STRING + thetype.getId());
 			Cursor typeCursor = mContext.getContentResolver().query(fieldtypeUri, null, null, null, null);
+			
 			if (typeCursor.getCount() == 0) {
 				ContentValues typecv = new ContentValues();
 
@@ -135,10 +170,33 @@ public class ModelBootstrap {
 				Log.d("dimagi", "InsertFieldType: " + thetype.getDataType());
 				Log.d("dimagi", "InsertFieldType: " + thetype.getReadableName());
 				Log.d("dimagi", "InsertFieldType: " + thetype.getRegex());
-
-				Uri insertedTypeUri = mContext.getContentResolver().insert(RapidSmsDBConstants.FieldType.CONTENT_URI,
-																			typecv);
+				
+				Uri insertedTypeUri = mContext.getContentResolver().insert(RapidSmsDBConstants.FieldType.CONTENT_URI, typecv);
 				Log.d("dimagi", "********** Inserted SimpleFieldType into db: " + insertedTypeUri);
+
+			} else if (typeCursor.getCount() == 1 && typeCursor.moveToFirst()) {
+				// update the fieldtype in the database -- the name has changed
+				int nameColIndx = typeCursor.getColumnIndex(FieldType.NAME);
+				boolean isUpdatedFieldType = (!typeCursor.getString(nameColIndx).equals(thetype.getReadableName()));
+
+				if (isUpdatedFieldType) {
+					ContentValues typecv = new ContentValues();
+					
+					//typecv.put(BaseColumns._ID, thetype.getId());
+					typecv.put(RapidSmsDBConstants.FieldType.DATATYPE, thetype.getDataType());
+					typecv.put(RapidSmsDBConstants.FieldType.NAME, thetype.getReadableName());
+					typecv.put(RapidSmsDBConstants.FieldType.REGEX, thetype.getRegex());
+					
+					Log.d("dimagi", "UpdateFieldType: " + thetype.getId());
+					Log.d("dimagi", "UpdateFieldType: " + thetype.getDataType());
+					Log.d("dimagi", "UpdateFieldType: " + thetype.getReadableName());
+					Log.d("dimagi", "UpdateFieldType: " + thetype.getRegex());
+					
+					String whereClause = BaseColumns._ID + "= ?";
+					String[] whereClauseArgs = {String.valueOf(thetype.getId())};
+					int numUpdatedType = mContext.getContentResolver().update(RapidSmsDBConstants.FieldType.CONTENT_URI, typecv, whereClause, whereClauseArgs);
+					Log.d("dimagi", "********** Updated SimpleFieldType into db: " + numUpdatedType);
+				}
 			}
 			typeCursor.close();
 		}
@@ -146,6 +204,10 @@ public class ModelBootstrap {
 
 	private static void loadFieldTypesFromAssets() {
 		String types = loadAssetFile("definitions/fieldtypes.json");
+		// load custom fieldtypes from sdcard but always append
+		String customtypes = loadAssetFile("definitions/customfieldtypes.json");
+		String externalcustomtypes = loadSdCardFile("/sdcard/rapidandroid/externalcustomfieldtypes.json");
+		
 		try {
 			JSONArray typesarray = new JSONArray(types);
 
@@ -171,6 +233,60 @@ public class ModelBootstrap {
 				}
 			}
 		} catch (JSONException e) {
+		}
+		try {
+			JSONArray customtypesarray = new JSONArray(customtypes);
+			
+			int arrlength = customtypesarray.length();
+			for (int i = 0; i < arrlength; i++) {
+				try {
+					JSONObject obj = customtypesarray.getJSONObject(i);
+					Log.d("dimagi", "type loop: " + i + " model: " + obj.getString("model"));
+					if (!obj.getString("model").equals("rapidandroid.fieldtype")) {
+						Log.d("dimagi", "###" + obj.getString("model") + "###");
+						throw new IllegalArgumentException("Error in parsing fieldtypes.json");
+					}
+					
+					int pk = obj.getInt("pk");
+					JSONObject jsonfields = obj.getJSONObject("fields");
+					Log.d("dimagi", "#### Regex from file: " + jsonfields.getString("name") + " ["
+							+ jsonfields.getString("regex") + "]");
+					SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
+							jsonfields.getString("regex"),
+							jsonfields.getString("name"));
+					fieldTypeHash.put(new Integer(pk), newtype);
+				} catch (JSONException e) {
+				}
+			}
+		} catch (JSONException e) {
+		}
+		
+		if (externalcustomtypes != null) {
+			try {
+				JSONArray externalcustomtypesarray = new JSONArray(externalcustomtypes);
+
+				int arrlength = externalcustomtypesarray.length();
+				for (int i = 0; i < arrlength; i++) {
+					try {
+						JSONObject obj = externalcustomtypesarray.getJSONObject(i);
+						Log.d("dimagi", "type loop: " + i + " model: " + obj.getString("model"));
+						if (!obj.getString("model").equals("rapidandroid.fieldtype")) {
+							Log.d("dimagi", "###" + obj.getString("model") + "###");
+							throw new IllegalArgumentException("Error in parsing fieldtypes.json");
+						}
+
+						int pk = obj.getInt("pk");
+						JSONObject jsonfields = obj.getJSONObject("fields");
+						Log.d("dimagi", "#### Regex from file: " + jsonfields.getString("name") + " ["
+										+ jsonfields.getString("regex") + "]");
+						SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
+								jsonfields.getString("regex"), jsonfields.getString("name"));
+						fieldTypeHash.put(new Integer(pk), newtype);
+					} catch (JSONException e) {
+					}
+				}
+			} catch (JSONException e) {
+			}
 		}
 	}
 
