@@ -49,7 +49,7 @@ public class RapidAndroidApplication extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		//Debug.startMethodTracing("rapidandroid_application");
-		Log.d("RapidAndroidApplicatin", "I AM STARTING UP THE APP");
+		Log.d("RapidAndroidApplicatin", "RAPIDANDROID IS STARTING UP!");
 		ApplicationGlobals.checkGlobals(this.getApplicationContext());
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
 

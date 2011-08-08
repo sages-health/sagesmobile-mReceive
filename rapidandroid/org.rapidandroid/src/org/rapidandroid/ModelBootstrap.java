@@ -136,6 +136,8 @@ public class ModelBootstrap {
 	/**
 	 * Initial app startup, ONLY SHOULD BE RUN ONCE!!! called when the existence
 	 * of some data in the fieldtypes table is missing.
+	 * 
+	 * external-custom-fieldtypes: place them here: /sdcard/rapidandroid/externalcustomfieldtypes.json
 	 */
 	private static void applicationInitialFormFieldTypesBootstrap() {
 
@@ -175,6 +177,7 @@ public class ModelBootstrap {
 				Log.d("dimagi", "********** Inserted SimpleFieldType into db: " + insertedTypeUri);
 
 			} else if (typeCursor.getCount() == 1 && typeCursor.moveToFirst()) {
+				// SAGES
 				// update the fieldtype in the database -- the name has changed
 				int nameColIndx = typeCursor.getColumnIndex(FieldType.NAME);
 				boolean isUpdatedFieldType = (!typeCursor.getString(nameColIndx).equals(thetype.getReadableName()));
@@ -187,15 +190,15 @@ public class ModelBootstrap {
 					typecv.put(RapidSmsDBConstants.FieldType.NAME, thetype.getReadableName());
 					typecv.put(RapidSmsDBConstants.FieldType.REGEX, thetype.getRegex());
 					
-					Log.d("dimagi", "UpdateFieldType: " + thetype.getId());
-					Log.d("dimagi", "UpdateFieldType: " + thetype.getDataType());
-					Log.d("dimagi", "UpdateFieldType: " + thetype.getReadableName());
-					Log.d("dimagi", "UpdateFieldType: " + thetype.getRegex());
+					Log.d("sages", "UpdateFieldType: " + thetype.getId());
+					Log.d("sages", "UpdateFieldType: " + thetype.getDataType());
+					Log.d("sages", "UpdateFieldType: " + thetype.getReadableName());
+					Log.d("sages", "UpdateFieldType: " + thetype.getRegex());
 					
 					String whereClause = BaseColumns._ID + "= ?";
 					String[] whereClauseArgs = {String.valueOf(thetype.getId())};
 					int numUpdatedType = mContext.getContentResolver().update(RapidSmsDBConstants.FieldType.CONTENT_URI, typecv, whereClause, whereClauseArgs);
-					Log.d("dimagi", "********** Updated SimpleFieldType into db: " + numUpdatedType);
+					Log.d("sages", "********** Updated SimpleFieldType into db: " + numUpdatedType);
 				}
 			}
 			typeCursor.close();
@@ -204,7 +207,8 @@ public class ModelBootstrap {
 
 	private static void loadFieldTypesFromAssets() {
 		String types = loadAssetFile("definitions/fieldtypes.json");
-		// load custom fieldtypes from sdcard but always append
+		// SAGES
+		// loading the custom fieldtype files 
 		String customtypes = loadAssetFile("definitions/customfieldtypes.json");
 		String externalcustomtypes = loadSdCardFile("/sdcard/rapidandroid/externalcustomfieldtypes.json");
 		
@@ -235,21 +239,23 @@ public class ModelBootstrap {
 		} catch (JSONException e) {
 		}
 		try {
+			// SAGES
+			// load custom fieldtypes from sdcard but always append
 			JSONArray customtypesarray = new JSONArray(customtypes);
 			
 			int arrlength = customtypesarray.length();
 			for (int i = 0; i < arrlength; i++) {
 				try {
 					JSONObject obj = customtypesarray.getJSONObject(i);
-					Log.d("dimagi", "type loop: " + i + " model: " + obj.getString("model"));
+					Log.d("sages", "type loop: " + i + " model: " + obj.getString("model"));
 					if (!obj.getString("model").equals("rapidandroid.fieldtype")) {
-						Log.d("dimagi", "###" + obj.getString("model") + "###");
+						Log.d("sages", "###" + obj.getString("model") + "###");
 						throw new IllegalArgumentException("Error in parsing fieldtypes.json");
 					}
 					
 					int pk = obj.getInt("pk");
 					JSONObject jsonfields = obj.getJSONObject("fields");
-					Log.d("dimagi", "#### Regex from file: " + jsonfields.getString("name") + " ["
+					Log.d("sages", "#### Regex from file: " + jsonfields.getString("name") + " ["
 							+ jsonfields.getString("regex") + "]");
 					SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 							jsonfields.getString("regex"),
@@ -260,7 +266,8 @@ public class ModelBootstrap {
 			}
 		} catch (JSONException e) {
 		}
-		
+		// SAGES
+		// load EXTERNAL (on the sdcard) custom fieldtypes from sdcard but always append
 		if (externalcustomtypes != null) {
 			try {
 				JSONArray externalcustomtypesarray = new JSONArray(externalcustomtypes);
@@ -269,15 +276,15 @@ public class ModelBootstrap {
 				for (int i = 0; i < arrlength; i++) {
 					try {
 						JSONObject obj = externalcustomtypesarray.getJSONObject(i);
-						Log.d("dimagi", "type loop: " + i + " model: " + obj.getString("model"));
+						Log.d("sages", "type loop: " + i + " model: " + obj.getString("model"));
 						if (!obj.getString("model").equals("rapidandroid.fieldtype")) {
-							Log.d("dimagi", "###" + obj.getString("model") + "###");
+							Log.d("sages", "###" + obj.getString("model") + "###");
 							throw new IllegalArgumentException("Error in parsing fieldtypes.json");
 						}
 
 						int pk = obj.getInt("pk");
 						JSONObject jsonfields = obj.getJSONObject("fields");
-						Log.d("dimagi", "#### Regex from file: " + jsonfields.getString("name") + " ["
+						Log.d("sages", "#### Regex from file: " + jsonfields.getString("name") + " ["
 										+ jsonfields.getString("regex") + "]");
 						SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 								jsonfields.getString("regex"), jsonfields.getString("name"));
