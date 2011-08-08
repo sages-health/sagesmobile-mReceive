@@ -26,13 +26,14 @@ import org.rapidsms.java.core.parser.interpreter.AlphaNumericInterpreter;
 import org.rapidsms.java.core.parser.interpreter.BooleanInterpreter;
 import org.rapidsms.java.core.parser.interpreter.DateInterpreter;
 import org.rapidsms.java.core.parser.interpreter.FloatInterpreter;
+import org.rapidsms.java.core.parser.interpreter.FreeTextInterpreter;
 import org.rapidsms.java.core.parser.interpreter.IParseInterpreter;
 import org.rapidsms.java.core.parser.interpreter.IntegerInterpreter;
 import org.rapidsms.java.core.parser.interpreter.StringInterpreter;
 
 public class InterpreterFactory {
 	public enum InterpreterType {
-		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD, ALPHANUMERIC, DATE
+		BOOLEAN, NUMBER, RATIO, HEIGHT, LENGTH, WEIGHT, WORD, ALPHANUMERIC, FREETEXT, DATE
 	}
 
 	private static IntegerInterpreter integerInterpreter = new IntegerInterpreter();
@@ -41,6 +42,7 @@ public class InterpreterFactory {
 	private static FloatInterpreter floatInterpreter = new FloatInterpreter();
 	private static DateInterpreter dateInterpreter = new DateInterpreter();
 	private static AlphaNumericInterpreter alphanumericInterpreter = new AlphaNumericInterpreter();
+	private static FreeTextInterpreter freetextInterpreter = new FreeTextInterpreter();
 
 	public static IParseInterpreter GetParseInterpreter(String typename) {
 		if (typename.equals("boolean"))
@@ -51,6 +53,8 @@ public class InterpreterFactory {
 			return stringInterpreter;
 		if (typename.equals("alphanumeric"))
 			return alphanumericInterpreter;
+		if (typename.equals("freetext"))
+			return freetextInterpreter;
 		if (typename.equals("float"))
 			return floatInterpreter;
 		if (typename.equals("integer"))
@@ -83,6 +87,8 @@ public class InterpreterFactory {
 				return stringInterpreter;
 			case ALPHANUMERIC:
 				return alphanumericInterpreter;
+			case FREETEXT:
+				return freetextInterpreter;
 			case DATE:
 				return dateInterpreter;
 			default:

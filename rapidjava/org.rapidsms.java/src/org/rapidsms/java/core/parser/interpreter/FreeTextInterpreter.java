@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * @author Adjoa Poku adjoa.poku@jhuapl.edu
  * @created June 2011 Summary:
  */
-public class AlphaNumericInterpreter implements IParseInterpreter {
+public class FreeTextInterpreter implements IParseInterpreter {
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -18,9 +18,9 @@ public class AlphaNumericInterpreter implements IParseInterpreter {
 
 	Pattern mPattern;
 
-	public AlphaNumericInterpreter() {
+	public FreeTextInterpreter() {
 		// MUST HAVE ZERO GROUPS AND OTHER TOKENIZING JUNK
-		mPattern = Pattern.compile("[A-Za-z\\d]+\\.*");
+		mPattern = Pattern.compile("[A-Za-z\\d\\s\\.]+\\.*");
 	}
 
 	public Object interpretValue(String token) {
