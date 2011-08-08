@@ -34,16 +34,17 @@ public class CsvOutputScheduler extends Activity {
 	    private SharedPreferences preferences;
 	    public static final String TOGGLE_VAR = "_isAutoCsvOn";
 	    public static final String FREQUENCY_VAR = "_autoCsvFrequency";
+	    public static final String DELETE_VAR = "_isDeleteOn";
 	    public static final String FORWARDING_VAR = "_isForwardingOn";
 	    public static final String FORWARDING_NUMS = "_forwardingNums";
 	    public static final String sharedPreferenceFilename = "RapidAndroidSettings";
 	    
-//TODO IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
+//TODO POKUAM1 - IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
 	    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("RapidAndroid :: Schedule CSV Output");
+        setTitle("RapidAndroid:: Schedule CSV Output, SMS Forwarding");
         setContentView(R.layout.schedule_csv_output);
         Bundle extras = getIntent().getExtras();
         
@@ -53,6 +54,7 @@ public class CsvOutputScheduler extends Activity {
         final int formId = extras.getInt(FormReviewer.CallParams.REVIEW_FORM);
         boolean isAutoCsvOn = preferences.getBoolean(formId + TOGGLE_VAR, false);
         int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 1);
+        //boolean isDeleteOn = preferences.getBoolean(formId + DELETE_VAR, false);
         boolean isForwardingOn = preferences.getBoolean(formId + FORWARDING_VAR, false);
         String forwardingNums = preferences.getString(formId + FORWARDING_NUMS, "");
         
@@ -75,7 +77,7 @@ public class CsvOutputScheduler extends Activity {
         frequencyTextField.setText(String.valueOf(autoCsvFrequency));
         frequencyTextField.addTextChangedListener(new TextWatcher() {
 
-        	final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle);
+        	final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle_csv_output);
         	final Button update = (Button) findViewById(R.id.updateButton);
 			
 			@Override
@@ -113,23 +115,35 @@ public class CsvOutputScheduler extends Activity {
 			}
 		});
         
-        final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle);
+        final ToggleButton toggle = (ToggleButton) findViewById(R.id.toggle_csv_output);
         toggle.setChecked(isAutoCsvOn);
         toggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
-			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
+			public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 				// toggle on/off if the csv output should be automatic 
 				System.out.println("on checked changed for toggle.");
-				System.out.println("arg: " + arg1);
-				toggle.setChecked(arg1);
+				System.out.println("arg: " + isChecked);
+				toggle.setChecked(isChecked);
 				Editor editor = preferences.edit();
-				editor.putBoolean(formId + TOGGLE_VAR, arg1);
+				editor.putBoolean(formId + TOGGLE_VAR, isChecked);
 				editor.commit();
 			}
 		});
-    
-        
+/*    
+        final ToggleButton deleteToggle = (ToggleButton) findViewById(R.id.toggle_delete);
+        deleteToggle.setChecked(isDeleteOn);
+        deleteToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttong, boolean isChecked) {
+				deleteToggle.setChecked(isChecked);
+				Editor editor = preferences.edit();
+				editor.putBoolean(formId + DELETE_VAR, isChecked);
+				editor.commit();
+			}
+		});
+    */    
         Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new OnClickListener() {
 			

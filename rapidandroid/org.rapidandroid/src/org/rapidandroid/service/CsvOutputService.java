@@ -8,13 +8,19 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import org.rapidandroid.activity.CsvOutputScheduler;
+import org.rapidandroid.activity.Dashboard;
 import org.rapidandroid.activity.FormReviewer;
 import org.rapidandroid.content.translation.ModelTranslator;
+import org.rapidandroid.data.SmsDbHelper;
 import org.rapidsms.java.core.model.Form;
 
+import android.app.AlertDialog;
 import android.app.IntentService;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
@@ -76,6 +82,7 @@ public class CsvOutputService extends IntentService {
 		preferences = getSharedPreferences(CsvOutputScheduler.sharedPreferenceFilename, MODE_PRIVATE);
 		boolean isAutoCsvOn = preferences.getBoolean(form.getFormId() + CsvOutputScheduler.TOGGLE_VAR, false);
 		int autoCsvFrequency = preferences.getInt(form.getFormId() + CsvOutputScheduler.FREQUENCY_VAR, 1);
+		//boolean isDeleteOn = preferences.getBoolean(form.getFormId() + CsvOutputScheduler.DELETE_VAR, false);
 		
 		Log.d("CsvOutputService.onHandleIntent", form.getFormId() + "_isAutoCsvOn: " + isAutoCsvOn);
 		Log.d("CsvOutputService.onHandleIntent", form.getFormId() + "_autoCsvFrequency: " + autoCsvFrequency);
@@ -87,6 +94,20 @@ public class CsvOutputService extends IntentService {
 				try {
 					FormReviewer reviewer = new FormReviewer();
 					reviewer.outputCSV(form.getFormId());
+
+/*					
+ * 			seems like a bad idea...needs more thought
+ * 						if (isDeleteOn){
+						SmsDbHelper dbHelper = new SmsDbHelper(this);
+						final SQLiteDatabase db = dbHelper.getWritableDatabase();
+						final String table = "formdata_" + form.getPrefix();
+						final String whereClause = null;
+						final String[] whereArgs = null;
+						
+						int rows = db.delete(table, whereClause, whereArgs);
+						Log.d("CsvOutputService", "deleted " + rows + " records from the form: " + form.getPrefix());
+					}*/
+					
 					wait(autoCsvFrequency * 1000);
 				} catch (Exception e){
 					

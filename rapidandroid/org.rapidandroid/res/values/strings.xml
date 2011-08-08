@@ -60,12 +60,16 @@
 <string name="glb_lbl_activeall">Activate all SMS features</string>
 
 <string name="numberHint">Integers 1 to 55 are valid</string>
-<string name="lbl_outputFreq">Set frequency of CSV output in seconds (1 to 55 are valid values)</string>
+<string name="lbl_outputFreq">Set period for CSV output in seconds (1 to 55 are valid values)</string>
 <string name="settings_saved">Changes Saved</string>
 <string name="refresh_cache">Refresh the cache</string>
 
 <string name="refresh">Refresh</string>
 
 <string name="lbl_forwardingNums">Forward SMS to these numbers (separate with comma)</string>
+
+<string name="lbl_deleteAfterCsvOut">Delete data after CSV output</string>
+
+<string name="lbl_toggleAutoCsvOutput">Activate auto CSV output</string>
 
 </resources>

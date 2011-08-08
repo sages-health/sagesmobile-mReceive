@@ -12,9 +12,16 @@
 		android:numeric="integer" android:layout_width="fill_parent"
 		android:hint="@string/numberHint">
 	</EditText>
+	<TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView2" android:text="@string/lbl_toggleAutoCsvOutput"></TextView>
 	<ToggleButton android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:text="ToggleButton"
-		android:id="@+id/toggle"></ToggleButton>
+		android:id="@+id/toggle_csv_output"></ToggleButton>
+<!-- 		
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/textView1" android:text="@string/lbl_deleteAfterCsvOut"></TextView>
+	<ToggleButton android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/toggle_delete"
+		android:text=""></ToggleButton> -->
 
 	<LinearLayout android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:id="@+id/linearLayout1">
@@ -26,5 +33,6 @@
 	<EditText android:layout_height="wrap_content"
 		android:layout_width="fill_parent" android:id="@+id/etx_forwardingNums">
 	</EditText>
-	<Button android:text="Update" android:id="@+id/updateButton" android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
+	<Button android:text="Update" android:id="@+id/updateButton"
+		android:layout_height="wrap_content" android:layout_width="wrap_content"></Button>
 </LinearLayout>
