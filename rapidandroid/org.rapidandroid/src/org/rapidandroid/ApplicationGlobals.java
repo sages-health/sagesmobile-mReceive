@@ -134,7 +134,8 @@ public class ApplicationGlobals {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
+			//saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
+			saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Try again:");
 			
 		}
 	}
