@@ -135,7 +135,7 @@ public class ParsedDataReporter {
 
 		query.append("WHERE rapidandroid_message.time > '" + startDate.get(Calendar.YEAR) + "-"
 				+ (startDate.get(Calendar.MONTH) + 1) + "-" + startDate.get(Calendar.DATE) + "' AND ");
-		query.append(" rapidandroid_message.time < '" + endDate.get(Calendar.YEAR) + "-"
+		query.append(" rapidandroid_message.time <= '" + endDate.get(Calendar.YEAR) + "-"
 				+ (1 + endDate.get(Calendar.MONTH)) + "-" + endDate.get(Calendar.DATE) + "';");
 
 		SQLiteDatabase db = mHelper.getReadableDatabase();
