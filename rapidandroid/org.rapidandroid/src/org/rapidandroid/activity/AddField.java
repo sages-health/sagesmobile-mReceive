@@ -195,11 +195,11 @@ public class AddField extends Activity {
 		}
 		// iterate over the prior created fieldnames from the bundle
 		if (existingFields != null) {
-			String name = etxName.getText().toString();
+			String name = etxName.getText().toString().trim();
 			boolean duplicate = false;
 			int len = existingFields.length;
 			for (int i = 0; i < len; i++) {
-				if (name.equals(existingFields[i])) {
+				if (name.equals(existingFields[i].trim())) {
 					duplicate = true;
 					break;
 				}

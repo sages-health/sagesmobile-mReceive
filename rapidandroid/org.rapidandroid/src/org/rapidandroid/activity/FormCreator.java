@@ -317,7 +317,7 @@ public class FormCreator extends Activity {
 
 		Field newField = new Field();
 		newField.setFieldId(-1);
-		newField.setName(extras.getString(ResultConstants.RESULT_KEY_FIELDNAME));
+		newField.setName(extras.getString(ResultConstants.RESULT_KEY_FIELDNAME).trim());
 		newField.setDescription(extras.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
 		int fieldTypeID = extras.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
 		ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
@@ -508,9 +508,9 @@ public class FormCreator extends Activity {
 		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
 		
 		Form formToSave = new Form();
-		formToSave.setFormName(etxFormName.getText().toString());
-		formToSave.setPrefix(etxFormPrefix.getText().toString());
-		formToSave.setDescription(etxDescription.getText().toString());
+		formToSave.setFormName(etxFormName.getText().toString().trim());
+		formToSave.setPrefix(etxFormPrefix.getText().toString().trim());
+		formToSave.setDescription(etxDescription.getText().toString().trim());
 		formToSave.setParserType(parserType);
 		// (Message[])parsedMessages.keySet().toArray(new
 		// Message[parsedMessages.keySet().size()]);
