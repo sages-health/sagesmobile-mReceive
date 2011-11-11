@@ -36,6 +36,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+import android.util.Log;
 
 /**
  * 
@@ -116,6 +117,7 @@ public class ParsedDataReporter {
 	}
 
 	public synchronized static void exportFormDataToCSV(Context context, Form f, Calendar startDate, Calendar endDate) {
+		endDate.add(Calendar.DATE, 1);
 		SmsDbHelper mHelper = new SmsDbHelper(context);
 		// build the query
 		StringBuilder query = new StringBuilder();
@@ -138,6 +140,7 @@ public class ParsedDataReporter {
 		query.append(" rapidandroid_message.time <= '" + endDate.get(Calendar.YEAR) + "-"
 				+ (1 + endDate.get(Calendar.MONTH)) + "-" + endDate.get(Calendar.DATE) + "';");
 
+		Log.d(ParsedDataReporter.class.getCanonicalName(), query.toString());
 		SQLiteDatabase db = mHelper.getReadableDatabase();
 		Cursor cr = db.rawQuery(query.toString(), null);
 		FileOutputStream fOut = null;
@@ -167,7 +170,7 @@ public class ParsedDataReporter {
 				}
 			}
 			fOut.write(sbrow.toString().getBytes());
-			cr.moveToFirst();
+			if (cr.moveToFirst())
 			do {
 				sbrow = new StringBuilder();
 				for (int i = 0; i < colcount; i++) {
