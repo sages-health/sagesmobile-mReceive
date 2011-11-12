@@ -117,11 +117,12 @@ public class ApplicationGlobals {
 	}
 	
 	public static String getParseFailText(Form form) {
-		StringBuilder failReply = new StringBuilder(form.getPrefix()).append(" "); 
-		for (Field field : form.getFields()){
-			failReply.append(field.getName()).append("_").append(field.getFieldType().getReadableName()).append(" ");
-		}
-		return mReplyFailText + ": " + failReply.toString();
+//		StringBuilder failReply = new StringBuilder(form.getPrefix()).append(" "); 
+//		for (Field field : form.getFields()){
+//			failReply.append(field.getName()).append("_").append(field.getFieldType().getReadableName()).append(" ");
+//		}
+//		return mReplyFailText + ": " + failReply.toString();
+		return mReplyFailText;
 	}
 	
 	
