@@ -276,11 +276,13 @@ public class Dashboard extends Activity {
 					               int rows = db.delete(table, whereClause, whereArgs);
 					               mListviewCursor = null;
 					               beginListViewReload();
+					               db.close();
 					           }
 					       })
 					       .setNegativeButton("No", new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {
 					                dialog.cancel();
+					                db.close();
 					           }
 					       });
 					
