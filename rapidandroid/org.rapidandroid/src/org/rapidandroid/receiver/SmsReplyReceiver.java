@@ -46,7 +46,7 @@ public class SmsReplyReceiver extends BroadcastReceiver {
 			if (extras.containsKey(KEY_DESTINATION_PHONE) && extras.containsKey(KEY_MESSAGE)) {
 				String destinationAddr = extras.getString(KEY_DESTINATION_PHONE);
 				String mesg = extras.getString(KEY_MESSAGE);
-				/** if mesg.length > 160(i think?) chars then this throws exception. would need
+				/** TODO if mesg.length > 160(i think?) chars then this throws exception. would need
 				 * to use the version that sends segmented sms **/
 				smgr.sendTextMessage(destinationAddr, null, mesg, null, null);
 			}
