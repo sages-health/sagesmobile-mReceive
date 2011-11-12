@@ -24,13 +24,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.json.JSONObject;
 import org.rapidandroid.activity.CsvOutputScheduler;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Debug;
 import android.util.Log;
 
 /**
@@ -99,14 +97,14 @@ public class RapidAndroidApplication extends Application {
 	public void onLowMemory() {
 		// TODO Auto-generated method stub
 		super.onLowMemory();
-		SharedPreferences prefs = this.getSharedPreferences(prefsFileName, MODE_PRIVATE);
-		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
-		boolean fileExists = privateFile.exists();
-		
-		File sdcardFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
-		boolean savedFileExists = sdcardFile.exists();
-		
-		copyFileAtoB(this, privateFile, sdcardFile);
+//		SharedPreferences prefs = this.getSharedPreferences(prefsFileName, MODE_PRIVATE);
+//		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
+//		boolean fileExists = privateFile.exists();
+//		
+//		File sdcardFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
+//		boolean savedFileExists = sdcardFile.exists();
+//		
+//		copyFileAtoB(this, privateFile, sdcardFile);
 	}
 
 	public static SharedPreferences loadPreferences(Context context){
