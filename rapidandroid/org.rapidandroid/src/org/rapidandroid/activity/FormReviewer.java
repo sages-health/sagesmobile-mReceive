@@ -196,8 +196,8 @@ public class FormReviewer extends Activity {
 			case MENU_DUMP_CSV:
 				if (ParsedDataReporter.getOldestMessageDate(this, mForm).equals(Constants.NULLDATE)) {
 					Builder noDateDialog = new AlertDialog.Builder(this);
-					noDateDialog.setPositiveButton("Ok", null);
-					noDateDialog.setTitle("Alert");
+					noDateDialog.setPositiveButton(R.string.ok, null);
+					noDateDialog.setTitle(R.string.alert);
 					noDateDialog.setMessage("This form has no messages or data to output");
 					noDateDialog.show();
 					return true;
