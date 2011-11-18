@@ -28,6 +28,7 @@ import org.rapidandroid.R;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.data.controller.DashboardDataLayer;
+import org.rapidandroid.data.controller.FormController;
 import org.rapidandroid.data.controller.MessageDataReporter;
 import org.rapidandroid.data.controller.ParsedDataReporter;
 import org.rapidandroid.view.SingleRowHeaderView;
@@ -48,6 +49,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -124,6 +126,7 @@ public class Dashboard extends Activity {
 	private static final int MENU_CHARTS_ID = Menu.FIRST + 3;
 	private static final int MENU_GLOBAL_SETTINGS = Menu.FIRST + 4;
 	private static final int MENU_ERASE_DATA = Menu.FIRST + 5;
+	private static final int MENU_DELETE_FORM = Menu.FIRST + 6;
 	// private static final int MENU_SHOW_REPORTS = Menu.FIRST + 3;
 	// private static final int MENU_EXIT = Menu.FIRST + 3; //waitaminute, we
 	// don't want to exit this thing, do we?
@@ -156,7 +159,8 @@ public class Dashboard extends Activity {
 	boolean mIsInitializing = false;
 	boolean resetCursor = true;
 	Cursor mListviewCursor = null;
-
+	ArrayAdapter<String> mSpinnerAdapter;
+	
 	// private Date mStartDate = Constants.NULLDATE;
 	// private Date mEndDate = Constants.NULLDATE;
 
@@ -268,9 +272,9 @@ public class Dashboard extends Activity {
 					final String[] whereArgs = {String.valueOf(objlong)};
 					
 					AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
-					builder.setMessage("Are you sure you want to delete?")
+					builder.setMessage(R.string.confirm_delete)
 					       .setCancelable(false)
-					       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {
 					               //Dashboard.this.finish();
 					               int rows = db.delete(table, whereClause, whereArgs);
@@ -279,15 +283,14 @@ public class Dashboard extends Activity {
 					               db.close();
 					           }
 					       })
-					       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+					       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {
 					                dialog.cancel();
 					                db.close();
 					           }
 					       });
 					
-					AlertDialog alert = builder.create();
-					builder.show();
+					builder.create().show();
 				}
 				return false;
 			}
@@ -473,11 +476,12 @@ public class Dashboard extends Activity {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_CREATE_ID, 0, R.string.dashboard_menu_create).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, MENU_FORM_REVIEW_ID, 0, R.string.dashboard_menu_edit).setIcon(android.R.drawable.ic_menu_agenda);
-		menu.add(0, MENU_ERASE_DATA, 0, R.string.dashboard_erase_data).setIcon(android.R.drawable.ic_input_delete);
+		menu.add(0, MENU_ERASE_DATA, 0, R.string.dashboard_menu_erase_data).setIcon(android.R.drawable.ic_input_delete);
 		// menu.add(0, MENU_CHANGE_DATERANGE, 0,
 		// R.string.chart_menu_change_parameters.setIcon(android.R.drawable.ic_menu_recent_history);
 		menu.add(0, MENU_CHARTS_ID, 0, R.string.dashboard_menu_view).setIcon(android.R.drawable.ic_menu_sort_by_size);
 		menu.add(0, MENU_GLOBAL_SETTINGS, 0, "Change Settings").setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(1, MENU_DELETE_FORM, 0, R.string.dashboard_menu_delete_form).setIcon(android.R.drawable.ic_menu_delete);
 		// menu.add(0, MENU_SHOW_REPORTS, 0,
 		// R.string.dashboard_menu_show_reports);
 		return true;
@@ -507,11 +511,52 @@ public class Dashboard extends Activity {
 			case MENU_GLOBAL_SETTINGS:
 				startActivityGlobalSettings();
 				return true;
+			case MENU_DELETE_FORM:
+				startDialogDeleteForm();
+				return true;
 		}
 		return true;
 	}
 
 	
+
+	/**
+	 * 
+	 */
+	private void startDialogDeleteForm() {
+		if (!ParsedDataReporter.getOldestMessageDate(this, mChosenForm).equals(Constants.NULLDATE)) {
+			Builder noDateDialog = new AlertDialog.Builder(this);
+			noDateDialog.setPositiveButton(R.string.ok, null);
+			noDateDialog.setTitle(R.string.alert);
+			noDateDialog.setMessage("You cannot delete a form containing data or messages");
+			noDateDialog.show();
+		} else {	
+		Builder deleteFormDialog = new AlertDialog.Builder(this);
+		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		final String table = "formdata_" + mChosenForm.getPrefix();
+		final String whereClause = null;
+		final String[] whereArgs = null;
+		final String formPrefix = mChosenForm.getPrefix();
+		deleteFormDialog.setMessage(R.string.confirm_delete)
+	       .setCancelable(false)
+	       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	        	   FormController.deleteFormByPrefix(Dashboard.this, formPrefix);
+	               //int rows = db.delete(table, whereClause, whereArgs);
+	               //mListviewCursor = null;
+	        	   initFormSpinner();
+	           }
+	       })
+	       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+	           public void onClick(DialogInterface dialog, int id) {
+	                dialog.cancel();
+	           }
+	       });
+	
+		deleteFormDialog.create().show();
+		}
+	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -612,9 +657,9 @@ public class Dashboard extends Activity {
 		final String whereClause = null;
 		final String[] whereArgs = null;
 		
-		eraseDataDialog.setMessage("Are you sure you want to delete?")
+		eraseDataDialog.setMessage(R.string.confirm_delete)
 	       .setCancelable(false)
-	       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 	           public void onClick(DialogInterface dialog, int id) {
 	               //Dashboard.this.finish();
 	               int rows = db.delete(table, whereClause, whereArgs);
@@ -622,7 +667,7 @@ public class Dashboard extends Activity {
 	               beginListViewReload();
 	           }
 	       })
-	       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 	           public void onClick(DialogInterface dialog, int id) {
 	                dialog.cancel();
 	           }
@@ -636,9 +681,9 @@ public class Dashboard extends Activity {
 		// Debug.stopMethodTracing();
 		if (mListviewCursor == null) {
 			Builder noDataDialog = new AlertDialog.Builder(this);
-			noDataDialog.setPositiveButton("Ok", null);
-			noDataDialog.setTitle("Alert");
-			noDataDialog.setMessage("There is no data to chart.");
+			noDataDialog.setPositiveButton(R.string.ok, null);
+			noDataDialog.setTitle(R.string.alert);
+			noDataDialog.setMessage(R.string.no_data_to_chart);
 			noDataDialog.show();
 			return;
 		}
@@ -651,9 +696,9 @@ public class Dashboard extends Activity {
 			Date startDate = ParsedDataReporter.getOldestMessageDate(this, mChosenForm);
 			if (startDate.equals(Constants.NULLDATE)) {
 				Builder noDateDialog = new AlertDialog.Builder(this);
-				noDateDialog.setPositiveButton("Ok", null);
-				noDateDialog.setTitle("Alert");
-				noDateDialog.setMessage("This form has no messages or data to chart");
+				noDateDialog.setPositiveButton(R.string.ok, null);
+				noDateDialog.setTitle(R.string.alert);
+				noDateDialog.setMessage(R.string.no_msgs_to_chart);
 				noDateDialog.show();
 				return;
 			}
@@ -730,10 +775,11 @@ public class Dashboard extends Activity {
 		monitors[monitors.length - 1] = "Show all Messages";
 		// monitors[monitors.length - 1] = "Show Monitors";
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, monitors);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, monitors);
+		mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// apply it to the spinner
-		spin_forms.setAdapter(adapter);
+		spin_forms.setAdapter(mSpinnerAdapter);
+		
 	}
 
 	private void spinnerItemSelected(int position) {
@@ -818,6 +864,8 @@ public class Dashboard extends Activity {
 			} else if (mShowAllMessages && mChosenForm == null) {
 				mListviewCursor = DashboardDataLayer.getCursorForRawMessages(this, mListCount);
 			}
+		} else {
+			Log.d("Dashboard","mListviewCursor wasn't null....");
 		}
 	}
 
