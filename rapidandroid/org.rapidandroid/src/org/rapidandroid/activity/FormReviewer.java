@@ -58,6 +58,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -196,9 +198,15 @@ public class FormReviewer extends Activity {
 			case MENU_DUMP_CSV:
 				if (ParsedDataReporter.getOldestMessageDate(this, mForm).equals(Constants.NULLDATE)) {
 					Builder noDateDialog = new AlertDialog.Builder(this);
-					noDateDialog.setPositiveButton(R.string.ok, null);
+					noDateDialog.setPositiveButton(R.string.ok, new OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							outputCSV();
+						}
+					});
 					noDateDialog.setTitle(R.string.alert);
-					noDateDialog.setMessage("This form has no messages or data to output");
+					noDateDialog.setMessage("This form has no messages or data to output. Therefore, the output will only contain the header columns.");
 					noDateDialog.show();
 					return true;
 				}
