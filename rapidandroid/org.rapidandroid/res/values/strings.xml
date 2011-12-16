@@ -10,7 +10,8 @@
 <string name="lbl_dashboardmessages">Recent Messages:</string>
 <string name="dashboard_menu_create">Create Form</string>
 <string name="dashboard_menu_edit">View Form</string>
-<string name="dashboard_erase_data">Erase Data</string>
+<string name="dashboard_menu_erase_data">Erase Data</string>
+<string name="dashboard_menu_delete_form">Delete Form</string>
 <string name="dashboard_menu_view">Show Charts</string>
 <string name="formeditor_menu_cancel">Cancel</string>
 <string name="formeditor_menu_save">Save</string>
@@ -24,6 +25,14 @@
 
 <string name="btn_finishaddfield">Add</string>
 <string name="btn_canceladdfield">Cancel</string>
+<string name="yes">Yes</string>
+<string name="no">No</string>
+<string name="ok">Ok</string>
+<string name="alert">Alert</string>
+<string name="confirm_delete">Are you sure you want to delete?</string>
+
+<string name="no_msgs_to_chart">This form has no messages or data to chart</string>
+<string name="no_data_to_chart">There is no data to chart.</string>
 
 <string name="formreview_menu_done">Done</string>
 <string name="formreview_menu_format">Show Example</string>
@@ -59,8 +68,8 @@
 <string name="glbsettings_heading">Global reply settings</string>
 <string name="glb_lbl_activeall">Activate all SMS features</string>
 
-<string name="numberHint">Integers 1 to 55 are valid</string>
-<string name="lbl_outputFreq">Set period for CSV output in seconds (1 to 55 are valid values)</string>
+<string name="numberHint">1 to 55</string>
+<string name="lbl_outputFreq">Period for output in seconds \n(1 to 55 are valid values)</string>
 <string name="settings_saved">Changes Saved</string>
 <string name="refresh_cache">Refresh the cache</string>
 

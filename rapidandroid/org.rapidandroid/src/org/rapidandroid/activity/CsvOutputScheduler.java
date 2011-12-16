@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,6 +29,8 @@ import android.widget.ToggleButton;
  * Scheduling activity for automatic csv output whenever an sms is received matching the prefix
  * for the registered form(s)
  * 
+ * // If this runs on schedule REALISE THAT IT WILL: delete the old csv files for this form - don't want them to accumulate  on sdcard
+ * 
  * @author Adjoa Poku adjoa.poku@jhuapl.edu
  * @created Mar 23, 2011
  */
@@ -39,12 +43,15 @@ public class CsvOutputScheduler extends Activity {
 	    public static final String FORWARDING_NUMS = "_forwardingNums";
 	    public static final String sharedPreferenceFilename = "RapidAndroidSettings";
 	    
+		public static final String t = CsvOutputScheduler.class.getSimpleName();
+		
+		private static final int MENU_DONE = Menu.FIRST;
 //TODO POKUAM1 - IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
 	    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("RapidAndroid:: Schedule CSV Output, SMS Forwarding");
+        setTitle("RapidAndroid:: CSV Scheduler & Forwarding");
         setContentView(R.layout.schedule_csv_output);
         Bundle extras = getIntent().getExtras();
         
@@ -130,28 +137,15 @@ public class CsvOutputScheduler extends Activity {
 				editor.commit();
 			}
 		});
-/*    
-        final ToggleButton deleteToggle = (ToggleButton) findViewById(R.id.toggle_delete);
-        deleteToggle.setChecked(isDeleteOn);
-        deleteToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttong, boolean isChecked) {
-				deleteToggle.setChecked(isChecked);
-				Editor editor = preferences.edit();
-				editor.putBoolean(formId + DELETE_VAR, isChecked);
-				editor.commit();
-			}
-		});
-    */    
+ 
         Button updateButton = (Button) findViewById(R.id.updateButton);
         updateButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View view) {
 				// set frequency value into UserSettings
-				Log.d("Button.CsvOutputScheduler","saving frequency to user settings.");
-				Log.d("Button.CsvOutputScheduler", "arg: " + view);
+				Log.d("Button."+t,"saving frequency to user settings.");
+				Log.d("Button."+t, "arg: " + view);
 				EditText frequencyVal = (EditText)findViewById(R.id.etx_outputFreq);
 		        EditText forwardingNumsTextField = (EditText)findViewById(R.id.etx_forwardingNums);
 				Editor editor = preferences.edit();
@@ -163,4 +157,32 @@ public class CsvOutputScheduler extends Activity {
 			}
 		});
     }
+    
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, MENU_DONE, 0, R.string.formreview_menu_done).setIcon(android.R.drawable.ic_menu_close_clear_cancel);		
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+			case MENU_DONE:
+				finish();
+				break;
+		}
+		return true;
+	}
 }
