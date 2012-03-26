@@ -89,7 +89,7 @@ public class SimpleRegexParser implements IMessageParser {
 			// if at all possible.
 			if (res != null) {
 				String justParsedToken = res.getParsedToken();
-				if (".".equals(justParsedToken)){
+				if (".".equals(justParsedToken)){ // "." is interpreted as a null value
 					res = null;
 				}
 				int tokLen = justParsedToken.length();
