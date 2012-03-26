@@ -20,6 +20,8 @@
  */
 package org.rapidsms.java.core.model;
 
+import java.io.Serializable;
+
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 
 /**
@@ -29,7 +31,7 @@ import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
  *          Main class for form definition.
  * 
  */
-public class Form {
+public class Form implements Serializable {
 
 	private int formId;
 	private String formName;

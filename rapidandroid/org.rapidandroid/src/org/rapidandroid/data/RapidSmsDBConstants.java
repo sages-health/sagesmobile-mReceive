@@ -69,6 +69,37 @@ public final class RapidSmsDBConstants {
 		public static final String IS_VIRTUAL = "is_virtual";
 		public static final String RECEIVE_TIME = "receive_time";
 	}
+	
+	/**
+	 * MultiSmsWorktable table
+	 */
+	public static final class MultiSmsWorktable implements BaseColumns {
+		
+		public static final String TABLE = "sages_multisms_worktable";
+		
+		public static final String URI_PART = "multipartmessage";
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + URI_PART);
+		public static final String CONTENT_URI_STRING = "content://" + AUTHORITY + "/" + URI_PART + "/";
+		
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/org.rapidandroid.data.multipartmessage";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/org.rapidandroid.data.multipartmessage";
+		
+		// Section Table columns ##########################################
+		/**
+		 * 
+		 * fields are helpers for inserting to the content provider.
+		 */
+		public static final String SEGMENT_NUMBER= "segment_number";
+		public static final String TOTAL_SEGMENTS = "total_segments";
+		public static final String TX_ID = "tx_id";
+		public static final String PAYLOAD = "payload";
+		public static final String TX_TIMESTAMP = "tx_timestamp";
+		public static final String MONITOR_MSG_ID = "monitor_msg_id";
+		
+		/**
+		 * fields are helpers for the CASE expressions
+		 */
+	}
 
 	/**
 	 * Monitor table

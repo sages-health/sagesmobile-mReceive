@@ -30,6 +30,10 @@ import org.rapidsms.java.core.parser.service.ParsingService;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
+import sun.util.logging.resources.logging;
+
+import android.app.IntentService;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -63,6 +67,14 @@ public class ModelTranslator {
 
 	private static SmsDbHelper mDbHelper;
 
+	public ModelTranslator(Context context){
+		mContext = context;
+	}
+	
+	public ModelTranslator(IntentService context){
+		mContext = context.getApplicationContext();
+	}
+	
 	/**
 	 * Pre save check to see if a form with given criteria is already in
 	 * existence. This is to prevent dupe formnames and prefixes from existing
@@ -168,7 +180,90 @@ public class ModelTranslator {
 		mDbHelper = helper;
 		mContext = context;
 	}
+	
+	private static void setContext(Context context){
+		mContext = context.getApplicationContext();
+//		if (mContext == null){
+//		}
+	}
 
+
+	/**
+	 * Query all the model tables and generate the fully fleshed out Form
+	 * objects. <br>
+	 * This call will return ALL forms in the system.
+	 * 
+	 * @return
+	 */
+	public static Form[] getAllForms(Context context) {
+		mContext = context;
+		Uri getFormsUri = RapidSmsDBConstants.Form.CONTENT_URI;
+
+		while (getFormsUri == null){
+			Log.e("sages_ModelTranslator", "form uri is null.");
+			getFormsUri = Uri.parse("content://" + RapidSmsDBConstants.AUTHORITY + "/" + RapidSmsDBConstants.Form.URI_PART);
+		}
+		if (mContext == null){
+			Log.e("sages", "CONTEXT IS NULL WTH!?");
+		}
+		Context dummy = null;
+//		ContentResolver resolver = dummy.getContentResolver();
+		ContentResolver resolver = context.getContentResolver();
+		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null, null); 
+//		Cursor allformsCursor = mContext.getContentResolver().query(getFormsUri, null, null, null, null); // real
+																											// way
+		// Cursor allformsCursor =
+		// provider.query(getFormsUri,null,null,null,null); //hack way
+
+		if (formColumnNamesToIndex == null) {
+			formColumnNamesToIndex = new HashMap<String, Integer>();
+			String[] colnames = allformsCursor.getColumnNames();
+			int colcount = colnames.length;
+			for (int i = 0; i < colcount; i++) {
+				formColumnNamesToIndex.put(colnames[i], new Integer(allformsCursor.getColumnIndex(colnames[i])));
+			}
+		}
+		int formcount = allformsCursor.getCount();
+
+		Form[] ret = new Form[formcount];
+		allformsCursor.moveToFirst();
+		for (int i = 0; i < formcount; i++) {
+
+			int id = allformsCursor.getInt(formColumnNamesToIndex.get(BaseColumns._ID).intValue());
+			Integer idInt = Integer.valueOf(id);
+
+			if (formIdCache.containsKey(idInt)) {
+				ret[i] = formIdCache.get(idInt);
+			}
+
+			String name = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.FORMNAME)
+																			.intValue());
+			String prefix = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.PREFIX)
+																			.intValue());
+			String description = allformsCursor
+												.getString(formColumnNamesToIndex
+																					.get(
+																							RapidSmsDBConstants.Form.DESCRIPTION)
+																					.intValue());
+			String parsemethod = allformsCursor
+												.getString(formColumnNamesToIndex
+																					.get(
+																							RapidSmsDBConstants.Form.PARSEMETHOD)
+																					.intValue());
+			// Field[] fields = getFieldsForForm(provider, id); // hack way
+			Field[] fields = getFieldsForForm(id); // real way
+
+			Form theForm = new Form(id, name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
+
+			formIdCache.put(idInt, theForm);
+			ret[i] = theForm;
+			allformsCursor.moveToNext();
+		}
+		allformsCursor.close();
+		return ret;
+	}
+
+	
 	/**
 	 * Query all the model tables and generate the fully fleshed out Form
 	 * objects. <br>
@@ -179,7 +274,18 @@ public class ModelTranslator {
 	public static Form[] getAllForms() {
 		Uri getFormsUri = RapidSmsDBConstants.Form.CONTENT_URI;
 
-		Cursor allformsCursor = mContext.getContentResolver().query(getFormsUri, null, null, null, null); // real
+		while (getFormsUri == null){
+			Log.e("sages_ModelTranslator", "form uri is null.");
+			getFormsUri = Uri.parse("content://" + RapidSmsDBConstants.AUTHORITY + "/" + RapidSmsDBConstants.Form.URI_PART);
+		}
+		if (mContext == null){
+			Log.e("sages", "CONTEXT IS NULL WTH!?");
+		}
+		Context dummy = null;
+//		ContentResolver resolver = dummy.getContentResolver();
+		ContentResolver resolver = mContext.getContentResolver();
+		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null, null); 
+//		Cursor allformsCursor = mContext.getContentResolver().query(getFormsUri, null, null, null, null); // real
 																											// way
 		// Cursor allformsCursor =
 		// provider.query(getFormsUri,null,null,null,null); //hack way

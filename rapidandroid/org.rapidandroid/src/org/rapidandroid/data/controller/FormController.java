@@ -62,7 +62,7 @@ public class FormController {
 		mDb.beginTransaction();
 		
 		try{
-		// confirm the formdata_prefix table is empty
+		// TODO: confirm the formdata_prefix table is empty
 
 		
 		// get formId of the form

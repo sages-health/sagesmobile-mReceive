@@ -344,6 +344,18 @@ public class Dashboard extends Activity {
 		});
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		if (mListviewCursor != null){
+			mListviewCursor.close();
+		}
+		super.onStop();
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -651,7 +663,7 @@ public class Dashboard extends Activity {
 	// Start the dialoge erase/delete ALL data for the selected form
 	private void startDialogEraseData(){
 		Builder eraseDataDialog = new AlertDialog.Builder(this);
-		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+		final SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
 		final String table = "formdata_" + mChosenForm.getPrefix();
 		final String whereClause = null;
@@ -663,6 +675,8 @@ public class Dashboard extends Activity {
 	           public void onClick(DialogInterface dialog, int id) {
 	               //Dashboard.this.finish();
 	               int rows = db.delete(table, whereClause, whereArgs);
+	               db.close();
+	               dbHelper.close();
 	               mListviewCursor = null;
 	               beginListViewReload();
 	           }

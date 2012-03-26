@@ -19,5 +19,15 @@
  {"pk": 10, "model": "rapidandroid.field", 
 "fields": {"fieldtype": 7, "prompt": "Does child suffer from oedema", "name": "oedema", "form": 2, "sequence": 6}},
  {"pk": 11, "model": "rapidandroid.field", 
-"fields": {"fieldtype": 7, "prompt": "does the child suffer from diarrhoea", "name": "diarrhoea", "form": 2, "sequence": 7}}]
+"fields": {"fieldtype": 7, "prompt": "does the child suffer from diarrhoea", "name": "diarrhoea", "form": 2, "sequence": 7}},
+
+{"pk": 12, "model": "rapidandroid.field", 
+"fields": {"fieldtype": 1, "prompt": "Distribution site location", "name": "Location", "form": 3, "sequence": 1}},
+ {"pk": 13, "model": "rapidandroid.field", 
+"fields": {"fieldtype": 2, "prompt": "Number of bednets received", "name": "received", "form": 3, "sequence": 2}},
+ {"pk": 14, "model": "rapidandroid.field", 
+"fields": {"fieldtype": 2, "prompt": "Number of bednets handed out", "name": "given", "form": 3, "sequence": 3}},
+ {"pk": 15, "model": "rapidandroid.field", 
+"fields": {"fieldtype": 2, "prompt": "Number of bednets in inventory", "name": "balance", "form": 3, "sequence": 4}}
+]
 

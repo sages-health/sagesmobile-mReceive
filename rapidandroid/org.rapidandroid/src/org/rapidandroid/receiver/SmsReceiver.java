@@ -25,6 +25,10 @@ import java.util.Date;
 
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
+import org.rapidandroid.data.controller.MessageBodyParser;
+import org.rapidandroid.data.controller.MessageBodyParser.SagesPdu;
+import org.rapidandroid.service.QueueAndPollService;
+import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.Message;
 import org.rapidsms.java.core.model.Monitor;
 
@@ -116,7 +120,47 @@ public class SmsReceiver extends BroadcastReceiver {
 			broadcast.putExtra("body", mesg.getMessageBody());
 			broadcast.putExtra("msgid", Integer.valueOf(msgUri.getPathSegments().get(1)));
 			//DeleteSMSFromInbox(context, mesg);
-			context.sendBroadcast(broadcast);
+//			context.sendBroadcast(broadcast);
+			
+			// check for multi-part attributes & send SMSMULTI_SAVED
+			if (true) {
+				SagesPdu mesgAsPdu = MessageBodyParser.extractSegmentAsPdu(mesg.getMessageBody(), mesg.getOriginatingAddress());
+				if (mesgAsPdu == null) { // means didn't match multipart criteria
+					context.sendBroadcast(broadcast); //means it was a regular SMS but not multipart!
+					// return
+					// break?
+				} else { // this did match multipart criteria
+					// write into worktable
+					insertMessageToSagesWorkTable(context, mesgAsPdu, mesg, now, monitor, msgUri);
+				}
+				
+			}
+		}
+	}
+
+	private void insertMessageToSagesWorkTable(Context context, SagesPdu pdu, SmsMessage mesg, Date date, Monitor monitor, Uri msgUri1) {
+		Uri writeMessageUri = RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI;
+
+		ContentValues messageValues = new ContentValues();
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.SEGMENT_NUMBER, pdu.getSegmentNumber());
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.TOTAL_SEGMENTS, pdu.getTotalSegments());
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.TX_ID, pdu.getTxId());
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.PAYLOAD, pdu.getPayload());
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.TX_TIMESTAMP, Message.SQLDateFormatter.format(date));
+		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
+		
+		boolean successfulSave = false;
+		Uri msgUri = null;
+		try {
+			msgUri = context.getContentResolver().insert(writeMessageUri, messageValues);
+			successfulSave = true;
+			Intent intent = new Intent(context, QueueAndPollService.class);
+			intent.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor.getID());
+			intent.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
+			intent.putExtra(RapidSmsDBConstants.Message.PHONE, mesg.getOriginatingAddress());
+			context.startService(intent);
+		} catch (Exception ex) {
+			Log.d("SmsReceiver.MultipartSMS", "Error writing into worktable: " + ex.getMessage());
 		}
 	}
 

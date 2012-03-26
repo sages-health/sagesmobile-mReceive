@@ -95,6 +95,9 @@ public class RapidSmsContentProvider extends ContentProvider {
 	private static final int FORMDATA_ID = 12;
 	// private static final int FORMDATA_ID = 13;
 
+	private static final int WORKTABLE = 14;
+	private static final int WORKTABLE_ID = 15;
+	
 	private static final UriMatcher sUriMatcher;
 
 	static {
@@ -102,6 +105,9 @@ public class RapidSmsContentProvider extends ContentProvider {
 		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.Message.URI_PART, MESSAGE);
 		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.Message.URI_PART + "/#", MESSAGE_ID);
 
+		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.MultiSmsWorktable.URI_PART, WORKTABLE);
+		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.MultiSmsWorktable.URI_PART + "/#", WORKTABLE_ID);
+		
 		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.Monitor.URI_PART, MONITOR);
 		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, RapidSmsDBConstants.Monitor.URI_PART + "/#", MONITOR_ID);
 		sUriMatcher.addURI(RapidSmsDBConstants.AUTHORITY, "messagesbymonitor/#", MONITOR_MESSAGE_ID);
@@ -132,6 +138,10 @@ public class RapidSmsContentProvider extends ContentProvider {
 				return RapidSmsDBConstants.Message.CONTENT_TYPE;
 			case MESSAGE_ID:
 				return RapidSmsDBConstants.Message.CONTENT_ITEM_TYPE;
+			case WORKTABLE:
+				return RapidSmsDBConstants.MultiSmsWorktable.CONTENT_TYPE;
+			case WORKTABLE_ID:
+				return RapidSmsDBConstants.MultiSmsWorktable.CONTENT_ITEM_TYPE;
 			case MONITOR:
 				return RapidSmsDBConstants.Monitor.CONTENT_TYPE;
 			case MONITOR_ID:
@@ -187,6 +197,8 @@ public class RapidSmsContentProvider extends ContentProvider {
 		switch (sUriMatcher.match(uri)) {
 			case MESSAGE:
 				return insertMessage(uri, values);
+			case WORKTABLE:
+				return insertMultipartMessage(uri, values);
 			case MONITOR:
 				return insertMonitor(uri, values);
 			case FIELDTYPE:
@@ -384,6 +396,32 @@ public class RapidSmsContentProvider extends ContentProvider {
 
 		return doInsert(uri, values, RapidSmsDBConstants.Message.TABLE, RapidSmsDBConstants.Message.MESSAGE);
 	}
+	
+	/**
+	 * @param uri
+	 * @param values
+	 */
+	private Uri insertMultipartMessage(Uri uri, ContentValues values) {
+		
+		// Make sure that the fields are all set
+		if (values.containsKey(RapidSmsDBConstants.MultiSmsWorktable.SEGMENT_NUMBER) == false) {
+			throw new SQLException("No segment number");
+		}
+		
+		if (values.containsKey(RapidSmsDBConstants.MultiSmsWorktable.TOTAL_SEGMENTS) == false) {
+			throw new SQLException("No total segments");
+		}
+		
+		if (values.containsKey(RapidSmsDBConstants.MultiSmsWorktable.TX_ID) == false) {
+			throw new SQLException("No tx id");
+		}
+		
+		if (values.containsKey(RapidSmsDBConstants.MultiSmsWorktable.PAYLOAD) == false) {
+			throw new SQLException("No payload");
+		}
+		
+		return doInsert(uri, values, RapidSmsDBConstants.MultiSmsWorktable.TABLE, RapidSmsDBConstants.MultiSmsWorktable.PAYLOAD);
+	}
 
 	/**
 	 * @param uri
@@ -451,6 +489,9 @@ public class RapidSmsContentProvider extends ContentProvider {
 				finalWhere = BaseColumns._ID + "=" + uri.getPathSegments().get(1)
 						+ (!TextUtils.isEmpty(where) ? " AND (" + where + ')' : "");
 				break;
+			case WORKTABLE:
+				table = RapidSmsDBConstants.MultiSmsWorktable.TABLE;
+				break;
 			case MONITOR:
 				table = RapidSmsDBConstants.Monitor.TABLE;
 				break;
@@ -506,15 +547,20 @@ public class RapidSmsContentProvider extends ContentProvider {
 			case MESSAGE:
 				qb.setTables(RapidSmsDBConstants.Message.TABLE);
 				break;
-
 			case MESSAGE_ID:
 				qb.setTables(RapidSmsDBConstants.Message.TABLE);
+				qb.appendWhere(BaseColumns._ID + "=" + uri.getPathSegments().get(1));
+				break;
+			case WORKTABLE:
+				qb.setTables(RapidSmsDBConstants.MultiSmsWorktable.TABLE);
+				break;
+			case WORKTABLE_ID:
+				qb.setTables(RapidSmsDBConstants.MultiSmsWorktable.TABLE);
 				qb.appendWhere(BaseColumns._ID + "=" + uri.getPathSegments().get(1));
 				break;
 			case MONITOR:
 				qb.setTables(RapidSmsDBConstants.Monitor.TABLE);
 				break;
-
 			case MONITOR_ID:
 				qb.setTables(RapidSmsDBConstants.Monitor.TABLE);
 				qb.appendWhere(BaseColumns._ID + "=" + uri.getPathSegments().get(1));

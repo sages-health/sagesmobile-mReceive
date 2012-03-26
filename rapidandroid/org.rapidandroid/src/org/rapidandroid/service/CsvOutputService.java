@@ -121,7 +121,7 @@ public class CsvOutputService extends IntentService {
 	/**
 	 * Filters files based on file names. Recall file names are based on the form prefix
 	 * 
-	 * @author Adjoa Poku adjoa.pouk@jhuapl.edu
+	 * @author Adjoa Poku adjoa.poku@jhuapl.edu
 	 * @created Apr 1, 2011
 	 */
 	public class FormPrefixFilter implements FilenameFilter {

@@ -1,0 +1,1 @@
+[{"pk": 3, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "phones", "description": "Phone Distribution(supply)", "formname": "phones"}}, {"pk": 4, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "animalhealth", "description": "Animal Health Information (monitoring and evaluation)", "formname": "AnimalHealth"}}]

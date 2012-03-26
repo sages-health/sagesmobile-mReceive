@@ -1,1 +1,16 @@
-[{"pk": 1, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "bednets", "description": "Bednet Distribution(supply)", "formname": "bednets"}}, {"pk": 2, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "nutrition", "description": "Nutrition Information (monitorin and evaluation)", "formname": "Nutrition"}}]
+[
+{"pk": 1, "model": "rapidandroid.form", 
+ "fields": {"parsemethod": "simpleregex", 
+ "prefix": "bednets", "description": "Bednet Distribution(supply)", 
+ "formname": "bednets"}},
+ 
+{"pk": 2, "model": "rapidandroid.form", 
+ "fields": {"parsemethod": "simpleregex", 
+ "prefix": "nutrition", "description": "Nutrition Information (monitorin and evaluation)", 
+ "formname": "Nutrition"}},
+ 
+{"pk": 3, "model": "rapidandroid.form", 
+ "fields": {"parsemethod": "strictregex", 
+ "prefix": "bootup", "description": "Bootup: see Bednet Distribution(supply)", 
+ "formname": "bootup"}}
+]

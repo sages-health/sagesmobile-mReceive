@@ -19,9 +19,10 @@ package org.rapidandroid.data;
 
 import java.io.File;
 
-import org.rapidandroid.content.translation.*;
+import org.rapidandroid.content.translation.ModelTranslator;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -52,12 +53,13 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 	private boolean useLocal = false;
 	private String dbPathToUse = DATABASE_PATH_EXTERNAL;
 
-	// private static final String DATABASE_NAME = "rapidandroid.db";
-	// private static final int DATABASE_VERSION = 1; //version 1: initial
+	// private static final int DATABASE_VERSION_1 = 1; //version 1: initial
 	// version 1/22/2009
-	private static final int DATABASE_VERSION = 2; // 2/6/2007, add receive_time
+	private static final int DATABASE_VERSION_2 = 2; // 2/6/2007, add receive_time
 													// column to message table
-
+	private static final int DATABASE_VERSION_3 = 3;  // 1/31/2012, create work_table for multipart sms
+	private static final int DATABASE_VERSION = 3;  // 1/31/2012, create work_table for multipart sms
+	
 	// Sections lifted from the originating class SqliteOpenHelper.java
 	private SQLiteDatabase mDatabase = null;
 	private boolean mIsInitializing = false;
@@ -125,6 +127,11 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 				+ "\"prompt\" varchar(64) NOT NULL,"
 				+ "\"fieldtype_id\" integer NOT NULL REFERENCES \"rapidandroid_fieldtype\" (\"id\"));";
 
+		String mCreateTable_MultiSmsWorkTable = "CREATE TABLE \"sages_multisms_worktable\" (\"_id\" INTEGER PRIMARY KEY "
+				+ "AUTOINCREMENT  NOT NULL , \"segment_number\" INTEGER NOT NULL , \"total_segments\" INTEGER NOT NULL , "
+				+ "\"tx_id\" DATETIME NOT NULL , \"tx_timestamp\" DATETIME NOT NULL , \"payload\" VARCHAR NOT NULL , \"monitor_msg_id\" VARCHAR NOT NULL , "
+				+ "UNIQUE( \"segment_number\" , \"total_segments\" , \"tx_id\"))";
+	
 		// String mCreateTable_Transaction =
 		// "CREATE TABLE \"rapidandroid_transaction\" ("
 		// + "\"_id\" integer NOT NULL PRIMARY KEY,"
@@ -138,6 +145,8 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 		db.execSQL(mCreateTable_Form);
 		db.execSQL(mCreateTable_FieldType);
 		db.execSQL(mCreateTable_Field);
+		db.execSQL(mCreateTable_MultiSmsWorkTable);
+
 	}
 
 	/*
@@ -216,6 +225,10 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 		try {
 			mIsInitializing = true;
 			db = SQLiteDatabase.openOrCreateDatabase(dbPathToUse, null);
+//			db.execSQL("PRAGMA journal_size_limit = 0");
+////			db.rawQuery("PRAGMA journal_mode = DELETE", null);
+			Cursor cursor = db.rawQuery("PRAGMA wal_autocheckpoint = 1", null);
+			cursor.close();
 			int version = db.getVersion();
 			if (version != DATABASE_VERSION) {
 				db.beginTransaction();
@@ -255,6 +268,24 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 
 	}
 
+	public static void getReadableSQLiteDatabase(Context context, SmsDbHelper mDbHelper, SQLiteDatabase mDb) {
+		if (mDb != null) {
+			if (mDb.isOpen()) {
+				mDb.close();
+			}
+			mDb = null;
+		}
+		
+		if (mDbHelper != null) {
+			mDbHelper.close();
+			mDbHelper = null;
+		}
+		
+		mDbHelper = new SmsDbHelper(context);
+		mDb = mDbHelper.getReadableDatabase();
+	}
+	
+	//TODO: this needs to increment because doesn't hit all version combos
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Log.w(TAG, "Upgrading database from version " + oldVersion + " to " +
@@ -263,12 +294,17 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 		// db.execSQL("DROP TABLE IF EXISTS notes");
 		// onCreate(db);
 
-		if (oldVersion == 1 && newVersion == 2) {
+		if (oldVersion == 1 && newVersion >= 2) {
 			// version 1 to 2 introduced the receive_time for the message
 			String messageAlterSql = "alter table rapidandroid_message add column receive_time datetime NULL";
 			db.execSQL(messageAlterSql);
-		}
-
+		} else if (oldVersion == 2 && newVersion >= 3){
+			// version 2 to 3 introduced the work_table for processing multi part SMS messages
+			String mCreateTable_MultiSmsWorkTable = "CREATE TABLE \"sages_multisms_worktable\" (\"_id\" INTEGER PRIMARY KEY "
+					+ "AUTOINCREMENT  NOT NULL , \"segment_number\" INTEGER NOT NULL , \"total_segments\" INTEGER NOT NULL , "
+					+ "\"tx_id\" DATETIME NOT NULL , \"tx_timestamp\" DATETIME NOT NULL , \"payload\" VARCHAR NOT NULL , \"monitor_msg_id\" VARCHAR NOT NULL ,"
+					+ "UNIQUE( \"segment_number\" , \"total_segments\" , \"tx_id\"))";;
+			db.execSQL(mCreateTable_MultiSmsWorkTable);
+		} 
 	}
-
 }
