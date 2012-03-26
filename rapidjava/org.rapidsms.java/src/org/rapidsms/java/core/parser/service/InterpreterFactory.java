@@ -61,6 +61,8 @@ public class InterpreterFactory {
 			return integerInterpreter;
 		if (typename.equals("date224"))
 			return dateInterpreter;
+		if (typename.equals("date422"))
+			return dateInterpreter;
 		if (typename.equals("datemdy"))
 			return dateInterpreter;
 		
