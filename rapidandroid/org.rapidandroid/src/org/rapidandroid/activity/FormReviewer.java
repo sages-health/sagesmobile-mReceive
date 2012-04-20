@@ -356,14 +356,10 @@ public class FormReviewer extends Activity {
 	}
 	
 	/**
-	 * TODO: POKU move into service class
+	 * TODO: SAGES/pokuam1 move into service class, also check for invalid formId
 	 */
 	public void outputCSV(int formId) {
 		final Form form = ModelTranslator.getFormById(formId);
-		/*
-		 *  TODO: POKU this broke it
-		 *  Toast.makeText(getApplicationContext(), "CSV output job has begun", Toast.LENGTH_LONG).show();
-		 */		
 		// Fire off a thread to do some work that we shouldn't do directly in
 		// the UI thread
 		Thread t = new Thread() {
@@ -373,10 +369,6 @@ public class FormReviewer extends Activity {
 				Calendar then = Calendar.getInstance();
 				then.set(Calendar.YEAR, 1990);
 				ParsedDataReporter.exportFormDataToCSV(getBaseContext(), form, then, now);
-				 /*
-				  * TODO: POKU remove this toast since it doesnt show anyway from service 
-				    mDebugHandler.post(mCsvSaveCompleted);
-				  */
 			}
 		};
 		t.start();

@@ -29,7 +29,7 @@ import android.widget.ToggleButton;
  * Scheduling activity for automatic csv output whenever an sms is received matching the prefix
  * for the registered form(s)
  * 
- * // If this runs on schedule REALISE THAT IT WILL: delete the old csv files for this form - don't want them to accumulate  on sdcard
+ * NOTE: If this runs on schedule REALISE THAT IT WILL: delete the old csv files for this form - don't want them to accumulate  on sdcard
  * 
  * @author Adjoa Poku adjoa.poku@jhuapl.edu
  * @created Mar 23, 2011

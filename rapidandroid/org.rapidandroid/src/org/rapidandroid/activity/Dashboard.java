@@ -74,6 +74,9 @@ import android.widget.ViewSwitcher;
  * 
  * @author Daniel Myung dmyung@dimagi.com
  * @created Jan 9, 2009
+ * ----------------------------------------------------------------------
+ * @author SAGES/pokuam1 - Modifications for Form deletion
+ * @author SAGES/pokuam1 - Modifications for Individual Record deletion
  * 
  */
 public class Dashboard extends Activity {
@@ -255,6 +258,7 @@ public class Dashboard extends Activity {
 			}
 		});
 		
+		// SAGES/pokuam1: long click enables deletion of record 
 		lsv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -523,6 +527,7 @@ public class Dashboard extends Activity {
 			case MENU_GLOBAL_SETTINGS:
 				startActivityGlobalSettings();
 				return true;
+			// SAGES/pokuam1
 			case MENU_DELETE_FORM:
 				startDialogDeleteForm();
 				return true;
@@ -533,7 +538,9 @@ public class Dashboard extends Activity {
 	
 
 	/**
+	 * @author SAGES/pokuam1
 	 * 
+	 *  Enables deletion of the form through the UI
 	 */
 	private void startDialogDeleteForm() {
 		if (!ParsedDataReporter.getOldestMessageDate(this, mChosenForm).equals(Constants.NULLDATE)) {

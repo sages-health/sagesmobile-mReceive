@@ -60,8 +60,7 @@ public class ModelBootstrap {
 
 	public static void InitApplicationDatabase(Context context) {
 		mContext = context;
-		// check existence of tables and forms
-		//TODO: pokuam1
+		// SAGES/pokuam1: force check existence of tables and forms
 		if (true) {
 		//if (isFieldTypeTableEmpty()) {
 			applicationInitialFormFieldTypesBootstrap();
@@ -177,8 +176,7 @@ public class ModelBootstrap {
 				Log.d("dimagi", "********** Inserted SimpleFieldType into db: " + insertedTypeUri);
 
 			} else if (typeCursor.getCount() == 1 && typeCursor.moveToFirst()) {
-				// SAGES
-				// update the fieldtype in the database -- the name has changed
+				// SAGES: update the fieldtype in the database -- the name has changed
 				int nameColIndx = typeCursor.getColumnIndex(FieldType.NAME);
 				boolean isUpdatedFieldType = (!typeCursor.getString(nameColIndx).equals(thetype.getReadableName()));
 
@@ -207,9 +205,8 @@ public class ModelBootstrap {
 
 	private static void loadFieldTypesFromAssets() {
 		String types = loadAssetFile("definitions/fieldtypes.json");
-		// SAGES
-		// loading the custom fieldtype files 
 		String customtypes = loadAssetFile("definitions/customfieldtypes.json");
+		// SAGES: loading the custom fieldtype files 
 		String externalcustomtypes = loadSdCardFile("/sdcard/rapidandroid/externalcustomfieldtypes.json");
 		
 		try {
@@ -239,8 +236,7 @@ public class ModelBootstrap {
 		} catch (JSONException e) {
 		}
 		try {
-			// SAGES
-			// load custom fieldtypes from sdcard but always append
+			// SAGES/pokuam1: load custom fieldtypes from sdcard but always append
 			JSONArray customtypesarray = new JSONArray(customtypes);
 			
 			int arrlength = customtypesarray.length();
@@ -266,8 +262,7 @@ public class ModelBootstrap {
 			}
 		} catch (JSONException e) {
 		}
-		// SAGES
-		// load EXTERNAL (on the sdcard) custom fieldtypes from sdcard but always append
+		// SAGES/pokuam1: load EXTERNAL (on the sdcard) custom fieldtypes from sdcard but always append
 		if (externalcustomtypes != null) {
 			try {
 				JSONArray externalcustomtypesarray = new JSONArray(externalcustomtypes);
@@ -305,45 +300,14 @@ public class ModelBootstrap {
 		parseFormsFromLoadableAssets();
 	}
 
+	/**
+	 * Loads externally defined field types from /sdcard/rapidandroid/loadablefields.json file
+	 * @return void
+	 */
+	// TODO pokuam1 - refactor to reuse original method, see parseFieldsFromAssets()
 	private static void parseFieldsFromLoadableAssets() {
 		String sdcardFields = loadSdCardFile("/sdcard/rapidandroid/loadablefields.json");
-		//String fields = loadAssetFile("definitions/fields.json");
-//		try {
-//			JSONArray fieldsarray = new JSONArray(fields);
-//			int arrlength = fieldsarray.length();
-//			for (int i = 0; i < arrlength; i++) {
-//				try {
-//					JSONObject obj = fieldsarray.getJSONObject(i);
-//					
-//					if (!obj.getString("model").equals("rapidandroid.field")) {
-//						
-//					}
-//					
-//					int pk = obj.getInt("pk");
-//					
-//					JSONObject jsonfields = obj.getJSONObject("fields");
-//					int form_id = jsonfields.getInt("form");
-//					Field newfield = new Field(pk, jsonfields.getInt("sequence"), jsonfields.getString("name"),
-//							jsonfields.getString("prompt"),
-//							fieldTypeHash.get(new Integer(jsonfields.getInt("fieldtype"))));
-//					
-//					Integer formInt = Integer.valueOf(form_id);
-//					if (!fieldToFormHash.containsKey(formInt)) {
-//						fieldToFormHash.put(formInt, new Vector<Field>());
-//						Log.d("dimagi", "### adding a key again?!" + formInt);
-//					}
-//					fieldToFormHash.get(formInt).add(newfield);
-//					Log.d("dimagi", "#### Parsed field: " + newfield.getFieldId() + " [" + newfield.getName()
-//							+ "] newlength: " + fieldToFormHash.get(formInt).size());
-//					
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					Log.d("dimagi", e.getMessage());
-//					
-//				}
-//			}
-//		} catch (JSONException e) {
-//		}
+
 		if (sdcardFields != null){
 		try {
 			JSONArray fieldsarray = new JSONArray(sdcardFields);
@@ -445,7 +409,8 @@ public class ModelBootstrap {
 						fieldarr[q] = fieldToFormHash.get(pkInt).get(q);
 					}
 					Form newform = new Form(pk, jsonfields.getString("formname"), jsonfields.getString("prefix"),
-											jsonfields.getString("description"), fieldarr, ParserType.SIMPLEREGEX);
+											jsonfields.getString("description"), fieldarr, 
+											ParserType.getTypeFromConfig(jsonfields.getString("parsemethod")));
 					formIdCache.put(pkInt, newform);
 
 				} catch (JSONException e) {
@@ -457,71 +422,57 @@ public class ModelBootstrap {
 		}
 	}
 
-	
+	/**
+	 * Loads externally defined forms from /sdcard/rapidandroid/loadableforms.json file
+	 * @return void
+	 * 
+	 */
+	// TODO pokuam1 - refactor to reuse original method, see parseFormsFromAssets()
 	private static void parseFormsFromLoadableAssets() {
-		//String forms = loadAssetFile("definitions/forms.json");
+		// String forms = loadAssetFile("definitions/forms.json");
 		String sdcardForms = loadSdCardFile("/sdcard/rapidandroid/loadableforms.json");
-		
-//		try {
-//			JSONArray formarray = new JSONArray(forms);
-//			int arrlength = formarray.length();
-//			for (int i = 0; i < arrlength; i++) {
-//				try {
-//					JSONObject obj = formarray.getJSONObject(i);
-//					
-//					if (!obj.getString("model").equals("rapidandroid.form")) {
-//					}
-//					
-//					int pk = obj.getInt("pk");
-//					Integer pkInt = new Integer(pk);
-//					JSONObject jsonfields = obj.getJSONObject("fields");
-//					
-//					Field[] fieldarr = new Field[fieldToFormHash.get(pkInt).size()];
-//					for (int q = 0; q < fieldarr.length; q++) {
-//						fieldarr[q] = fieldToFormHash.get(pkInt).get(q);
-//					}
-//					Form newform = new Form(pk, jsonfields.getString("formname"), jsonfields.getString("prefix"),
-//							jsonfields.getString("description"), fieldarr, ParserType.SIMPLEREGEX);
-//					formIdCache.put(pkInt, newform);
-//					
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					Log.d("dimagi", e.getMessage());
-//				}
-//			}
-//		} catch (JSONException e) {
-//		}
-		
+
 		if (sdcardForms != null) {
-		try {
-			JSONArray formarray = new JSONArray(sdcardForms);
-			int arrlength = formarray.length();
-			for (int i = 0; i < arrlength; i++) {
-				try {
-					JSONObject obj = formarray.getJSONObject(i);
-					
-					if (!obj.getString("model").equals("rapidandroid.form")) {
+			try {
+				JSONArray formarray = new JSONArray(sdcardForms);
+				int arrlength = formarray.length();
+				Integer curPkInt = null;
+				for (int i = 0; i < arrlength; i++) {
+					try {
+						JSONObject obj = formarray.getJSONObject(i);
+
+						if (!obj.getString("model").equals("rapidandroid.form")) {
+						}
+
+						int pk = obj.getInt("pk");
+						Integer pkInt = new Integer(pk);
+						curPkInt = pkInt;
+						JSONObject jsonfields = obj.getJSONObject("fields");
+
+						Field[] fieldarr = new Field[fieldToFormHash.get(pkInt)
+								.size()];
+						for (int q = 0; q < fieldarr.length; q++) {
+							fieldarr[q] = fieldToFormHash.get(pkInt).get(q);
+						}
+						Form newform = new Form(pk,
+								jsonfields.getString("formname"),
+								jsonfields.getString("prefix"),
+								jsonfields.getString("description"), fieldarr,
+								ParserType.getTypeFromConfig(jsonfields
+										.getString("parsemethod")));
+						formIdCache.put(pkInt, newform);
+
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						Log.d("sages", e.getMessage());
+					} catch (NullPointerException npe) {
+						Log.e("sages", "pkInt: " + curPkInt
+								+ "may have caused exception.");
+						throw npe;
 					}
-					
-					int pk = obj.getInt("pk");
-					Integer pkInt = new Integer(pk);
-					JSONObject jsonfields = obj.getJSONObject("fields");
-					
-					Field[] fieldarr = new Field[fieldToFormHash.get(pkInt).size()];
-					for (int q = 0; q < fieldarr.length; q++) {
-						fieldarr[q] = fieldToFormHash.get(pkInt).get(q);
-					}
-					Form newform = new Form(pk, jsonfields.getString("formname"), jsonfields.getString("prefix"),
-							jsonfields.getString("description"), fieldarr, ParserType.SIMPLEREGEX);
-					formIdCache.put(pkInt, newform);
-					
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					Log.d("sages", e.getMessage());
 				}
+			} catch (JSONException e) {
 			}
-		} catch (JSONException e) {
-		}
 		}
 	}
 	

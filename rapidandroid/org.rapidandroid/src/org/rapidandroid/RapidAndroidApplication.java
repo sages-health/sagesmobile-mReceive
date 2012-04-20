@@ -37,6 +37,8 @@ import android.util.Log;
  */
 public class RapidAndroidApplication extends Application {
 
+	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -47,15 +49,20 @@ public class RapidAndroidApplication extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		//Debug.startMethodTracing("rapidandroid_application");
-		Log.d("RapidAndroidApplicatin", "RAPIDANDROID IS STARTING UP!");
+		Log.d("RapidAndroidApplication", "RAPIDANDROID IS STARTING UP!");
 		ApplicationGlobals.checkGlobals(this.getApplicationContext());
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
 
 	}
 	
-	
+	/**
+	 * Copies source file contents into target file
+	 * 
+	 * @param context
+	 * @param fromFile source file to copy
+	 * @param toFile target file to be overwritten
+	 */
 	public static void copyFileAtoB(Context context, File fromFile, File toFile){
-		// copy from /data/data over into config
 		FileInputStream fin = null;
 		InputStreamReader irdr = null;
 		FileOutputStream fout = null;
@@ -89,24 +96,14 @@ public class RapidAndroidApplication extends Application {
 			}
 		}
 	}
-	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
-	/* (non-Javadoc)
-	 * @see android.app.Application#onLowMemory()
-	 */
-	@Override
-	public void onLowMemory() {
-		// TODO Auto-generated method stub
-		super.onLowMemory();
-//		SharedPreferences prefs = this.getSharedPreferences(prefsFileName, MODE_PRIVATE);
-//		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
-//		boolean fileExists = privateFile.exists();
-//		
-//		File sdcardFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
-//		boolean savedFileExists = sdcardFile.exists();
-//		
-//		copyFileAtoB(this, privateFile, sdcardFile);
-	}
 
+	/**
+	 * Loads saved off preferences from internal /data/data/org.rapidandroid/shared_prefs/$prefs.xml 
+	 * or /sdcard/rapidandroid/$prefsConfig.xml
+	 * 
+	 * @param context
+	 * @return SharedPreferences either preferences loaded form /data or /sdcard
+	 */
 	public static SharedPreferences loadPreferences(Context context){
 		
 		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");

@@ -1,5 +1,6 @@
-/**
- * 
+/*
+ * Copyright (©) 2012 The Johns Hopkins University Applied Physics Laboratory.
+ * All Rights Reserved.  
  */
 package org.rapidandroid.data.controller;
 
@@ -12,20 +13,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 /**
+ * Adds more control to forms and makes calls to the db layer. (There was a requirement to delete form via the UI)
+ * 
  * @author POKUAM1
  * @created Nov 15, 2011
  */
 public class FormController {
 
-	/**
-	 * 
-	 */
 	private static final String t = FormController.class.getCanonicalName();
 	private static SmsDbHelper mDbHelper;
 	private static SQLiteDatabase mDb;
 	
-	
-	public static void deleteFormById(Context context, int id){
+	/**
+	 * Not fully implemented, see {@link FormController}.deleteFormByPrefix()
+	 * @param context
+	 * @param id
+	 */
+	private static void deleteFormById(Context context, int id){
 		if (mDb != null) {
 			if (mDb.isOpen()) {
 				mDb.close();
@@ -41,7 +45,6 @@ public class FormController {
 		mDbHelper = new SmsDbHelper(context);
 		mDb = mDbHelper.getWritableDatabase();
 		StringBuilder query = new StringBuilder();
-		
 	}
 	
 	public static void deleteFormByPrefix(Context context, String formPrefix){

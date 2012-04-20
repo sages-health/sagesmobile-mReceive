@@ -45,6 +45,9 @@ import android.widget.EditText;
 /**
  * @author Daniel Myung dmyung@dimagi.com
  * @created Feb 10, 2009 Summary:
+ * 
+ * ----------------------------------------------------------------------
+ * @author SAGES/pokuam1 - Modifications for parse in progress settings
  */
 public class GlobalSettings extends Activity {
 

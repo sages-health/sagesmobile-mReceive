@@ -126,7 +126,8 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 				+ "\"name\" varchar(32) NOT NULL,"
 				+ "\"prompt\" varchar(64) NOT NULL,"
 				+ "\"fieldtype_id\" integer NOT NULL REFERENCES \"rapidandroid_fieldtype\" (\"id\"));";
-
+		
+		// SAGES:pokuam1: table for multipart sms support
 		String mCreateTable_MultiSmsWorkTable = "CREATE TABLE \"sages_multisms_worktable\" (\"_id\" INTEGER PRIMARY KEY "
 				+ "AUTOINCREMENT  NOT NULL , \"segment_number\" INTEGER NOT NULL , \"total_segments\" INTEGER NOT NULL , "
 				+ "\"tx_id\" DATETIME NOT NULL , \"tx_timestamp\" DATETIME NOT NULL , \"payload\" VARCHAR NOT NULL , \"monitor_msg_id\" VARCHAR NOT NULL , "
@@ -225,8 +226,11 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 		try {
 			mIsInitializing = true;
 			db = SQLiteDatabase.openOrCreateDatabase(dbPathToUse, null);
-//			db.execSQL("PRAGMA journal_size_limit = 0");
-////			db.rawQuery("PRAGMA journal_mode = DELETE", null);
+			//db.execSQL("PRAGMA journal_size_limit = 0"); // SAGES/pokuam1: didn't do anything useful, see wal_autocheckpoint
+			//db.rawQuery("PRAGMA journal_mode = DELETE", null); // SAGES/pokuam1: didn't do anything useful, wal_autocheckpoint
+
+			// SAGES/pokuam1: with Android 2.3+ native sqlite v 3.7 uses WAL instead of journaling. use this to force commit WAL to main db file.
+			// https://groups.google.com/group/android-developers/browse_thread/thread/f9dca550c085221c?pli=1
 			Cursor cursor = db.rawQuery("PRAGMA wal_autocheckpoint = 1", null);
 			cursor.close();
 			int version = db.getVersion();
@@ -285,7 +289,7 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 		mDb = mDbHelper.getReadableDatabase();
 	}
 	
-	//TODO: this needs to increment because doesn't hit all version combos
+	//TODO: SAGES/pokuam: This needs work. Needs to increment by 1 because logic doesn't hit all version combinations
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Log.w(TAG, "Upgrading database from version " + oldVersion + " to " +
@@ -299,7 +303,7 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 			String messageAlterSql = "alter table rapidandroid_message add column receive_time datetime NULL";
 			db.execSQL(messageAlterSql);
 		} else if (oldVersion == 2 && newVersion >= 3){
-			// version 2 to 3 introduced the work_table for processing multi part SMS messages
+			// SAGES/pokuam1: version 2 to 3 introduced the work_table for processing multi part SMS messages
 			String mCreateTable_MultiSmsWorkTable = "CREATE TABLE \"sages_multisms_worktable\" (\"_id\" INTEGER PRIMARY KEY "
 					+ "AUTOINCREMENT  NOT NULL , \"segment_number\" INTEGER NOT NULL , \"total_segments\" INTEGER NOT NULL , "
 					+ "\"tx_id\" DATETIME NOT NULL , \"tx_timestamp\" DATETIME NOT NULL , \"payload\" VARCHAR NOT NULL , \"monitor_msg_id\" VARCHAR NOT NULL ,"

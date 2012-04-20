@@ -67,13 +67,13 @@ public class ModelTranslator {
 
 	private static SmsDbHelper mDbHelper;
 
-	public ModelTranslator(Context context){
+/*	public ModelTranslator(Context context){
 		mContext = context;
 	}
 	
 	public ModelTranslator(IntentService context){
 		mContext = context.getApplicationContext();
-	}
+	}*/
 	
 	/**
 	 * Pre save check to see if a form with given criteria is already in
