@@ -1,5 +1,6 @@
-/**
- * 
+/*
+ * Copyright (©) 2012 The Johns Hopkins University Applied Physics Laboratory.
+ * All Rights Reserved.  
  */
 package org.rapidandroid.data.controller;
 
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,15 +17,15 @@ import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.parser.IParseResult;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.util.Log;
 
 /**
+ * Database access layer for the sages_multisms_worktable
+ * 
  * @author POKUAM1
  * @created Feb 8, 2012
  */
@@ -34,7 +34,11 @@ public class WorktableDataLayer {
 	private static SmsDbHelper mDbHelper;
 	private static SQLiteDatabase mDb;
 	
+	public static SQLiteDatabase getDb(){
+		return mDb;
+	};
 	private static long timer_threshold = 300;
+	
 	public static void setTimerThreshold(long timer_threshold) {
 		WorktableDataLayer.timer_threshold = timer_threshold;
 	}
@@ -55,7 +59,11 @@ public class WorktableDataLayer {
 	private static final String tx_timestamp = RapidSmsDBConstants.MultiSmsWorktable.TX_TIMESTAMP;
 	private static final String payload = RapidSmsDBConstants.MultiSmsWorktable.PAYLOAD;
 	private static final String segment_number = RapidSmsDBConstants.MultiSmsWorktable.SEGMENT_NUMBER;
-
+	private static final String rapidandroid_message = RapidSmsDBConstants.Message.TABLE;
+	private static final String phone = RapidSmsDBConstants.Message.PHONE;
+	private static final String monitor_msg_id = RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID;
+	private static final String rapidandroid_monitor = RapidSmsDBConstants.Monitor.TABLE;
+	
 	private static  StringBuilder bldrCaseExprIsComplete = new StringBuilder();
 	static	{/* SELECT CASE 
 				WHEN SEGTOTAL = total_segments THEN 'complete' 
@@ -286,26 +294,18 @@ public class WorktableDataLayer {
 		return ttlMap;
 	}
 
-	/**
-	 * @param list
-	 */
-	public static void deleteStaleIncompleteTxIds(Context context, List<Long> txIds) {
-		deleteTxIds(context, txIds);
-//		if (txIds == null && txIds.isEmpty()) return;
-//		openDbInterfaces(context);
-////		mDb = mDbHelper.getWritableDatabase();
-//		
-//		StringBuilder query = new StringBuilder();
-//		String txIdString = StringUtils.join(txIds, ",");
-//		String paramStr = StringUtils.repeat("?", ",", txIds.size());
-//		String str = "DELETE FROM " +sages_multisms_worktable+ " WHERE " +tx_id+ " IN (" + paramStr + ")";
-//
-//		Log.d("WorktableDataLayer", "Delete string: " + str);
-//		query.append(str);
-//		String[] txIdsAsArray = txIdString.split(",");
-//		int val = mDb.delete(sages_multisms_worktable, tx_id+ " IN (" + paramStr + ")", txIdsAsArray);
+	public static Map<Long, String> buildSenderPhonesLookupForTxIds(Context context, List<Long> txIds){
+		Map<Long, String> phonelookup = new HashMap<Long, String>();
+		Cursor c = getSenderPhonesForTxIds(context, txIds);
+		int col_tx_id = c.getColumnIndex(tx_id);
+		int col_phone = c.getColumnIndex(phone);
+		while (c.moveToNext()){
+			phonelookup.put(c.getLong(col_tx_id), c.getString(col_phone));
+			Log.d("WorktableDataLayer:buildsenderphones", "tx_id= " + c.getLong(col_tx_id)+"  , phone= "+ c.getString(col_phone));
+		}
+		return phonelookup;
+		
 	}
-	
 	/**
 	 * @param list
 	 */
@@ -336,6 +336,27 @@ public class WorktableDataLayer {
 		Log.d("WorktableDataLayer", "Lookup messages for txIds string: " + str);
 		query.append(str);
 		String[] txIdsAsArray = txIdString.split(",");
+		Cursor cursor = mDb.rawQuery(query.toString(), txIdsAsArray);
+		return cursor;
+	}
+	public static Cursor getSenderPhonesForTxIds(Context context, List<Long> txIds){
+		openDbInterfaces(context);
+		//txIds = (txIds == null) ? new ArrayList<Long>(): txIds; 
+		StringBuilder query = new StringBuilder();
+//		String str = "SELECT m._id, "+tx_id+", "+phone+" FROM "+rapidandroid_message+" m " +
+//		"INNER JOIN " +sages_multisms_worktable+ " w ON m._id = w._id";
+		String str = "SELECT w._id, "+tx_id+", "+monitor_msg_id+", mo.phone as "+phone+", mo._id from "+sages_multisms_worktable+" w" + 
+				" INNER JOIN "+rapidandroid_message+" m ON m._id = w.monitor_msg_id " + 
+				" INNER JOIN "+rapidandroid_monitor+" mo ON m.monitor_id = mo._id GROUP BY "+tx_id;
+		String[] txIdsAsArray = null;
+		if (txIds != null) {
+			String txIdString = StringUtils.join(txIds, ",");
+			String paramStr = StringUtils.repeat("?", ",", txIds.size());
+			str += " WHERE " +tx_id+ " IN (" + paramStr + ")";
+			txIdsAsArray = txIdString.split(",");
+		}
+		Log.d("WorktableDataLayer", "Get sender phones for all txIds");
+		query.append(str);
 		Cursor cursor = mDb.rawQuery(query.toString(), txIdsAsArray);
 		return cursor;
 	}

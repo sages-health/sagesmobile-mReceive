@@ -14,7 +14,7 @@ import android.content.Intent;
 /**
  * Starts the CsvOutputService that outputs csv files for the associated form
  * 
- * @author Adjoa Poku adjoa.poku@jhuapl.edu
+ * @author POKUAM1
  * @created Mar 24, 2011
  */
 public class CsvReceiver extends BroadcastReceiver {

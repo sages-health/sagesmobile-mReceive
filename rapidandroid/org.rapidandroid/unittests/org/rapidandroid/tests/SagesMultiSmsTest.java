@@ -235,7 +235,7 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			WorktableDataLayer.beginTransaction(getContext());
 			
 			// delete records with stale txIds and verify gone
-			WorktableDataLayer.deleteStaleIncompleteTxIds(getContext(), staleTxIds);
+			WorktableDataLayer.deleteTxIds(getContext(), staleTxIds);
 			Cursor cursor = WorktableDataLayer.getAvailableMessagesForTxId(getContext(), staleTxIds);
 			assertTrue(cursor.moveToFirst());
 			assertEquals(0, cursor.getInt(0));
@@ -255,7 +255,7 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			WorktableDataLayer.beginTransaction(getContext());
 			
 			// delete records with stale txIds and verify gone
-			WorktableDataLayer.deleteStaleIncompleteTxIds(getContext(), staleTxIds);
+			WorktableDataLayer.deleteTxIds(getContext(), staleTxIds);
 			cursor = WorktableDataLayer.getAvailableMessagesForTxId(getContext(), staleTxIds);
 			assertTrue(cursor.moveToFirst());
 			assertEquals(0, cursor.getInt(0));

@@ -8,25 +8,19 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import org.rapidandroid.activity.CsvOutputScheduler;
-import org.rapidandroid.activity.Dashboard;
 import org.rapidandroid.activity.FormReviewer;
 import org.rapidandroid.content.translation.ModelTranslator;
-import org.rapidandroid.data.SmsDbHelper;
 import org.rapidsms.java.core.model.Form;
 
-import android.app.AlertDialog;
 import android.app.IntentService;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.util.Log;
 
 /**
  * 
- * @author Adjoa Poku
+ * @author POKUAM1
  * @created March 22, 2011
  * 
  * Configurable Service that automatically outputs CSV files upon successful parsing of an SMS into rapidandroid. 

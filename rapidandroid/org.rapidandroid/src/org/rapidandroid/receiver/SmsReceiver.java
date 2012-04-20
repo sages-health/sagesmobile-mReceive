@@ -22,13 +22,16 @@ package org.rapidandroid.receiver;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.MessageBodyParser;
+import org.rapidandroid.data.controller.WorktableDataLayer;
 import org.rapidandroid.data.controller.MessageBodyParser.SagesPdu;
 import org.rapidandroid.service.QueueAndPollService;
-import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.Message;
 import org.rapidsms.java.core.model.Monitor;
 
@@ -39,6 +42,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.telephony.SmsManager;
 import android.telephony.gsm.SmsMessage;
 import android.util.Log;
 
@@ -74,8 +79,53 @@ public class SmsReceiver extends BroadcastReceiver {
 
 	Uri uriSms = Uri.parse("content://sms/inbox");
 
-	private void insertMessageToContentProvider(Context context, SmsMessage mesg) {
+	
+	static Context mContext;
+	static long lastTimeRun;
+	static Thread timerThread = null;
 
+	/**
+	 * Runs for 2 minutes OR as long as the sages multisms worktable is "dirty" (i.e. contains
+	 * incomplete messages)
+	 * 
+	 * @author SAGES/POKUAM1
+	 * @return Thread that cleans up stale multisms messages from sages worktable
+	 */
+	Thread threadFactory(){
+		return new Thread(new Runnable(){
+
+			int i = 5;
+			
+			@Override
+			synchronized public void run() {
+				//Uri writeMessageUri = RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI;
+				long timeelapsed = 0;
+				
+				while (timeelapsed <= 120000 || QueueAndPollService.isDirty == true){
+					timeelapsed = new Date().getTime() - lastTimeRun;
+					Log.d("sages", i + "===HEY BOO, THIS IS MY THREAD THIS IS MY THREAD WOOT!");
+					i--;
+					Intent intentQueuePollTimer = new Intent(mContext, QueueAndPollService.class);
+					intentQueuePollTimer.putExtra("timerMode", true);
+//					intentQueuePoll.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
+//					intentQueuePoll.putExtra(RapidSmsDBConstants.Message.PHONE, mesg.getOriginatingAddress());
+
+					mContext.startService(intentQueuePollTimer);
+					try {
+						Thread.sleep(30000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}
+			
+		});
+	}
+
+	private void insertMessageToContentProvider(Context context, SmsMessage mesg) {
+		
 		Uri writeMessageUri = RapidSmsDBConstants.Message.CONTENT_URI;
 
 		ContentValues messageValues = new ContentValues();
@@ -133,11 +183,38 @@ public class SmsReceiver extends BroadcastReceiver {
 					// write into worktable
 					insertMessageToSagesWorkTable(context, mesgAsPdu, mesg, now, monitor, msgUri);
 				}
+
+				
+				mContext = context;
+					
+				timerThread = (timerThread == null) ? threadFactory() : timerThread;
+				if (!timerThread.isAlive()) {
+					Log.d("sages", timerThread.getState().toString());
+					lastTimeRun = new Date().getTime();
+					if (!timerThread.getState().equals(Thread.State.valueOf("NEW"))) {
+						timerThread = threadFactory();
+						timerThread.start();
+					} else {
+						timerThread.start();
+					}
+				}
 				
 			}
 		}
 	}
 
+	/**
+	 * @author SAGES/pokuam1
+	 * 
+	 * If SMS is determined to be a multipart sms, then it is written into the sages multisms worktable
+	 * 
+	 * @param context
+	 * @param pdu
+	 * @param mesg
+	 * @param date
+	 * @param monitor
+	 * @param msgUri1
+	 */
 	private void insertMessageToSagesWorkTable(Context context, SagesPdu pdu, SmsMessage mesg, Date date, Monitor monitor, Uri msgUri1) {
 		Uri writeMessageUri = RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI;
 
@@ -154,13 +231,14 @@ public class SmsReceiver extends BroadcastReceiver {
 		try {
 			msgUri = context.getContentResolver().insert(writeMessageUri, messageValues);
 			successfulSave = true;
-			Intent intent = new Intent(context, QueueAndPollService.class);
-			intent.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor.getID());
-			intent.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
-			intent.putExtra(RapidSmsDBConstants.Message.PHONE, mesg.getOriginatingAddress());
-			context.startService(intent);
+			Intent intentQueuePoll = new Intent(context, QueueAndPollService.class);
+			intentQueuePoll.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor.getID());
+			intentQueuePoll.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
+			intentQueuePoll.putExtra(RapidSmsDBConstants.Message.PHONE, mesg.getOriginatingAddress());
+			context.startService(intentQueuePoll);
+			
 		} catch (Exception ex) {
-			Log.d("SmsReceiver.MultipartSMS", "Error writing into worktable: " + ex.getMessage());
+			Log.d("SmsReceiver.insertMessageToSagesWorkTable", "Error writing into worktable: " + ex.getMessage());
 		}
 	}
 

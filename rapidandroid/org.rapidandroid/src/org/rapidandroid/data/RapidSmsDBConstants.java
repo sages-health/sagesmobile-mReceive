@@ -71,6 +71,8 @@ public final class RapidSmsDBConstants {
 	}
 	
 	/**
+	 * @author SAGES/pokuam1
+	 * 
 	 * MultiSmsWorktable table
 	 */
 	public static final class MultiSmsWorktable implements BaseColumns {

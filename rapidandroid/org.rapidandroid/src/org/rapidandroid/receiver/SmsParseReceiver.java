@@ -158,118 +158,22 @@ public class SmsParseReceiver extends BroadcastReceiver {
 			
 			ParsedDataTranslator.InsertFormData(context, form, msgid, results);
 
-			// broadcast for the automatic csv output service
+			// SAGES/pokuam1: broadcast for the automatic csv output service
 			Intent broadcastStartCsvOutput = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
 			broadcastStartCsvOutput.putExtra("formId", form.getFormId());
 			broadcastStartCsvOutput.putExtra("formName", form.getFormName());
 			broadcastStartCsvOutput.putExtra("formPrefix", form.getPrefix());
 			context.sendBroadcast(broadcastStartCsvOutput);
 			
-			// broadcast for the SMS Forwarding Activity
+			// SAGES/pokuam1: broadcast for the SMS Forwarding Activity
 			final int formId = form.getFormId();
 			boolean isFwdOn = pref.getBoolean(formId + CsvOutputScheduler.FORWARDING_VAR, false);
 			if (isFwdOn){
 				Intent broadcastForwardSMS= new Intent("org.rapidandroid.intents.SMS_FORWARD");
-				//broadcastForwardSMS.putExtra("formId", formId);
-				//broadcastForwardSMS.putExtra("formName", form.getFormName());
-				//broadcastForwardSMS.putExtra("formPrefix", form.getPrefix());
 				broadcastForwardSMS.putExtra("msg", body);
 				broadcastForwardSMS.putExtra("forwardNums", pref.getString(form.getFormId() + CsvOutputScheduler.FORWARDING_NUMS, "").split(",")); 
 				context.sendBroadcast(broadcastForwardSMS);
 			}
 		}
-	}
-	
-	public static void slimParser(Context context, String body, Intent intent){
-		ApplicationGlobals.initGlobals(context);
-		
-		if (prefixes == null) {
-			initFormCache(); // profiler shows us that this is being called
-								// frequently on new messages.
-		}
-//		// TODO Auto-generated method stub
-//		String body = intent.getStringExtra("body");
-//
-//		if (body.startsWith("notifications@dimagi.com /  / ")) {
-//			body = body.replace("notifications@dimagi.com /  / ", "");
-//			Log.d("SmsParseReceiver", "Debug, snipping out the email address");
-//		}
-//
-//		int msgid = intent.getIntExtra("msgid", 0);
-
-		Form form = determineForm(body);
-		if (form == null) {
-			Log.d("SLIM PARSER", "no form found");
-//			if (ApplicationGlobals.doReplyOnFail()) {
-//				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
-//				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-//				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseFailText());
-//				context.sendBroadcast(broadcast);
-//			}
-			return;
-		} else {
-//			Monitor mon = MessageTranslator.GetMonitorAndInsertIfNew(context, intent.getStringExtra("from"));
-//			// if(mon.getReplyPreference()) {
-			if (ApplicationGlobals.doReplyOnParseInProgress()) {
-				Log.d("SLIM PARSER", "REPLY ON PARSE IN PROGRESS");
-//				// for debug purposes, we'll just ack every time.
-//				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
-//				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-//				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseInProgressText());
-//				context.sendBroadcast(broadcast);
-			}
-			
-			// TODO POKU "body" is the sms that we want to pass along
-			SharedPreferences pref = context.getSharedPreferences(CsvOutputScheduler.sharedPreferenceFilename, Context.MODE_PRIVATE);
-			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
-
-			// parse success reply
-			if (ApplicationGlobals.doReplyOnParse() && results != null) {
-				
-				Log.d("SLIM PARSER", "SUCCESSFUL PARSE ACK");
-//				// for debug purposes, we'll just ack every time.
-//				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
-//				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-//				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
-//				context.sendBroadcast(broadcast);
-			}
-			
-			// parse failure reply
-			// results would be null after the result of a StrictParser
-			if (results == null) {
-				if (ApplicationGlobals.doReplyOnFail()){
-					Log.d("SLIM PARSER", "NACK ON PARSE FAILURE");
-//					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
-//					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-//					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseFailText(form));
-//					context.sendBroadcast(broadcast);
-				}
-				return;
-			}
-			
-			int msgid = -9;
-			ParsedDataTranslator.InsertFormData(context, form, msgid, results);
-
-			// broadcast for the automatic csv output service
-			Intent broadcastStartCsvOutput = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
-			broadcastStartCsvOutput.putExtra("formId", form.getFormId());
-			broadcastStartCsvOutput.putExtra("formName", form.getFormName());
-			broadcastStartCsvOutput.putExtra("formPrefix", form.getPrefix());
-			context.sendBroadcast(broadcastStartCsvOutput);
-			
-			// broadcast for the SMS Forwarding Activity
-			final int formId = form.getFormId();
-			boolean isFwdOn = pref.getBoolean(formId + CsvOutputScheduler.FORWARDING_VAR, false);
-			if (isFwdOn){
-				Intent broadcastForwardSMS= new Intent("org.rapidandroid.intents.SMS_FORWARD");
-				//broadcastForwardSMS.putExtra("formId", formId);
-				//broadcastForwardSMS.putExtra("formName", form.getFormName());
-				//broadcastForwardSMS.putExtra("formPrefix", form.getPrefix());
-				broadcastForwardSMS.putExtra("msg", body);
-				broadcastForwardSMS.putExtra("forwardNums", pref.getString(form.getFormId() + CsvOutputScheduler.FORWARDING_NUMS, "").split(",")); 
-				context.sendBroadcast(broadcastForwardSMS);
-			}
-		}
-
 	}
 }

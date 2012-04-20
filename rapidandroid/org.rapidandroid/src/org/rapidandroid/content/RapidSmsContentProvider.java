@@ -272,6 +272,8 @@ public class RapidSmsContentProvider extends ContentProvider {
 	}
 	
 	/**
+	 * @author SAGES/pokuam1
+	 * 
 	 * @param uri
 	 * @param values
 	 * @param tablename
@@ -315,6 +317,15 @@ public class RapidSmsContentProvider extends ContentProvider {
 		return doInsert(uri, values, RapidSmsDBConstants.FieldType.TABLE, RapidSmsDBConstants.FieldType.NAME);
 	}
 	
+	/**
+	 * @author SAGES/pokuam1
+	 * 
+	 * @param uri
+	 * @param values
+	 * @param selection
+	 * @param selectionArgs
+	 * @return
+	 */
 	private int updateFieldType(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		if (values.containsKey(RapidSmsDBConstants.FieldType.NAME) == false
 				|| values.containsKey(RapidSmsDBConstants.FieldType.REGEX) == false
@@ -398,6 +409,8 @@ public class RapidSmsContentProvider extends ContentProvider {
 	}
 	
 	/**
+	 * @author SAGES/pokuam1
+	 * 
 	 * @param uri
 	 * @param values
 	 */
@@ -650,6 +663,9 @@ public class RapidSmsContentProvider extends ContentProvider {
 	 * @see android.content.ContentProvider#update(android.net.Uri,
 	 * android.content.ContentValues, java.lang.String, java.lang.String[])
 	 */
+	/**
+	 * @author SAGES/pokuam1
+	 */
 	@Override
 	public int update(Uri uri, ContentValues initialValues, String selection, String[] selectionArgs) {
 		//TODO pokuam1
@@ -689,7 +705,6 @@ public class RapidSmsContentProvider extends ContentProvider {
 					// other stuffs not implemented for insertion yet.
 				default:
 					throw new IllegalArgumentException("Unknown URI " + uri);
-
 			}
 		}
 	}
