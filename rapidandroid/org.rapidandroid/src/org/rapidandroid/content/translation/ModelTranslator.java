@@ -638,9 +638,23 @@ public class ModelTranslator {
 		return ret;
 	}
 
+	/**
+	 * NOTE: This method will always return 1 due to every 
+	 * value in the hashtable being of SimpleFieldType class.
+	 * Do not use this method to get the actual ID of the FieldType.
+	 * Instead, cast the ITokenParser to a SimpleFieldType and then call
+	 * getId();
+	 * @param p
+	 * @return
+	 */
 	public static int getFieldTypeId(ITokenParser p) {
 		for (Integer key : fieldTypeHash.keySet()) {
 			ITokenParser ip = fieldTypeHash.get(key);
+			
+//			Log.e("MARK 1",p.getReadableName());
+//			Log.e("MARK 2",ip.getClass().getName());
+//			Log.e("MARK 3",p.getClass().getName());
+			
 			if (ip.getClass().getName().equals(p.getClass().getName()))
 				return key.intValue();
 		}
@@ -648,6 +662,8 @@ public class ModelTranslator {
 	}
 
 	public static ITokenParser getFieldType(int type_id) {
+//		Log.e("FOOBAR","Field type id: " + type_id);
+		
 		// //real way
 		// public static SimpleFieldType getFieldType(ContentProvider provider,
 		// int type_id) { // hack
@@ -696,6 +712,10 @@ public class ModelTranslator {
 		SimpleFieldType newType = new SimpleFieldType(id, dataType, regex, name);
 		fieldTypeHash.put(typeInt, newType);
 		typeCursor.close();
+		
+//		Log.e("FOOBAR","Field type returned: " + newType.getReadableName());
+
+		
 		return newType;
 
 	}

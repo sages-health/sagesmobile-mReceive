@@ -336,8 +336,8 @@ public class FormCreator extends Activity {
 			b.putString(ResultConstants.RESULT_KEY_FIELDNAME, fi.getName());
 			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION,
 					fi.getDescription());
-			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID,
-					ModelTranslator.getFieldTypeId(fi.getFieldType()));
+			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType)fi.getFieldType()).getId());
+
 			addNewFieldFromActivity(b);
 		}
 
@@ -390,8 +390,8 @@ public class FormCreator extends Activity {
 
 		newField.setDescription(extras
 				.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-		int fieldTypeID = extras
-				.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+		int fieldTypeID = extras.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+		
 		ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 		newField.setFieldType(fieldtype);
 
