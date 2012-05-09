@@ -21,6 +21,7 @@
 <string name="lbl_fieldprompt">Descripción:</string>
 <string name="lbl_fieldtypechoose">tipo de campo</string>
 <string name="lbl_fields">Campos:</string>
+<string name="formeditor_menu_edit_forms">{Edit Fields}</string>
 
 <string name="btn_finishaddfield">Agregar</string>
 <string name="btn_canceladdfield">cancelar</string>

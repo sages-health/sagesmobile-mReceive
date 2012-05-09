@@ -17,9 +17,12 @@
 
 package org.rapidandroid.content.translation;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.rapidandroid.activity.FormCreator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.receiver.SmsParseReceiver;
@@ -67,14 +70,13 @@ public class ModelTranslator {
 
 	private static SmsDbHelper mDbHelper;
 
-/*	public ModelTranslator(Context context){
-		mContext = context;
-	}
-	
-	public ModelTranslator(IntentService context){
-		mContext = context.getApplicationContext();
-	}*/
-	
+	/*
+	 * public ModelTranslator(Context context){ mContext = context; }
+	 * 
+	 * public ModelTranslator(IntentService context){ mContext =
+	 * context.getApplicationContext(); }
+	 */
+
 	/**
 	 * Pre save check to see if a form with given criteria is already in
 	 * existence. This is to prevent dupe formnames and prefixes from existing
@@ -85,15 +87,18 @@ public class ModelTranslator {
 	 * @param nameCandidate
 	 * @return
 	 */
-	public static boolean doesFormExist(Context context, String prefixCandidate, String nameCandidate) {
+	public static boolean doesFormExist(String prefixCandidate,
+			String nameCandidate) {
 		// next let's see if this form is unique
 		Uri formExistUri = RapidSmsDBConstants.Form.CONTENT_URI;
 		StringBuilder whereclause = new StringBuilder();
-		whereclause.append(RapidSmsDBConstants.Form.PREFIX + "='" + prefixCandidate + "'");
+		whereclause.append(RapidSmsDBConstants.Form.PREFIX + "='"
+				+ prefixCandidate + "'");
 		whereclause.append(" OR ");
-		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='" + nameCandidate + "'");
-		Cursor existsCursor = context.getContentResolver()
-										.query(formExistUri, null, whereclause.toString(), null, null);
+		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='"
+				+ nameCandidate + "'");
+		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
+				null, whereclause.toString(), null, null);
 
 		if (existsCursor.getCount() == 0) {
 			existsCursor.close();
@@ -103,6 +108,127 @@ public class ModelTranslator {
 			return true;
 		}
 	}
+
+	public static void editFormToDatabase(Form f) {
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+		try
+		{
+			Cursor c = db.rawQuery("select * from formdata_" + f.getPrefix() + ";",	null);
+			if (c.getCount() > 0) {
+				// there was data collected with previous form/table so we need
+				// rename that table
+				// to a different prefix, update the prefix name in the forms table,
+				// and generate a new formID and field equivalents for the
+				// updated table
+	
+				// rename table
+				SimpleDateFormat sdf = new SimpleDateFormat("HHmmss_ddMMyyyy");
+				String newPrefix = f.getPrefix() + "_"
+						+ sdf.format(new Date(System.currentTimeMillis()));
+				db.execSQL("alter table formdata_" + f.getPrefix()	+ " rename to formdata_" + newPrefix);
+	
+				// update name and prefix in forms table
+				db.execSQL("update rapidandroid_form set prefix='" + newPrefix
+						+ "', " + "formname='" + newPrefix + "' where _id="
+						+ f.getFormId());
+	
+				Log.e("INFO",
+						"Renaming table due to duplicate prefix since there is data in table.");
+				f.setFormId(-1); // must set to -1 or it might try to reuse an id
+				addFormToDatabase(f);
+				return;
+			} else {
+	
+				// there is no data in previous form so we can drop the table
+				// associated with it,
+				// keep the form ID and simply update the fields associated with it
+				// in the field table
+	
+				db.execSQL("drop table formdata_" + f.getPrefix());
+				Log.e("INFO",
+						"Dropped table due to duplicate prefix since no data in table.");
+			}
+		}
+		catch(Exception ex)
+		{
+			Log.e("INFO",ex.getMessage(),ex);
+		}
+		
+		updateFormData(f);
+	}
+	
+	
+	private static void updateFormData(Form f)
+	{
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		
+		ContentValues typecv = new ContentValues();
+		if (f.getFormId() != -1) {
+			typecv.put(BaseColumns._ID, f.getFormId());
+		}
+		typecv.put(RapidSmsDBConstants.Form.FORMNAME, f.getFormName());
+		typecv.put(RapidSmsDBConstants.Form.PARSEMETHOD, f.getParserType()
+				.getJsonConfigVal());
+
+		typecv.put(RapidSmsDBConstants.Form.PREFIX, f.getPrefix());
+		typecv.put(RapidSmsDBConstants.Form.DESCRIPTION, f.getDescription());
+
+		db.update("rapidandroid_form", typecv, "_id=?",	new String[] { f.getFormId() + "" });
+
+		Field[] fields = f.getFields();
+
+		// first remove existing fields with reference to form, and then
+		// re-add the updated ones
+		db.delete("rapidandroid_field", "form_id=?",new String[] { f.getFormId() + "" });
+
+		Log.d("dimagi", "****** Begin fields loop: " + fields.length);
+		for (int j = 0; j < fields.length; j++) {
+			Field thefield = fields[j];
+			Log.d("dimagi", "******** Iterating through fields: "
+					+ thefield.getName());
+			Uri fieldUri = RapidSmsDBConstants.Field.CONTENT_URI;
+			StringBuilder where = new StringBuilder();
+			where.append("name='" + thefield.getName() + "' AND ");
+			where.append("form_id=" + f.getFormId());
+			Cursor crfield = mContext.getContentResolver().query(fieldUri,
+					null, where.toString(), null, null);
+
+			// if this field isn't in DB, add it
+			if (crfield.getCount() == 0) {
+				ContentValues fieldcv = new ContentValues();
+
+				if (thefield.getFieldId() != -1) {
+					fieldcv.put(BaseColumns._ID, thefield.getFieldId());
+				}
+				fieldcv.put(RapidSmsDBConstants.Field.NAME,
+						thefield.getName());
+				fieldcv.put(RapidSmsDBConstants.Field.FORM, f.getFormId());
+				fieldcv.put(RapidSmsDBConstants.Field.PROMPT,
+						thefield.getDescription());
+				fieldcv.put(RapidSmsDBConstants.Field.SEQUENCE,
+						thefield.getSequenceId());
+
+				fieldcv.put(RapidSmsDBConstants.Field.FIELDTYPE,
+						((SimpleFieldType) (thefield.getFieldType()))
+								.getId());
+
+				Uri insertedFieldUri = mContext.getContentResolver()
+						.insert(RapidSmsDBConstants.Field.CONTENT_URI,
+								fieldcv);
+				Log.d("dimagi", "********** Inserted Field into db: "
+						+ insertedFieldUri);
+			} else {
+
+			}
+			crfield.close();
+		}
+
+		generateFormTable(f);
+
+		SmsParseReceiver.initFormCache();
+	}
+	
 
 	/**
 	 * Add a form to to the rapidandroid_form table, inserting new fields as
@@ -115,34 +241,41 @@ public class ModelTranslator {
 	 * @param crform
 	 */
 	public static void addFormToDatabase(Form f) {
-		boolean newFormInserted;
 		ContentValues typecv = new ContentValues();
 
 		if (f.getFormId() != -1) {
 			typecv.put(BaseColumns._ID, f.getFormId());
 		}
+
 		typecv.put(RapidSmsDBConstants.Form.FORMNAME, f.getFormName());
-		typecv.put(RapidSmsDBConstants.Form.PARSEMETHOD, f.getParserType().getJsonConfigVal()); 
-		
+		typecv.put(RapidSmsDBConstants.Form.PARSEMETHOD, f.getParserType()
+				.getJsonConfigVal());
+
 		typecv.put(RapidSmsDBConstants.Form.PREFIX, f.getPrefix());
 		typecv.put(RapidSmsDBConstants.Form.DESCRIPTION, f.getDescription());
 
-		Uri insertedFormUri = mContext.getContentResolver().insert(RapidSmsDBConstants.Form.CONTENT_URI, typecv);
+		Uri insertedFormUri = mContext.getContentResolver().insert(
+				RapidSmsDBConstants.Form.CONTENT_URI, typecv);
 		Log.d("dimagi", "****** Inserted form into db: " + insertedFormUri);
 
-		int newFormId = Integer.valueOf(insertedFormUri.getPathSegments().get(1)).intValue();
+		int newFormId = Integer.valueOf(
+				insertedFormUri.getPathSegments().get(1)).intValue();
 		f.setFormId(newFormId);
 
 		Field[] fields = f.getFields();
 		Log.d("dimagi", "****** Begin fields loop: " + fields.length);
 		for (int j = 0; j < fields.length; j++) {
 			Field thefield = fields[j];
-			Log.d("dimagi", "******** Iterating through fields: " + thefield.getName());
+			Log.d("dimagi",
+					"******** Iterating through fields: " + thefield.getName());
 			Uri fieldUri = RapidSmsDBConstants.Field.CONTENT_URI;
 			StringBuilder where = new StringBuilder();
 			where.append("name='" + thefield.getName() + "' AND ");
 			where.append("form_id=" + newFormId);
-			Cursor crfield = mContext.getContentResolver().query(fieldUri, null, where.toString(), null, null);
+			Cursor crfield = mContext.getContentResolver().query(fieldUri,
+					null, where.toString(), null, null);
+
+			// if this field isn't in DB, add it
 			if (crfield.getCount() == 0) {
 				ContentValues fieldcv = new ContentValues();
 
@@ -151,14 +284,20 @@ public class ModelTranslator {
 				}
 				fieldcv.put(RapidSmsDBConstants.Field.NAME, thefield.getName());
 				fieldcv.put(RapidSmsDBConstants.Field.FORM, f.getFormId());
-				fieldcv.put(RapidSmsDBConstants.Field.PROMPT, thefield.getDescription());
-				fieldcv.put(RapidSmsDBConstants.Field.SEQUENCE, thefield.getSequenceId());
+				fieldcv.put(RapidSmsDBConstants.Field.PROMPT,
+						thefield.getDescription());
+				fieldcv.put(RapidSmsDBConstants.Field.SEQUENCE,
+						thefield.getSequenceId());
 
-				fieldcv.put(RapidSmsDBConstants.Field.FIELDTYPE, ((SimpleFieldType) (thefield.getFieldType())).getId());
+				fieldcv.put(RapidSmsDBConstants.Field.FIELDTYPE,
+						((SimpleFieldType) (thefield.getFieldType())).getId());
 
-				Uri insertedFieldUri = mContext.getContentResolver().insert(RapidSmsDBConstants.Field.CONTENT_URI,
-																			fieldcv);
-				Log.d("dimagi", "********** Inserted Field into db: " + insertedFieldUri);
+				Uri insertedFieldUri = mContext.getContentResolver().insert(
+						RapidSmsDBConstants.Field.CONTENT_URI, fieldcv);
+				Log.d("dimagi", "********** Inserted Field into db: "
+						+ insertedFieldUri);
+			} else {
+
 			}
 			crfield.close();
 		}
@@ -180,13 +319,12 @@ public class ModelTranslator {
 		mDbHelper = helper;
 		mContext = context;
 	}
-	
-	private static void setContext(Context context){
-		mContext = context.getApplicationContext();
-//		if (mContext == null){
-//		}
-	}
 
+	private static void setContext(Context context) {
+		mContext = context.getApplicationContext();
+		// if (mContext == null){
+		// }
+	}
 
 	/**
 	 * Query all the model tables and generate the fully fleshed out Form
@@ -199,19 +337,24 @@ public class ModelTranslator {
 		mContext = context;
 		Uri getFormsUri = RapidSmsDBConstants.Form.CONTENT_URI;
 
-		while (getFormsUri == null){
+		while (getFormsUri == null) {
 			Log.e("sages_ModelTranslator", "form uri is null.");
-			getFormsUri = Uri.parse("content://" + RapidSmsDBConstants.AUTHORITY + "/" + RapidSmsDBConstants.Form.URI_PART);
+			getFormsUri = Uri.parse("content://"
+					+ RapidSmsDBConstants.AUTHORITY + "/"
+					+ RapidSmsDBConstants.Form.URI_PART);
 		}
-		if (mContext == null){
+		if (mContext == null) {
 			Log.e("sages", "CONTEXT IS NULL WTH!?");
 		}
 		Context dummy = null;
-//		ContentResolver resolver = dummy.getContentResolver();
+		// ContentResolver resolver = dummy.getContentResolver();
 		ContentResolver resolver = context.getContentResolver();
-		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null, null); 
-//		Cursor allformsCursor = mContext.getContentResolver().query(getFormsUri, null, null, null, null); // real
-																											// way
+		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null,
+				null);
+		// Cursor allformsCursor =
+		// mContext.getContentResolver().query(getFormsUri, null, null, null,
+		// null); // real
+		// way
 		// Cursor allformsCursor =
 		// provider.query(getFormsUri,null,null,null,null); //hack way
 
@@ -220,7 +363,8 @@ public class ModelTranslator {
 			String[] colnames = allformsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				formColumnNamesToIndex.put(colnames[i], new Integer(allformsCursor.getColumnIndex(colnames[i])));
+				formColumnNamesToIndex.put(colnames[i], new Integer(
+						allformsCursor.getColumnIndex(colnames[i])));
 			}
 		}
 		int formcount = allformsCursor.getCount();
@@ -229,31 +373,29 @@ public class ModelTranslator {
 		allformsCursor.moveToFirst();
 		for (int i = 0; i < formcount; i++) {
 
-			int id = allformsCursor.getInt(formColumnNamesToIndex.get(BaseColumns._ID).intValue());
+			int id = allformsCursor.getInt(formColumnNamesToIndex.get(
+					BaseColumns._ID).intValue());
 			Integer idInt = Integer.valueOf(id);
 
 			if (formIdCache.containsKey(idInt)) {
 				ret[i] = formIdCache.get(idInt);
 			}
 
-			String name = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.FORMNAME)
-																			.intValue());
-			String prefix = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.PREFIX)
-																			.intValue());
+			String name = allformsCursor.getString(formColumnNamesToIndex.get(
+					RapidSmsDBConstants.Form.FORMNAME).intValue());
+			String prefix = allformsCursor.getString(formColumnNamesToIndex
+					.get(RapidSmsDBConstants.Form.PREFIX).intValue());
 			String description = allformsCursor
-												.getString(formColumnNamesToIndex
-																					.get(
-																							RapidSmsDBConstants.Form.DESCRIPTION)
-																					.intValue());
+					.getString(formColumnNamesToIndex.get(
+							RapidSmsDBConstants.Form.DESCRIPTION).intValue());
 			String parsemethod = allformsCursor
-												.getString(formColumnNamesToIndex
-																					.get(
-																							RapidSmsDBConstants.Form.PARSEMETHOD)
-																					.intValue());
+					.getString(formColumnNamesToIndex.get(
+							RapidSmsDBConstants.Form.PARSEMETHOD).intValue());
 			// Field[] fields = getFieldsForForm(provider, id); // hack way
 			Field[] fields = getFieldsForForm(id); // real way
 
-			Form theForm = new Form(id, name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
+			Form theForm = new Form(id, name, prefix, description, fields,
+					ParserType.getTypeFromConfig(parsemethod));
 
 			formIdCache.put(idInt, theForm);
 			ret[i] = theForm;
@@ -263,7 +405,6 @@ public class ModelTranslator {
 		return ret;
 	}
 
-	
 	/**
 	 * Query all the model tables and generate the fully fleshed out Form
 	 * objects. <br>
@@ -274,19 +415,24 @@ public class ModelTranslator {
 	public static Form[] getAllForms() {
 		Uri getFormsUri = RapidSmsDBConstants.Form.CONTENT_URI;
 
-		while (getFormsUri == null){
+		while (getFormsUri == null) {
 			Log.e("sages_ModelTranslator", "form uri is null.");
-			getFormsUri = Uri.parse("content://" + RapidSmsDBConstants.AUTHORITY + "/" + RapidSmsDBConstants.Form.URI_PART);
+			getFormsUri = Uri.parse("content://"
+					+ RapidSmsDBConstants.AUTHORITY + "/"
+					+ RapidSmsDBConstants.Form.URI_PART);
 		}
-		if (mContext == null){
+		if (mContext == null) {
 			Log.e("sages", "CONTEXT IS NULL WTH!?");
 		}
 		Context dummy = null;
-//		ContentResolver resolver = dummy.getContentResolver();
+		// ContentResolver resolver = dummy.getContentResolver();
 		ContentResolver resolver = mContext.getContentResolver();
-		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null, null); 
-//		Cursor allformsCursor = mContext.getContentResolver().query(getFormsUri, null, null, null, null); // real
-																											// way
+		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null,
+				null);
+		// Cursor allformsCursor =
+		// mContext.getContentResolver().query(getFormsUri, null, null, null,
+		// null); // real
+		// way
 		// Cursor allformsCursor =
 		// provider.query(getFormsUri,null,null,null,null); //hack way
 
@@ -295,7 +441,8 @@ public class ModelTranslator {
 			String[] colnames = allformsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				formColumnNamesToIndex.put(colnames[i], new Integer(allformsCursor.getColumnIndex(colnames[i])));
+				formColumnNamesToIndex.put(colnames[i], new Integer(
+						allformsCursor.getColumnIndex(colnames[i])));
 			}
 		}
 		int formcount = allformsCursor.getCount();
@@ -304,31 +451,29 @@ public class ModelTranslator {
 		allformsCursor.moveToFirst();
 		for (int i = 0; i < formcount; i++) {
 
-			int id = allformsCursor.getInt(formColumnNamesToIndex.get(BaseColumns._ID).intValue());
+			int id = allformsCursor.getInt(formColumnNamesToIndex.get(
+					BaseColumns._ID).intValue());
 			Integer idInt = Integer.valueOf(id);
 
 			if (formIdCache.containsKey(idInt)) {
 				ret[i] = formIdCache.get(idInt);
 			}
 
-			String name = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.FORMNAME)
-																			.intValue());
-			String prefix = allformsCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.PREFIX)
-																			.intValue());
+			String name = allformsCursor.getString(formColumnNamesToIndex.get(
+					RapidSmsDBConstants.Form.FORMNAME).intValue());
+			String prefix = allformsCursor.getString(formColumnNamesToIndex
+					.get(RapidSmsDBConstants.Form.PREFIX).intValue());
 			String description = allformsCursor
-												.getString(formColumnNamesToIndex
-																					.get(
-																							RapidSmsDBConstants.Form.DESCRIPTION)
-																					.intValue());
+					.getString(formColumnNamesToIndex.get(
+							RapidSmsDBConstants.Form.DESCRIPTION).intValue());
 			String parsemethod = allformsCursor
-												.getString(formColumnNamesToIndex
-																					.get(
-																							RapidSmsDBConstants.Form.PARSEMETHOD)
-																					.intValue());
+					.getString(formColumnNamesToIndex.get(
+							RapidSmsDBConstants.Form.PARSEMETHOD).intValue());
 			// Field[] fields = getFieldsForForm(provider, id); // hack way
 			Field[] fields = getFieldsForForm(id); // real way
 
-			Form theForm = new Form(id, name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
+			Form theForm = new Form(id, name, prefix, description, fields,
+					ParserType.getTypeFromConfig(parsemethod));
 
 			formIdCache.put(idInt, theForm);
 			ret[i] = theForm;
@@ -345,7 +490,8 @@ public class ModelTranslator {
 	 * @return
 	 */
 	public static Form getFormById(int id) {
-		return getFormFromUri(Uri.parse(RapidSmsDBConstants.Form.CONTENT_URI_STRING + id));
+		return getFormFromUri(Uri
+				.parse(RapidSmsDBConstants.Form.CONTENT_URI_STRING + id));
 	}
 
 	/**
@@ -362,10 +508,12 @@ public class ModelTranslator {
 			return formIdCache.get(formid);
 		}
 
-		Cursor formCursor = mContext.getContentResolver().query(formUri, null, null, null, null); // real
-																									// way
+		Cursor formCursor = mContext.getContentResolver().query(formUri, null,
+				null, null, null); // real
+									// way
 		if (formCursor.getCount() != 1) {
-			throw new IllegalArgumentException(formUri + " returned a bad result.");
+			throw new IllegalArgumentException(formUri
+					+ " returned a bad result.");
 		}
 
 		if (formColumnNamesToIndex == null) {
@@ -373,23 +521,28 @@ public class ModelTranslator {
 			String[] colnames = formCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				formColumnNamesToIndex.put(colnames[i], new Integer(formCursor.getColumnIndex(colnames[i])));
+				formColumnNamesToIndex.put(colnames[i],
+						new Integer(formCursor.getColumnIndex(colnames[i])));
 			}
 		}
 
 		formCursor.moveToFirst();
-		int id = formCursor.getInt(formColumnNamesToIndex.get(BaseColumns._ID).intValue());
-		String name = formCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.FORMNAME).intValue());
-		String prefix = formCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.PREFIX).intValue());
-		String description = formCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.DESCRIPTION)
-																		.intValue());
-		String parsemethod = formCursor.getString(formColumnNamesToIndex.get(RapidSmsDBConstants.Form.PARSEMETHOD)
-																		.intValue());
+		int id = formCursor.getInt(formColumnNamesToIndex.get(BaseColumns._ID)
+				.intValue());
+		String name = formCursor.getString(formColumnNamesToIndex.get(
+				RapidSmsDBConstants.Form.FORMNAME).intValue());
+		String prefix = formCursor.getString(formColumnNamesToIndex.get(
+				RapidSmsDBConstants.Form.PREFIX).intValue());
+		String description = formCursor.getString(formColumnNamesToIndex.get(
+				RapidSmsDBConstants.Form.DESCRIPTION).intValue());
+		String parsemethod = formCursor.getString(formColumnNamesToIndex.get(
+				RapidSmsDBConstants.Form.PARSEMETHOD).intValue());
 
 		// Field[] fields = getFieldsForForm(provider, id); // hack way
 		Field[] fields = getFieldsForForm(id); // real way
 
-		Form ret = new Form(formCursor.getInt(0), name, prefix, description, fields, ParserType.getTypeFromConfig(parsemethod));
+		Form ret = new Form(formCursor.getInt(0), name, prefix, description,
+				fields, ParserType.getTypeFromConfig(parsemethod));
 		formIdCache.put(Integer.valueOf(id), ret);
 		formCursor.close();
 		return ret;
@@ -409,10 +562,10 @@ public class ModelTranslator {
 		Context c;
 
 		Uri fieldsUri = RapidSmsDBConstants.Field.CONTENT_URI;
-		Cursor fieldsCursor = mContext.getContentResolver().query(fieldsUri, null,
-																	RapidSmsDBConstants.Field.FORM + "=" + formId,
-																	null, "sequence ASC"); // real
-																							// way
+		Cursor fieldsCursor = mContext.getContentResolver().query(fieldsUri,
+				null, RapidSmsDBConstants.Field.FORM + "=" + formId, null,
+				"sequence ASC"); // real
+									// way
 
 		// Cursor fieldsCursor = provider.query(fieldsUri, null,
 		// RapidSmsDBConstants.Field.FORM + "=" + formId, null,
@@ -423,25 +576,27 @@ public class ModelTranslator {
 			String[] colnames = fieldsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				fieldColumnNamesToIndex.put(colnames[i], new Integer(fieldsCursor.getColumnIndex(colnames[i])));
+				fieldColumnNamesToIndex.put(colnames[i], new Integer(
+						fieldsCursor.getColumnIndex(colnames[i])));
 			}
 		}
 		Field[] newfields = new Field[fieldsCursor.getCount()];
 		fieldsCursor.moveToFirst();
 		int fieldcount = 0;
 		do {
-			int id = fieldsCursor.getInt(fieldColumnNamesToIndex.get(BaseColumns._ID).intValue());
-			String name = fieldsCursor
-										.getString(fieldColumnNamesToIndex.get(RapidSmsDBConstants.Field.NAME)
-																			.intValue());
-			String prompt = fieldsCursor.getString(fieldColumnNamesToIndex.get(RapidSmsDBConstants.Field.PROMPT)
-																			.intValue());
-			int sequence = fieldsCursor.getInt(fieldColumnNamesToIndex.get(RapidSmsDBConstants.Field.SEQUENCE)
-																		.intValue());
-			int fieldtype = fieldsCursor.getInt(fieldColumnNamesToIndex.get(RapidSmsDBConstants.Field.FIELDTYPE)
-																		.intValue());
+			int id = fieldsCursor.getInt(fieldColumnNamesToIndex.get(
+					BaseColumns._ID).intValue());
+			String name = fieldsCursor.getString(fieldColumnNamesToIndex.get(
+					RapidSmsDBConstants.Field.NAME).intValue());
+			String prompt = fieldsCursor.getString(fieldColumnNamesToIndex.get(
+					RapidSmsDBConstants.Field.PROMPT).intValue());
+			int sequence = fieldsCursor.getInt(fieldColumnNamesToIndex.get(
+					RapidSmsDBConstants.Field.SEQUENCE).intValue());
+			int fieldtype = fieldsCursor.getInt(fieldColumnNamesToIndex.get(
+					RapidSmsDBConstants.Field.FIELDTYPE).intValue());
 
-			Field newField = new Field(id, sequence, name, prompt, getFieldType(fieldtype));
+			Field newField = new Field(id, sequence, name, prompt,
+					getFieldType(fieldtype));
 			// //real way
 			// Field newField = new Field(id, sequence, name,
 			// prompt,getFieldType(provider, fieldtype));// hack way
@@ -463,7 +618,8 @@ public class ModelTranslator {
 
 	public static ITokenParser[] getFieldTypes() {
 		Uri typesUri = RapidSmsDBConstants.FieldType.CONTENT_URI;
-		Cursor typeCursor = mContext.getContentResolver().query(typesUri, null, null, null, null);
+		Cursor typeCursor = mContext.getContentResolver().query(typesUri, null,
+				null, null, null);
 
 		ITokenParser[] ret = new ITokenParser[typeCursor.getCount()];
 
@@ -471,7 +627,8 @@ public class ModelTranslator {
 
 		int typecounter = 0;
 		do {
-			int id = typeCursor.getInt(typeColumnNamesToIndex.get(BaseColumns._ID).intValue());
+			int id = typeCursor.getInt(typeColumnNamesToIndex.get(
+					BaseColumns._ID).intValue());
 
 			ITokenParser newType = getFieldType(id);
 			ret[typecounter++] = newType;
@@ -479,6 +636,15 @@ public class ModelTranslator {
 		} while (typeCursor.moveToNext());
 		typeCursor.close();
 		return ret;
+	}
+
+	public static int getFieldTypeId(ITokenParser p) {
+		for (Integer key : fieldTypeHash.keySet()) {
+			ITokenParser ip = fieldTypeHash.get(key);
+			if (ip.getClass().getName().equals(p.getClass().getName()))
+				return key.intValue();
+		}
+		return -1;
 	}
 
 	public static ITokenParser getFieldType(int type_id) {
@@ -491,9 +657,12 @@ public class ModelTranslator {
 		if (fieldTypeHash.containsKey(typeInt)) {
 			return fieldTypeHash.get(typeInt);
 		}
-		Uri typeUri = Uri.parse(RapidSmsDBConstants.FieldType.CONTENT_URI_STRING + type_id);
-		Cursor typeCursor = mContext.getContentResolver().query(typeUri, null, null, null, null); // real
-																									// way
+		Uri typeUri = Uri
+				.parse(RapidSmsDBConstants.FieldType.CONTENT_URI_STRING
+						+ type_id);
+		Cursor typeCursor = mContext.getContentResolver().query(typeUri, null,
+				null, null, null); // real
+									// way
 		// Cursor typeCursor = provider.query(typeUri, null, null, null, null);
 		// // hack
 		// way
@@ -503,20 +672,25 @@ public class ModelTranslator {
 			String[] colnames = typeCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				typeColumnNamesToIndex.put(colnames[i], new Integer(typeCursor.getColumnIndex(colnames[i])));
+				typeColumnNamesToIndex.put(colnames[i],
+						new Integer(typeCursor.getColumnIndex(colnames[i])));
 			}
 		}
 		if (typeCursor.getCount() != 1) {
-			throw new IllegalArgumentException(typeUri + " returned a bad result.");
+			throw new IllegalArgumentException(typeUri
+					+ " returned a bad result.");
 		}
 
 		typeCursor.moveToFirst();
 
-		int id = typeCursor.getInt(typeColumnNamesToIndex.get(BaseColumns._ID).intValue());
-		String dataType = typeCursor.getString(typeColumnNamesToIndex.get(RapidSmsDBConstants.FieldType.DATATYPE)
-																		.intValue());
-		String name = typeCursor.getString(typeColumnNamesToIndex.get(RapidSmsDBConstants.FieldType.NAME).intValue());
-		String regex = typeCursor.getString(typeColumnNamesToIndex.get(RapidSmsDBConstants.FieldType.REGEX).intValue());
+		int id = typeCursor.getInt(typeColumnNamesToIndex.get(BaseColumns._ID)
+				.intValue());
+		String dataType = typeCursor.getString(typeColumnNamesToIndex.get(
+				RapidSmsDBConstants.FieldType.DATATYPE).intValue());
+		String name = typeCursor.getString(typeColumnNamesToIndex.get(
+				RapidSmsDBConstants.FieldType.NAME).intValue());
+		String regex = typeCursor.getString(typeColumnNamesToIndex.get(
+				RapidSmsDBConstants.FieldType.REGEX).intValue());
 
 		// SimpleFieldType ftype) {
 		SimpleFieldType newType = new SimpleFieldType(id, dataType, regex, name);
@@ -526,7 +700,8 @@ public class ModelTranslator {
 
 	}
 
-	private static void getFieldDeclaration(Field field, StringBuilder sb, boolean last) {
+	private static void getFieldDeclaration(Field field, StringBuilder sb,
+			boolean last) {
 
 		sb.append(" \"");
 		sb.append("col_" + field.getName());
@@ -566,7 +741,8 @@ public class ModelTranslator {
 		db.execSQL("delete from " + RapidSmsDBConstants.Field.TABLE);
 		db.execSQL("delete from " + RapidSmsDBConstants.Form.TABLE);
 
-		Log.v("dimagi", "wiped the form/field/fieldtype/formdata table for debug purposes");
+		Log.v("dimagi",
+				"wiped the form/field/fieldtype/formdata table for debug purposes");
 	}
 
 	/**
@@ -588,7 +764,8 @@ public class ModelTranslator {
 
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 		try {
-			Cursor formdatacursor = db.rawQuery("select * from formdata_" + form.getPrefix() + ";", null);
+			Cursor formdatacursor = db.rawQuery("select * from formdata_"
+					+ form.getPrefix() + ";", null);
 			if (formdatacursor.getCount() > 0) {
 				return;
 			} else {
@@ -619,6 +796,7 @@ public class ModelTranslator {
 
 		sb.append(" );");
 
+		// Log.e("FOOBAR", sb.toString());
 		db.execSQL(sb.toString());
 	}
 

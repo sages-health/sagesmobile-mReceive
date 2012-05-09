@@ -21,6 +21,7 @@
 <string name="lbl_fieldprompt">Description:</string>
 <string name="lbl_fieldtypechoose">type de champ</string>
 <string name="lbl_fields">Domaines:</string>
+<string name="formeditor_menu_edit_forms">{Edit Fields}</string>
 
 <string name="btn_finishaddfield">Ajouter</string>
 <string name="btn_canceladdfield">Annuler</string>

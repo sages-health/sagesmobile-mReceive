@@ -46,7 +46,20 @@
 
 		<activity android:name=".activity.FormReviewer"></activity>
 		
-		<activity android:name=".activity.FormCreator"></activity>
+		<activity android:name=".activity.FormCreator">
+			<intent-filter>
+ 				<action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+		
+		<activity android:name=".activity.FormListView">
+		    <intent-filter>
+ 				<action android:name="android.intent.action.VIEW" />
+		        <category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		    
+		</activity>
 		
 		<activity android:name=".activity.CsvOutputScheduler">
 			<intent-filter>

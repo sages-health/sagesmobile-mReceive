@@ -27,7 +27,7 @@ import org.rapidsms.java.core.parser.IParseResult;
  *          High level interface for parsing a field or token in a message
  * 
  */
-public interface ITokenParser {
+public interface ITokenParser extends java.io.Serializable {
 
 	IParseResult Parse(String fragment);
 

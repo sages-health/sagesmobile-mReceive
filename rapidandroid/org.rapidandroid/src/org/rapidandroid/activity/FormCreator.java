@@ -26,6 +26,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Vector;
 
 import org.json.JSONException;
@@ -59,11 +62,13 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity window for creating a new form.
@@ -80,11 +85,13 @@ import android.widget.TextView;
 
 public class FormCreator extends Activity {
 	private static final int MENU_SAVE = Menu.FIRST;
-	private static final int MENU_ADD_FIELD = Menu.FIRST + 1;
-	private static final int MENU_CANCEL = Menu.FIRST + 2;
+	private static final int MENU_EDIT_FORMS = Menu.FIRST + 1;
+	private static final int MENU_ADD_FIELD = Menu.FIRST + 2;
+	private static final int MENU_CANCEL = Menu.FIRST + 3;
 
 	public static final int ACTIVITY_ADDFIELD_CANCEL = 0;
 	public static final int ACTIVITY_ADDFIELD_ADDED = 1;
+	public static final int PREVIOUS_FORM_SELECTED = 2;
 
 	private static final int CONTEXT_MOVE_UP = Menu.FIRST;
 	private static final int CONTEXT_MOVE_DOWN = Menu.FIRST + 1;
@@ -106,16 +113,21 @@ public class FormCreator extends Activity {
 	private static final String STATE_FORMNAME = "formname";
 	private static final String STATE_PREFIX = "prefix";
 	private static final String STATE_DESC = "desc";
-	private static final String STATE_PARSER= "parser";
+	private static final String STATE_PARSER = "parser";
 
-	private Vector<Field> mCurrentFields;
+	private ArrayList<Field> mCurrentFields;
 	private String[] fieldStrings;
 
-	private IMessageParser[] mAllParsers = {new SimpleRegexParser(), new StrictRegexParser()};
+	private IMessageParser[] mAllParsers = { new SimpleRegexParser(),
+			new StrictRegexParser() };
 	private IMessageParser mChosenParser;
 	private boolean mClosing = false;
 
+	private Form selectedForm;
+
 	private int selectedFieldPosition = -1;
+
+	private FieldViewAdapter fieldViewAdapter;
 
 	/*
 	 * (non-Javadoc)
@@ -125,51 +137,63 @@ public class FormCreator extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		mCurrentFields = new ArrayList<Field>();
+
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.form_create);
 
 		// Required onCreate setup
 		// add some events to the listview
 		ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
-		lsv.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-				menu.setHeaderTitle("Current Field");
-				menu.add(0, CONTEXT_MOVE_UP, 0, "Move Up");
-				menu.add(0, CONTEXT_MOVE_DOWN, 0, "Move Down");
-				// menu.add(0, CONTEXT_EDIT, 0, "Edit");
-				menu.add(0, CONTEXT_REMOVE, 0, "Remove").setIcon(android.R.drawable.ic_menu_delete);
 
-			}
-		});
+		fieldViewAdapter = new FieldViewAdapter(this, mCurrentFields);
+		lsv.setAdapter(fieldViewAdapter);
 
-		lsv.setOnItemClickListener(new OnItemClickListener() {
+		lsv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-				// TODO Auto-generated method stub
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
 				selectedFieldPosition = arg2;
+				return false;
 			}
 
 		});
+
 		TextView noFields = new TextView(this);
 		noFields.setText("No fields");
 		lsv.setEmptyView(noFields);
-		updateFieldList();
-		
+		registerForContextMenu(lsv);
+
 		initParserSpinner();
 		// Set the event listeners for the spinner and the listview
 		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
-		spin_forms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View theview, int position, long rowid) {
-				spinnerItemSelected(position);
-			}
+		spin_forms
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					public void onItemSelected(AdapterView<?> parent,
+							View theview, int position, long rowid) {
+						spinnerItemSelected(position);
+					}
 
-			public void onNothingSelected(AdapterView<?> parent) {
-				// blow away the listview's items
-				mChosenParser = null;
-				//resetCursor = true;
-				//loadListViewWithFormData();
-			}
-		});
+					public void onNothingSelected(AdapterView<?> parent) {
+						// blow away the listview's items
+						mChosenParser = null;
+						// resetCursor = true;
+						// loadListViewWithFormData();
+					}
+				});
+	}
+
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+
+		menu.setHeaderTitle("Current Field");
+		menu.add(0, CONTEXT_MOVE_UP, 0, "Move Up");
+		menu.add(0, CONTEXT_MOVE_DOWN, 0, "Move Down");
+		// menu.add(0, CONTEXT_EDIT, 0, "Edit");
+		menu.add(0, CONTEXT_REMOVE, 0, "Remove").setIcon(
+				android.R.drawable.ic_menu_delete);
 
 	}
 
@@ -187,8 +211,8 @@ public class FormCreator extends Activity {
 		}
 	}
 
-	// dmyung - since the savestate and onresume rely upon the database, and we
-	// are only doing the formcreate in memory, we will not implement these.
+
+
 	private void saveState() {
 		// TODO Auto-generated method stub
 		// this.d
@@ -211,51 +235,37 @@ public class FormCreator extends Activity {
 
 					JSONObject fieldobj = new JSONObject();
 
-					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME, f.getName());
-					fieldobj.put(AddField.ResultConstants.RESULT_KEY_DESCRIPTION, f.getDescription());
-					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID,
-									((SimpleFieldType) f.getFieldType()).getId());
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME,
+							f.getName());
+					fieldobj.put(
+							AddField.ResultConstants.RESULT_KEY_DESCRIPTION,
+							f.getDescription());
+					fieldobj.put(
+							AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID,
+							((SimpleFieldType) f.getFieldType()).getId());
 
 					savedstate.put("Field" + i, fieldobj);
 				}
 			}
+
+			getIntent().putExtra("current_form", savedstate.toString());
+
 		} catch (JSONException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			Log.d("FormCreator", e1.getMessage());
-		}
-
-		try {
-			FileOutputStream fos = this.openFileOutput("FormCreatorSavedState", Context.MODE_PRIVATE);
-			fos.write(savedstate.toString().getBytes());
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Log.d("FormCreator", e.getMessage());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Log.d("FormCreator", e.getMessage());
 		}
 	}
 
 	@Override
 	protected synchronized void onResume() {
 		super.onResume();
-		try {
-			File f = this.getFileStreamPath("FormCreatorSavedState");
-			if (f.exists()) {
-				// mCurrentFields = new Vector<Field>();
-				FileInputStream fin = this.openFileInput("FormCreatorSavedState");
-				InputStreamReader irdr = new InputStreamReader(fin); // promote
 
-				int size = (int) fin.getChannel().size();
-				char[] data = new char[size]; // allocate char array of right
-				// size
-				irdr.read(data, 0, size); // read into char array
-				irdr.close();
-
-				String contents = new String(data);
+		Intent intent = getIntent();
+		String currentForm = intent.getStringExtra("current_form");
+		if (currentForm != null) {
+			try {
+				String contents = new String(currentForm);
 				JSONObject readobject = new JSONObject(contents);
 
 				EditText etxFormName = (EditText) findViewById(R.id.etx_formname);
@@ -270,17 +280,70 @@ public class FormCreator extends Activity {
 				do {
 					checkForFields = readobject.has("Field" + i);
 					if (checkForFields) {
-						JSONObject fieldBundle = (JSONObject) readobject.get("Field" + i);
+						JSONObject fieldBundle = (JSONObject) readobject
+								.get("Field" + i);
 						restoreFieldFromState(fieldBundle);
 						i++;
 					}
 				} while (checkForFields);
-				fin.close();				
-				f.delete();
+			} catch (Exception e) {
+				Log.e("FOOBAR", e.getMessage(), e);
 			}
-		} catch (Exception ex) {
-			Log.d("FormCreator", ex.getMessage());
 		}
+	}
+
+
+	/**
+	 * Gets called from onActivityResult
+	 * 
+	 * @param f
+	 */
+	private void restoreForm(Form f) {
+		EditText etxFormName = (EditText) findViewById(R.id.etx_formname);
+		etxFormName.setText(f.getFormName());
+
+		EditText etxFormPrefix = (EditText) findViewById(R.id.etx_formprefix);
+		etxFormPrefix.setText(f.getPrefix());
+
+		EditText etxDescription = (EditText) findViewById(R.id.etx_description);
+		etxDescription.setText(f.getDescription());
+
+		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
+		int cnt = spin_forms.getCount();
+		for(int i=0;i<cnt;i++)
+		{
+			if(spin_forms.getItemAtPosition(i).toString().toLowerCase().contains(f.getParserType().name().toLowerCase()))
+				spin_forms.setSelection(i);
+		}
+		
+		
+		// add fields
+		Field[] fields = f.getFields();
+		Arrays.sort(fields, new Comparator() {
+			public int compare(Object arg0, Object arg1) {
+				Field f1 = (Field) arg0;
+				Field f2 = (Field) arg1;
+				if (f1.getSequenceId() < f2.getSequenceId())
+					return -1;
+				else if (f1.getSequenceId() > f2.getSequenceId())
+					return 1;
+				return 0;
+			}
+		});
+
+		for (Field fi : fields) {
+			Bundle b = new Bundle();
+			b.putString(ResultConstants.RESULT_KEY_FIELDNAME, fi.getName());
+			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION,
+					fi.getDescription());
+			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID,
+					ModelTranslator.getFieldTypeId(fi.getFieldType()));
+			addNewFieldFromActivity(b);
+		}
+
+		// save state so that the "current_form" is in the intent
+		// and will therefore be loaded in the onResume call
+		saveState();
 	}
 
 	/*
@@ -290,7 +353,8 @@ public class FormCreator extends Activity {
 	 * android.content.Intent)
 	 */
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	protected void onActivityResult(int requestCode, int resultCode,
+			Intent intent) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, intent);
 		Bundle extras = null;
@@ -299,27 +363,35 @@ public class FormCreator extends Activity {
 		}
 
 		switch (requestCode) {
-			case ACTIVITY_ADDFIELD_ADDED:
-				if (extras != null) {
-					addNewFieldFromActivity(extras);
+		case ACTIVITY_ADDFIELD_ADDED:
+			if (extras != null) {
+				addNewFieldFromActivity(extras);
+			}
+			break;
+		case ACTIVITY_ADDFIELD_CANCEL:
+			// do nothing
+			break;
+		case PREVIOUS_FORM_SELECTED:
+			if (extras != null) {
+				selectedForm = (Form) extras.getSerializable("selected_form");
+				if (selectedForm != null) {
+					restoreForm(selectedForm);
 				}
-				break;
-			case ACTIVITY_ADDFIELD_CANCEL:
-				// do nothing
-				break;
+			}
+			break;
 		}
 	}
 
 	private void addNewFieldFromActivity(Bundle extras) {
-		if (mCurrentFields == null) {
-			mCurrentFields = new Vector<Field>();
-		}
-
 		Field newField = new Field();
 		newField.setFieldId(-1);
-		newField.setName(extras.getString(ResultConstants.RESULT_KEY_FIELDNAME).trim());
-		newField.setDescription(extras.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-		int fieldTypeID = extras.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+		newField.setName(extras.getString(ResultConstants.RESULT_KEY_FIELDNAME)
+				.trim());
+
+		newField.setDescription(extras
+				.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
+		int fieldTypeID = extras
+				.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
 		ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 		newField.setFieldType(fieldtype);
 
@@ -330,19 +402,22 @@ public class FormCreator extends Activity {
 		newField.setSequenceId(seqId);
 		mCurrentFields.add(newField);
 
-		updateFieldList();
+		fieldViewAdapter.notifyDataSetChanged();
 	}
 
 	private void restoreFieldFromState(JSONObject fieldjson) {
 		if (mCurrentFields == null) {
-			mCurrentFields = new Vector<Field>();
+			mCurrentFields = new ArrayList<Field>();
 		}
 		try {
 			Field newField = new Field();
 			newField.setFieldId(-1);
-			newField.setName(fieldjson.getString(ResultConstants.RESULT_KEY_FIELDNAME));
-			newField.setDescription(fieldjson.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-			int fieldTypeID = fieldjson.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+			newField.setName(fieldjson
+					.getString(ResultConstants.RESULT_KEY_FIELDNAME));
+			newField.setDescription(fieldjson
+					.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
+			int fieldTypeID = fieldjson
+					.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
 			ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 			newField.setFieldType(fieldtype);
 
@@ -361,7 +436,8 @@ public class FormCreator extends Activity {
 
 			mCurrentFields.add(newField);
 
-			updateFieldList();
+			fieldViewAdapter.notifyDataSetChanged();
+			// updateFieldList();
 		} catch (Exception ex) {
 			Log.d("FormCreator", ex.getMessage());
 		}
@@ -370,17 +446,17 @@ public class FormCreator extends Activity {
 	/**
 	 * 
 	 */
-	private void updateFieldList() {
-		ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
-		if (mCurrentFields == null) {
-			mCurrentFields = new Vector<Field>();
-		}
+	// private void updateFieldList() {
+	// ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
+	// if (mCurrentFields == null) {
+	// mCurrentFields = new Vector<Field>();
+	// }
+	//
+	// Field[] fieldArray = this.mCurrentFields
+	// .toArray(new Field[mCurrentFields.size()]);
+	// lsv.setAdapter(new FieldViewAdapter(this, fieldArray));
+	// }
 
-		Field[] fieldArray = this.mCurrentFields.toArray(new Field[mCurrentFields.size()]);
-		lsv.setAdapter(new FieldViewAdapter(this, fieldArray));
-	}
-
-	
 	// This is a call to the DB to get all the forms that this form can support.
 	private void initParserSpinner() {
 		// The steps:
@@ -388,8 +464,7 @@ public class FormCreator extends Activity {
 		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
 		// Get an array of forms from the DB
 		// in the current iteration, it's mForms
-		//this.mAllParsers = ModelTranslator.getAllForms();
-		
+		// this.mAllParsers = ModelTranslator.getAllForms();
 
 		String[] monitors = new String[mAllParsers.length];
 
@@ -397,15 +472,17 @@ public class FormCreator extends Activity {
 			monitors[i] = "Parse Mode: " + mAllParsers[i].getName();
 		}
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, monitors);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, monitors);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// apply it to the spinner
 		spin_forms.setAdapter(adapter);
 	}
-	
+
 	private void spinnerItemSelected(int position) {
 		mChosenParser = mAllParsers[position];
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -414,10 +491,14 @@ public class FormCreator extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, MENU_SAVE, 0, R.string.formeditor_menu_save).setIcon(android.R.drawable.ic_menu_save);
-		menu.add(0, MENU_ADD_FIELD, 0, R.string.formeditor_menu_add_field).setIcon(android.R.drawable.ic_menu_add);
-		menu.add(0, MENU_CANCEL, 0, R.string.formeditor_menu_cancel)
-			.setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		menu.add(0, MENU_SAVE, 0, R.string.formeditor_menu_save).setIcon(
+				android.R.drawable.ic_menu_save);
+		menu.add(0, MENU_EDIT_FORMS, 0, R.string.formeditor_menu_edit_forms)
+				.setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, MENU_ADD_FIELD, 0, R.string.formeditor_menu_add_field)
+				.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, MENU_CANCEL, 0, R.string.formeditor_menu_cancel).setIcon(
+				android.R.drawable.ic_menu_close_clear_cancel);
 		return true;
 	}
 
@@ -430,36 +511,40 @@ public class FormCreator extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
-			case MENU_SAVE:
-				int formStatus = checkFormIsSaveable();
-				if (formStatus == FormCreator.DIALOG_FORM_SAVEABLE) {
-					doSave();
-					setResult(0);
-					File f = this.getFileStreamPath("FormCreatorSavedState");
-					if (f.exists()) {
-						f.delete();
-					}
-					mClosing = true;
-					finish();
-				} else {
-					this.showDialog(formStatus);
+		case MENU_SAVE:
+			int formStatus = checkFormIsSaveable();
+			if (formStatus == FormCreator.DIALOG_FORM_SAVEABLE) {
+				doSave();
+				setResult(0);
+				File f = this.getFileStreamPath("FormCreatorSavedState");
+				if (f.exists()) {
+					f.delete();
 				}
-				return true;
-			case MENU_ADD_FIELD:
-				Intent intent = new Intent(this, AddField.class);
-				// mUpdatedFromActivity = true;
-				if (mCurrentFields != null) {
-					int len = this.mCurrentFields.size();
-					for (int i = 0; i < len; i++) {
-						intent.putExtra(mCurrentFields.get(i).getName(), 0);
-					}
-				}
-				startActivityForResult(intent, ACTIVITY_ADDFIELD_ADDED);
-				return true;
-			case MENU_CANCEL:
 				mClosing = true;
 				finish();
-				return true;
+			} else {
+				this.showDialog(formStatus);
+			}
+			return true;
+		case MENU_EDIT_FORMS:
+			Intent in = new Intent(this, FormListView.class);
+			startActivityForResult(in, PREVIOUS_FORM_SELECTED);
+			return true;
+		case MENU_ADD_FIELD:
+			Intent intent = new Intent(this, AddField.class);
+			// mUpdatedFromActivity = true;
+			if (mCurrentFields != null) {
+				int len = this.mCurrentFields.size();
+				for (int i = 0; i < len; i++) {
+					intent.putExtra(mCurrentFields.get(i).getName(), 0);
+				}
+			}
+			startActivityForResult(intent, ACTIVITY_ADDFIELD_ADDED);
+			return true;
+		case MENU_CANCEL:
+			mClosing = true;
+			finish();
+			return true;
 		}
 
 		return true;
@@ -482,14 +567,16 @@ public class FormCreator extends Activity {
 		if (this.mCurrentFields.size() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFIELDS;
 		}
-		String prefixCandidate = etxFormPrefix.getText().toString();
-		String nameCandidate = etxFormName.getText().toString();
 
-		if (ModelTranslator.doesFormExist(this, prefixCandidate, nameCandidate)) {
-			return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
-		} else {
-			return FormCreator.DIALOG_FORM_SAVEABLE;
-		}
+		// String prefixCandidate = etxFormPrefix.getText().toString();
+		// String nameCandidate = etxFormName.getText().toString();
+		//
+		// if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
+		// return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
+		// } else {
+		// return FormCreator.DIALOG_FORM_SAVEABLE;
+		// }
+		return FormCreator.DIALOG_FORM_SAVEABLE;
 	}
 
 	/**
@@ -504,9 +591,10 @@ public class FormCreator extends Activity {
 		EditText etxDescription = (EditText) findViewById(R.id.etx_description);
 		Spinner spinnerParserType = (Spinner) findViewById(R.id.spinner_formparser);
 		int parserPosition = spinnerParserType.getSelectedItemPosition();
-		
-		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
-		
+
+		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition]
+				.getName().toUpperCase());
+
 		Form formToSave = new Form();
 		formToSave.setFormName(etxFormName.getText().toString().trim());
 		formToSave.setPrefix(etxFormPrefix.getText().toString().trim());
@@ -514,12 +602,19 @@ public class FormCreator extends Activity {
 		formToSave.setParserType(parserType);
 		// (Message[])parsedMessages.keySet().toArray(new
 		// Message[parsedMessages.keySet().size()]);
-		Field[] fieldArray = this.mCurrentFields.toArray(new Field[mCurrentFields.size()]);
+		Field[] fieldArray = this.mCurrentFields
+				.toArray(new Field[mCurrentFields.size()]);
 		formToSave.setFields(fieldArray);
 
 		try {
-			ModelTranslator.addFormToDatabase(formToSave);
+			if (selectedForm != null) {
+				formToSave.setFormId(selectedForm.getFormId());
+				ModelTranslator.editFormToDatabase(formToSave);
+			} else {
+				ModelTranslator.addFormToDatabase(formToSave);
+			}
 		} catch (Exception ex) {
+			Log.e("FOOBAR", ex.getMessage(), ex);
 			showDialog(DIALOG_FORM_CREATE_FAIL);
 		}
 	}
@@ -528,9 +623,12 @@ public class FormCreator extends Activity {
 	// http://www.anddev.org/tinytutcontextmenu_for_listview-t4019.html
 	// UGH, things changed from .9 to 1.0
 	public boolean onContextItemSelected(MenuItem item) {
+
 		// some sanity checks:
 		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
-		if (lsvFields.getCount() == 0 || this.mCurrentFields == null || this.mCurrentFields.size() == 0) {
+		if (lsvFields.getCount() == 0 || this.mCurrentFields == null
+				|| this.mCurrentFields.size() == 0) {
+
 			return true;
 		}
 
@@ -538,24 +636,26 @@ public class FormCreator extends Activity {
 			return true;
 		}
 
-		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
+				.getMenuInfo();
+
 		switch (item.getItemId()) {
-			// TODO: IMPLEMENT CONTEXT MENU
-			case CONTEXT_MOVE_UP:
+		// TODO: IMPLEMENT CONTEXT MENU
+		case CONTEXT_MOVE_UP:
 
-				moveFieldUp(selectedFieldPosition);
+			moveFieldUp(selectedFieldPosition);
 
-				break;
-			case CONTEXT_MOVE_DOWN:
+			break;
+		case CONTEXT_MOVE_DOWN:
 
-				moveFieldDown(selectedFieldPosition);
+			moveFieldDown(selectedFieldPosition);
 
-				break;
-			case CONTEXT_REMOVE:
-				removeField(selectedFieldPosition);
-				break;
-			default:
-				return super.onContextItemSelected(item);
+			break;
+		case CONTEXT_REMOVE:
+			removeField(selectedFieldPosition);
+			break;
+		default:
+			return super.onContextItemSelected(item);
 		}
 		return true;
 	}
@@ -609,7 +709,7 @@ public class FormCreator extends Activity {
 			Field f = mCurrentFields.get(i);
 			f.setSequenceId(i);
 		}
-		updateFieldList();
+		fieldViewAdapter.notifyDataSetChanged();// updateFieldList();
 	}
 
 	@Override
@@ -619,53 +719,77 @@ public class FormCreator extends Activity {
 		String message = "";
 
 		switch (id) {
-			case DIALOG_FORM_INVALID_NOFIELDS:
-				title = "Invalid form";
-				message = "You must have at least one field for this form to save";
-				break;
-			case DIALOG_FORM_INVALID_NOFORMNAME:
-				title = "Invalid form";
-				message = "You must enter a formname";
-				break;
-			case DIALOG_FORM_INVALID_NOPREFIX:
-				title = "Invalid form";
-				message = "You must enter a prefix";
-				break;
-			case DIALOG_FORM_INVALID_NOTUNIQUE:
-				title = "Invalid form";
-				message = "The form of this name and prefix already exists";
-				break;
-			case DIALOG_FORM_CREATE_FAIL:
-				title = "Form creation failed";
-				message = "Unable to create the form and its support tables.  Check the logs.";
-				return new AlertDialog.Builder(FormCreator.this).setTitle(title).setMessage(message)
-																.setPositiveButton("Ok", null).create();
-			case DIALOG_CONFIRM_CLOSURE:
-				// for confirm closure, we actually just return the dialog as we
-				// want it here.
-				title = "Confirm Closure";
-				message = "Are you sure you want to close without saving changes?";
-				return new AlertDialog.Builder(FormCreator.this)
-																.setTitle(title)
-																.setMessage(message)
-																.setPositiveButton(
-																					"Yes",
-																					new DialogInterface.OnClickListener() {
-																						public void onClick(
-																								DialogInterface dialog,
-																								int whichButton) {
-																							finish();
-																						}
-																					})
-																.setNegativeButton("No, keep working", null).create();
-			default:
-				return null;
+		case DIALOG_FORM_INVALID_NOFIELDS:
+			title = "Invalid form";
+			message = "You must have at least one field for this form to save";
+			break;
+		case DIALOG_FORM_INVALID_NOFORMNAME:
+			title = "Invalid form";
+			message = "You must enter a formname";
+			break;
+		case DIALOG_FORM_INVALID_NOPREFIX:
+			title = "Invalid form";
+			message = "You must enter a prefix";
+			break;
+		case DIALOG_FORM_INVALID_NOTUNIQUE:
+			title = "Invalid form";
+			message = "The form of this name and prefix already exists";
+			break;
+		case DIALOG_FORM_CREATE_FAIL:
+			title = "Form creation failed";
+			message = "Unable to create the form and its support tables.  Check the logs.";
+			return new AlertDialog.Builder(FormCreator.this).setTitle(title)
+					.setMessage(message).setPositiveButton("Ok", null).create();
+		case DIALOG_CONFIRM_CLOSURE:
+			// for confirm closure, we actually just return the dialog as we
+			// want it here.
+			title = "Confirm Closure";
+			message = "Are you sure you want to close without saving changes?";
+			return new AlertDialog.Builder(FormCreator.this)
+					.setTitle(title)
+					.setMessage(message)
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int whichButton) {
+									finish();
+								}
+							}).setNegativeButton("No, keep working", null)
+					.create();
+		default:
+			return null;
 
 		}
-		return new AlertDialog.Builder(FormCreator.this).setTitle(title).setMessage(message).setPositiveButton("OK",
-																												null)
-														.create();
+		return new AlertDialog.Builder(FormCreator.this).setTitle(title)
+				.setMessage(message).setPositiveButton("OK", null).create();
 
+	}
+
+	public void onBackPressed() {
+		AlertDialog dialog = new AlertDialog.Builder(this).create();
+
+		dialog.setMessage("Save Changes First?");
+		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						doSave();
+						finish();
+					}
+				});
+
+		dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "No",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+
+		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+		dialog.show();
 	}
 
 }

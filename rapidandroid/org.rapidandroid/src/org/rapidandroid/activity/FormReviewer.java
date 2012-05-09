@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -150,7 +151,13 @@ public class FormReviewer extends Activity {
 
 			// lsv_fields.setAdapter(new ArrayAdapter<String>(this,
 			// android.R.layout.simple_list_item_1, fields));
-			lsv_fields.setAdapter(new FieldViewAdapter(this, mForm.getFields()));
+			ArrayList<Field> fields = new ArrayList<Field>();
+			Field[] f = mForm.getFields();
+			for(Field ff : f)
+			{
+				fields.add(ff);
+			}
+			lsv_fields.setAdapter(new FieldViewAdapter(this, fields));
 
 		}
 	}

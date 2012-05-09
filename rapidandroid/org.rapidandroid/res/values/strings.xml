@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="hello">Hello World, rapidandroid</string>
+<string name="not_implemented">Not implemented yet!</string>
+<string name="show_all_messages">Show all Messages</string>
+<string name="show_all_multisms_messages">Show Multipart Messages</string>
 <string name="app_name">RapidAndroid</string>
 <string name="lbl_formname">Name</string>
 <string name="lbl_description">Description</string>
@@ -22,6 +25,7 @@
 <string name="lbl_fieldprompt">Description:</string>
 <string name="lbl_fieldtypechoose">Field Type:</string>
 <string name="lbl_fields">Fields:</string>
+<string name="formeditor_menu_edit_forms">Edit Fields</string>
 
 <string name="btn_finishaddfield">Add</string>
 <string name="btn_canceladdfield">Cancel</string>
