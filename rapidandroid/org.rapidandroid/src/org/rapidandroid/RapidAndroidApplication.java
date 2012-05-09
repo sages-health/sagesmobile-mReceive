@@ -23,7 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
+import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.activity.CsvOutputScheduler;
 
 import android.app.Application;
@@ -38,6 +40,7 @@ import android.util.Log;
 public class RapidAndroidApplication extends Application {
 
 	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
+	public static boolean logSystemHealth = true;
 	
 	/*
 	 * (non-Javadoc)
@@ -49,10 +52,17 @@ public class RapidAndroidApplication extends Application {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		//Debug.startMethodTracing("rapidandroid_application");
+		try {
+			SystemHealthTracking.initDataStore(this);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Log.d("RapidAndroidApplication", "RAPIDANDROID IS STARTING UP!");
+		if (logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.STARTUP, "RapidAndroid is starting up!", Log.INFO);
 		ApplicationGlobals.checkGlobals(this.getApplicationContext());
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
-
+		
 	}
 	
 	/**

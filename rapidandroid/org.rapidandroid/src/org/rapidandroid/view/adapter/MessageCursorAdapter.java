@@ -85,7 +85,7 @@ public class MessageCursorAdapter extends CursorAdapter {
 		return srv;
 	}
 
-	private class SimpleMessageView extends TableLayout {
+	protected class SimpleMessageView extends TableLayout {
 
 		private TableRow mHeaderRow;
 		private TextView txvDate;

@@ -17,9 +17,13 @@
 
 package org.rapidandroid.receiver;
 
+import java.util.Date;
 import java.util.Vector;
 
 import org.rapidandroid.ApplicationGlobals;
+import org.rapidandroid.RapidAndroidApplication;
+import org.rapidandroid.SystemHealthTracking;
+import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.activity.CsvOutputScheduler;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.content.translation.ModelTranslator;
@@ -112,7 +116,9 @@ public class SmsParseReceiver extends BroadcastReceiver {
 		int msgid = intent.getIntExtra("msgid", 0);
 
 		Form form = determineForm(body);
-		if (form == null) {			
+		if (form == null) {
+			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_FAIL, "SmsParseReceiver--no form matched", Log.INFO);
+
 			if (ApplicationGlobals.doReplyOnFail()) {
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
@@ -142,11 +148,16 @@ public class SmsParseReceiver extends BroadcastReceiver {
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
 				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
 				context.sendBroadcast(broadcast);
+				
+				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
+
 			}
 			
 			// parse failure reply
 			// results would be null after the result of a StrictParser
 			if (results == null) {
+				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_FAIL, "SmsParseReceiver", Log.INFO);
+
 				if (ApplicationGlobals.doReplyOnFail()){
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));

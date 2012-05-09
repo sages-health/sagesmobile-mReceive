@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.rapidandroid.RapidAndroidApplication;
+import org.rapidandroid.SystemHealthTracking;
+import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.MessageBodyParser;
@@ -78,7 +81,6 @@ public class SmsReceiver extends BroadcastReceiver {
 	 */
 
 	Uri uriSms = Uri.parse("content://sms/inbox");
-
 	
 	static Context mContext;
 	static long lastTimeRun;
@@ -101,7 +103,7 @@ public class SmsReceiver extends BroadcastReceiver {
 				//Uri writeMessageUri = RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI;
 				long timeelapsed = 0;
 				
-				while (timeelapsed <= 120000 || QueueAndPollService.isDirty == true){
+				while (/*timeelapsed <= 2000 120000 ||*/ QueueAndPollService.isDirty == true){
 					timeelapsed = new Date().getTime() - lastTimeRun;
 					Log.d("sages", i + "===HEY BOO, THIS IS MY THREAD THIS IS MY THREAD WOOT!");
 					i--;
@@ -112,7 +114,8 @@ public class SmsReceiver extends BroadcastReceiver {
 
 					mContext.startService(intentQueuePollTimer);
 					try {
-						Thread.sleep(30000);
+						//Thread.sleep(30000);
+						Thread.sleep(10000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -188,7 +191,7 @@ public class SmsReceiver extends BroadcastReceiver {
 				mContext = context;
 					
 				timerThread = (timerThread == null) ? threadFactory() : timerThread;
-				if (!timerThread.isAlive()) {
+/*				if (!timerThread.isAlive()) {
 					Log.d("sages", timerThread.getState().toString());
 					lastTimeRun = new Date().getTime();
 					if (!timerThread.getState().equals(Thread.State.valueOf("NEW"))) {
@@ -197,7 +200,12 @@ public class SmsReceiver extends BroadcastReceiver {
 					} else {
 						timerThread.start();
 					}
-				}
+				}*/
+				
+//				Intent intentQueuePollTimer = new Intent(mContext, QueueAndPollService.class);
+//				intentQueuePollTimer.putExtra("timerMode", true);
+//				mContext.startService(intentQueuePollTimer);
+
 				
 			}
 		}
@@ -271,6 +279,8 @@ public class SmsReceiver extends BroadcastReceiver {
 		if (!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {// {
 			return;
 		}
+		
+		if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_RECEIVED, "SmsReceiver", Log.INFO);
 
 		SmsMessage msgs[] = getMessagesFromIntent(intent);
 

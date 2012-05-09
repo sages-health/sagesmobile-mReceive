@@ -4,6 +4,9 @@
  */
 package org.rapidandroid.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,9 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.ApplicationGlobals;
+import org.rapidandroid.RapidAndroidApplication;
+import org.rapidandroid.SystemHealthTracking;
+import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.activity.CsvOutputScheduler;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.content.translation.ParsedDataTranslator;
@@ -32,7 +38,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Service to queue pieces of multi-part sms and poll until all received prior to the 
@@ -91,11 +96,15 @@ public class QueueAndPollService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		
 		if (intent.getBooleanExtra("timerMode", false)){
+			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService cleanup timer", Log.INFO);
+
 			Log.d(t, "timer mode...calling cleanupTimer()....");
 			cleanupTimer();
 			return;
 		}
 		
+		if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService normal mode", Log.INFO);
+
 		int monitor_msg_id = intent.getIntExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, 0);
 		String current_sender_phone = intent.getStringExtra(RapidSmsDBConstants.Message.PHONE);
 		//String sender_phone = phoneLookupMap.get(key);
@@ -119,6 +128,8 @@ public class QueueAndPollService extends IntentService {
 			
 		} catch (Exception e) {
 			Log.e(t, "Unable to retrieve ttl statuses. Contact admin.");
+			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService--error getting ttl status " + e.getMessage() , Log.ERROR);
+
 			e.printStackTrace();
 			smsManager.sendTextMessage(current_sender_phone, null, "Receiver had trouble processing stale data. Contact admin.", null, null);
 		}
@@ -134,11 +145,19 @@ public class QueueAndPollService extends IntentService {
 		phoneLookupMap = WorktableDataLayer.buildSenderPhonesLookupForTxIds(this, null);
 		String sender_phone = "";
 		WorktableDataLayer.beginTransaction(this);
+		Log.d("Q&P","BEGIN TX[1]");
 		try {
 			// Delete messages for incomplete and stale txIds
 			if (!ttlMap.get(WorktableDataLayer.label_ttlStale).isEmpty()) {
+				WorktableDataLayer.beginTransaction(this);
+				Log.d("Q&P","BEGIN TX[2]-deleteTxIds");
+
 				WorktableDataLayer.deleteTxIds(this, ttlMap.get(WorktableDataLayer.label_ttlStale));
 		
+				WorktableDataLayer.setTransactionSuccessful(); //endTransaction() is called in the finally branch
+				Log.d("Q&P","SET SUCCESS TX[2]-deleteTxIds");
+				WorktableDataLayer.endTransaction();
+				Log.d("Q&P","END TX[2]-deleteTxIds");
 				// Send NACK for all incomplete and stale txIds
 				int i = 1;
 				for (Long txId: ttlMap.get(WorktableDataLayer.label_ttlStale)){
@@ -146,6 +165,7 @@ public class QueueAndPollService extends IntentService {
 					smsManager.sendTextMessage(sender_phone, null, i + "_NACK--txid=" + txId + " was stale", null, null);
 					i++;
 				}
+
 			}
 			
 			// If incomplete txIds are present, system is considered "dirty"
@@ -158,6 +178,7 @@ public class QueueAndPollService extends IntentService {
 			// If complete message txIds are empty, there is nothing to process. End db-transaction in finally block. 
 			if (completed.isEmpty()){
 				WorktableDataLayer.setTransactionSuccessful(); //endTransaction() is called in the finally branch
+				Log.d("Q&P","SET SUCCESS TX[1]");
 				Log.d(t, "no complete records, exiting.");
 				return;
 			}
@@ -178,15 +199,16 @@ public class QueueAndPollService extends IntentService {
 				Long txId = allBlobs.getKey();
 				String[] parseableBlobs = allBlobs.getValue();
 				
-				WorktableDataLayer.beginTransaction(this);
+//				WorktableDataLayer.beginTransaction(this);
+//				Log.d("Q&P","BEGIN TX[3]-demodedBlobs");
+				String sender_phone_for_blobs = phoneLookupMap.get(txId);
 				boolean badData = false;
-				
 				for (String body: parseableBlobs){
 					badData = false;
-					
+
 					broadcast.putExtra("body", body);
-					broadcast.putExtra("from", sender_phone);
 					broadcast.putExtra("txId", txId);
+					broadcast.putExtra("from", sender_phone_for_blobs);
 					broadcast.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor_msg_id);
 					
 					parseOutcome = SmsParseUtility.parseOnCall(this, broadcast, this.forms, this.prefixes);
@@ -196,12 +218,18 @@ public class QueueAndPollService extends IntentService {
 					if (rowOutcome == -1){
 						badData = true;
 //						
-//						// throw ERROR SEND NACK MESSAGE FOR SURE!
+//						// throw ERROR SEND NACK MESSAGE FOR SURE! -- PARSE ON CALL SENDS THE NACK!!!
 //						if (ApplicationGlobals.doReplyOnFail()){
 //							smsManager.sendTextMessage(sender_phone, null, "NACK--txid=" + txId + " error in parsing", null, null);
 //						}
 //
 //						// delete problematic ones? OR JUST LET IT GET STALE???
+						// I THINK SHOULD DELETE O.W. WILL GET REPROCESSED EACH TIME!!!!
+						WorktableDataLayer.beginTransaction(this);
+						Log.d("Q&P","BEGIN TX[3]-deleteTxId(badData)");
+						WorktableDataLayer.deleteTxIds(this, Arrays.asList(new Long[]{txId}));
+						WorktableDataLayer.setTransactionSuccessful();
+						Log.d("Q&P","SET SUCCESS[3] TX-deleteTxId(badData)");
 						break;
 					} else {
 						if (formToCsvOutput != null) outputCsvSet.add(formToCsvOutput);
@@ -209,17 +237,24 @@ public class QueueAndPollService extends IntentService {
 				}
 				
 				if (badData) {
-					WorktableDataLayer.endTransaction();
+					WorktableDataLayer.endTransaction(); //setTransactionSuccessful()?
+					Log.d("Q&P","END TX[3]--deleteTxId(badData)");
 				} else {
 					
 					// Delete processed messages (for complete txIds) from multisms_worktable
 					if (!statusMap.get(WorktableDataLayer.label_complete).isEmpty()){
+						WorktableDataLayer.beginTransaction(this);
+						Log.d("Q&P","BEGIN TX--deleteTxIds(processed)");
+						
 						WorktableDataLayer.deleteTxIds(this, statusMap.get(WorktableDataLayer.label_complete));
+
+						// Commit changes to multisms_worktable
+						WorktableDataLayer.setTransactionSuccessful();
+						Log.d("Q&P","SET SUCCESS TX--deleteTxIds(processed)");
+						WorktableDataLayer.endTransaction();
+						Log.d("Q&P","END TX--deleteTxIds(processed)");
 					}	
 					
-					// Commit changes to multisms_worktable
-					WorktableDataLayer.setTransactionSuccessful();
-					WorktableDataLayer.endTransaction();
 
 					// Trigger CsvOutputService for formIds in the stack of processed txIds
 					String successfulForms = "";
@@ -236,17 +271,23 @@ public class QueueAndPollService extends IntentService {
 					successfulFormsTxId = successfulForms;
 				}
 					
-				if (ApplicationGlobals.doReplyOnParse()){
-					smsManager.sendTextMessage(sender_phone, null, txId + " was completely successful for: " + successfulFormsTxId, null, null);
+				if (!badData && ApplicationGlobals.doReplyOnParse()){
+					smsManager.sendTextMessage(sender_phone_for_blobs, null, txId + " was completely successful for: " + successfulFormsTxId, null, null);
+					if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
+
 				}
 			}
 			
 			WorktableDataLayer.setTransactionSuccessful();
+			Log.d("Q&P","SET SUCCESS TX[1]");
 		} catch (Exception e){
 			e.printStackTrace();
 			Log.e(t, e.getMessage());
+			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, t + " " + e.getMessage() , Log.ERROR);
+
 		} finally {
 			WorktableDataLayer.endTransaction();
+			Log.d("Q&P","END TX[1]");
 		}
 	}
 	
@@ -401,22 +442,28 @@ public static class SmsParseUtility {
 				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseInProgressText());
 				//context.sendBroadcast(broadcast);
 				outcome.putExtra("strategy_ReplyOnParseInProgress", broadcast);
+			
+
 			}
 			
 			SharedPreferences pref = context.getSharedPreferences(CsvOutputScheduler.sharedPreferenceFilename, Context.MODE_PRIVATE);
 			Vector<IParseResult> results = ParsingService.ParseMessage(form, sms_body);
 
 			// Parse success reply
-			if (ApplicationGlobals.doReplyOnParse() && results != null) {
-				// for debug purposes, we'll just ack every time.
-				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
-				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
-				if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
+			if (results != null) {
+				if (ApplicationGlobals.doReplyOnParse() && results != null) {
+					// for debug purposes, we'll just ack every time.
+					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
+					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
+					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
+					if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
+				}
+				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
 			}
-			
+
 			// Parse failure reply (if StrictParser was used, results would be null) 
 			if (results == null) {
+				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_PARSE_FAIL, "SmsParseReceiver", Log.INFO);
 				if (ApplicationGlobals.doReplyOnFail()){
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
@@ -431,6 +478,7 @@ public static class SmsParseUtility {
 			}
 			
 			 rowid = WorktableDataLayer.InsertFormData(context, form, msgid, results);
+			 if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_SAVED, "SmsParseReceiver", Log.INFO);
 			 outcome.putExtra("rowid", rowid);
 			 outcome.putExtra("form", form);
 			 

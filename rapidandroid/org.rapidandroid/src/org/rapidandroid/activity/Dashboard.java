@@ -34,6 +34,7 @@ import org.rapidandroid.data.controller.ParsedDataReporter;
 import org.rapidandroid.view.SingleRowHeaderView;
 import org.rapidandroid.view.adapter.FormDataGridCursorAdapter;
 import org.rapidandroid.view.adapter.MessageCursorAdapter;
+import org.rapidandroid.view.adapter.MultipartMessageCursorAdapter;
 import org.rapidandroid.view.adapter.SummaryCursorAdapter;
 import org.rapidsms.java.core.Constants;
 import org.rapidsms.java.core.model.Form;
@@ -65,6 +66,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 /**
@@ -167,6 +169,16 @@ public class Dashboard extends Activity {
 	// private Date mStartDate = Constants.NULLDATE;
 	// private Date mEndDate = Constants.NULLDATE;
 
+	final Runnable mToastNotImplemented = new Runnable() {
+		public void run() {
+			alertNotImplemented();
+		}
+	};
+	
+	private void alertNotImplemented() {
+		Toast.makeText(getApplicationContext(), "Not implemented yet!", Toast.LENGTH_SHORT).show();
+	}
+	
 	private int mScreenWidth;
 	private int mListCount = 100;
 	private RadioButton rb100;
@@ -203,6 +215,7 @@ public class Dashboard extends Activity {
 		}
 
 	};
+	private boolean mShowAllMultismsMessages;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -713,7 +726,7 @@ public class Dashboard extends Activity {
 		Date now = new Date();
 		i.putExtra(ChartData.CallParams.END_DATE, now.getTime());
 		// we want to chart for a form
-		if (mChosenForm != null && !mShowAllMessages) {
+		if (mChosenForm != null && !mShowAllMessages && !mShowAllMultismsMessages) {
 			Date startDate = ParsedDataReporter.getOldestMessageDate(this, mChosenForm);
 			if (startDate.equals(Constants.NULLDATE)) {
 				Builder noDateDialog = new AlertDialog.Builder(this);
@@ -770,6 +783,8 @@ public class Dashboard extends Activity {
 			i.putExtra(ChartData.CallParams.START_DATE, startDate.getTime());
 
 			i.putExtra(ChartData.CallParams.CHART_MESSAGES, true);
+		} else if (mShowAllMultismsMessages){
+			Toast.makeText(getApplicationContext(), getString(R.string.not_implemented), Toast.LENGTH_SHORT).show();
 		}
 
 		// i.putExtra(ChartData.CallParams.START_DATE, mStartDate.getTime());
@@ -786,14 +801,15 @@ public class Dashboard extends Activity {
 		// in the current iteration, it's mForms
 		this.mAllForms = ModelTranslator.getAllForms();
 
-		String[] monitors = new String[mAllForms.length + 1];
+		String[] monitors = new String[mAllForms.length + 2];
 
 		for (int i = 0; i < mAllForms.length; i++) {
 			monitors[i] = "Form: " + mAllForms[i].getFormName();
 		}
 
 		// add some special selections:
-		monitors[monitors.length - 1] = "Show all Messages";
+		monitors[monitors.length - 2] = getString(R.string.show_all_messages);
+		monitors[monitors.length - 1] = getString(R.string.show_all_multisms_messages);
 		// monitors[monitors.length - 1] = "Show Monitors";
 
 		mSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, monitors);
@@ -812,6 +828,13 @@ public class Dashboard extends Activity {
 			beginListViewReload();
 			// loadListViewWithRawMessages();
 
+		} else if (position == mAllForms.length + 1){
+			// if it's forms+2, then it's ALL multisms messages
+			mChosenForm = null;
+			this.mShowAllMessages = false;
+			this.mShowAllMultismsMessages = true;
+			resetCursor = true;
+			beginListViewReload();
 		} else {
 			this.mShowAllMessages = false;
 			mChosenForm = mAllForms[position];
@@ -832,9 +855,14 @@ public class Dashboard extends Activity {
 
 		if (mChosenForm != null && !mShowAllMessages) {
 			loadListViewWithFormData();
-		} else if (mShowAllMessages && mChosenForm == null) {
+		} else if ((mShowAllMessages || mShowAllMultismsMessages) && mChosenForm == null) {
 			this.mBtnViewModeSwitcher.setVisibility(View.INVISIBLE);
-			this.messageCursorAdapter = new MessageCursorAdapter(this, mListviewCursor);
+			if (mShowAllMessages){
+				this.messageCursorAdapter = new MessageCursorAdapter(this, mListviewCursor);
+			} else if (mShowAllMultismsMessages){
+//				this.messageCursorAdapter = new MessageCursorAdapter(this, mListviewCursor);
+				this.messageCursorAdapter = new MultipartMessageCursorAdapter(this, mListviewCursor);
+			}
 			lsv.setAdapter(messageCursorAdapter);
 		}
 		// lsv.setVisibility(View.VISIBLE);
@@ -884,6 +912,10 @@ public class Dashboard extends Activity {
 				mListviewCursor = DashboardDataLayer.getCursorForFormData(this, mChosenForm, mListCount);
 			} else if (mShowAllMessages && mChosenForm == null) {
 				mListviewCursor = DashboardDataLayer.getCursorForRawMessages(this, mListCount);
+			} else if (mShowAllMultismsMessages && mChosenForm == null){
+				mListviewCursor = DashboardDataLayer.getCursorForMultipartMessages(this, mListCount);
+				this.runOnUiThread(mToastNotImplemented);		
+				
 			}
 		} else {
 			Log.d("Dashboard","mListviewCursor wasn't null....");

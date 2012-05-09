@@ -86,5 +86,28 @@ public class DashboardDataLayer {
 
 		return cr;
 	}
+	
+	public synchronized static Cursor getCursorForMultipartMessages(Context context, int mListCount){
+		
+		if (mDb != null){
+			if (mDb.isOpen()){
+				mDb.close();
+			}
+			mDb = null;
+		}
+		
+		if (mDbHelper != null){
+			mDbHelper.close();
+			mDbHelper = null;
+		}
+		mDbHelper = new SmsDbHelper(context);
+		mDb = mDbHelper.getReadableDatabase();
+		StringBuilder sb = new StringBuilder();
+//		sb.append("SELECT * FROM sages_multisms_worktable ORDER BY tx_id ASC, segment_number ASC;");
+		//[MON_ID, alias, _id, segment_number, total_segments, tx_id, tx_timestamp, payload, monitor_msg_id, _id, phone, monitor_id, time, message, is_outgoing, is_virtual, receive_time, _id, first_name, last_name, alias, phone, email, incoming_messages, receive_reply]
+		sb.append("SELECT mon._id as MON_ID, mon.alias,  * FROM sages_multisms_worktable smw left join rapidandroid_message mes on monitor_msg_id = mes._id left join rapidandroid_monitor mon on monitor_id = mon._id ORDER BY tx_id ASC, segment_number ASC;");
+		Cursor cr = mDb.rawQuery(sb.toString(), null);
+		return cr;
+	}
 
 }
