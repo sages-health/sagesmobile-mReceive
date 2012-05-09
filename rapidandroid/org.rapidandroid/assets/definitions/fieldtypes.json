@@ -13,7 +13,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "number", 
-			"regex": "^((\\d+)|(\\.))($|\\s)", 
+			"regex": "^(([-]?\\d+)|(\\.))($|\\s)", 
 			"name": "Number"
 		}
 	}, 
@@ -30,7 +30,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "integer", 
-			"regex": "^(\\d+)(\\s*(cm|m|meter|meters))($|\\s)", 
+			"regex": "^([-]?\\d+)(\\s*(cm|m|meter|meters))($|\\s)", 
 			"name": "Height"
 		}
 	}, 
@@ -39,7 +39,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "float", 
-			"regex": "^((\\d+\\:\\d+)|(\\d+\\/\\d+)|(\\d+\\s*%)|(\\d+\\s*pct)|(\\d+\\.\\d+))", 
+			"regex": "^(([-]?\\d+\\:\\d+)|([-]?\\d+\\/\\d+)|([-]?\\d+\\s*%)|([-]?\\d+\\s*pct)|([-]?\\d+\\.\\d+))", 
 			"name": "Ratio"
 		}
 	}, 
@@ -93,7 +93,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "freetext", 
-			"regex": "^(([A-Za-z\\d\\s\\.]+)|(\\.))($|\\s)",
+			"regex": "^(('[A-Za-z\\d\\s\\.]+')|(\\.))($|\\s)",
 			"name": "freetext"
 		}
 	}	

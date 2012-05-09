@@ -1,1 +1,16 @@
-[{"pk": 3, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "phones", "description": "Phone Distribution(supply)", "formname": "phones"}}, {"pk": 4, "model": "rapidandroid.form", "fields": {"parsemethod": "simpleregex", "prefix": "animalhealth", "description": "Animal Health Information (monitoring and evaluation)", "formname": "AnimalHealth"}}]
+[
+{"pk": 3, "model": "rapidandroid.form", 
+ "fields": {"parsemethod": "strictregex", 
+ "prefix": "bootup", "description": "Bootup: see Bednet Distribution(supply)", 
+ "formname": "bootup"}},
+ 
+{"pk": 4, "model": "rapidandroid.form", 
+"fields": {"parsemethod": "strictregex", 
+"prefix": "free", "description": "Free Text form", 
+"formname": "freetext"}}, 
+
+{"pk": 5, "model": "rapidandroid.form", 
+"fields": {"parsemethod": "strictregex", 
+"prefix": "patient", "description": "Patient Case based", 
+"formname": "patient"}}
+]
