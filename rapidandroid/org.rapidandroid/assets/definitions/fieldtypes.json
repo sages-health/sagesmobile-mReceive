@@ -93,7 +93,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "freetext", 
-			"regex": "^(('[A-Za-z\\d\\s\\.]+')|(\\.))($|\\s)",
+			"regex": "^(('[A-Za-z\\d\\s\\.]*')|(\\.))($|\\s)",
 			"name": "freetext"
 		}
 	}	

@@ -191,7 +191,7 @@ public class SmsReceiver extends BroadcastReceiver {
 				mContext = context;
 					
 				timerThread = (timerThread == null) ? threadFactory() : timerThread;
-/*				if (!timerThread.isAlive()) {
+				if (!timerThread.isAlive()) {
 					Log.d("sages", timerThread.getState().toString());
 					lastTimeRun = new Date().getTime();
 					if (!timerThread.getState().equals(Thread.State.valueOf("NEW"))) {
@@ -200,7 +200,7 @@ public class SmsReceiver extends BroadcastReceiver {
 					} else {
 						timerThread.start();
 					}
-				}*/
+				}
 				
 //				Intent intentQueuePollTimer = new Intent(mContext, QueueAndPollService.class);
 //				intentQueuePollTimer.putExtra("timerMode", true);

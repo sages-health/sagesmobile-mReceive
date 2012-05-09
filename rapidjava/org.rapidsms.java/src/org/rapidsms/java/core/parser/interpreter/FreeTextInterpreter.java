@@ -20,7 +20,7 @@ public class FreeTextInterpreter implements IParseInterpreter {
 
 	public FreeTextInterpreter() {
 		// MUST HAVE ZERO GROUPS AND OTHER TOKENIZING JUNK
-		mPattern = Pattern.compile("[A-Za-z\\d\\s\\.]+\\.*");
+		mPattern = Pattern.compile("'[A-Za-z\\d\\s\\.]*'\\.*");
 	}
 
 	public Object interpretValue(String token) {
