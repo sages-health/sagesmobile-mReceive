@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><resources>
+<string name="hello">Hola a todos, rapidandroid</string>
+<string name="app_name">RapidAndroid</string>
+<string name="lbl_formname">Nombre</string>
+<string name="lbl_description">Descripción</string>
+<string name="lbl_formprefix">Prefijos</string>
+<string name="lbl_formchoose">Formularios:</string>
+<string name="lbl_formparser">Analizador Tipo</string>
+<string name="lbl_dashboardmessages">Mensajes recientes:</string>
+<string name="dashboard_menu_create">Crear formulario</string>
+<string name="dashboard_menu_edit">Ver Formulario</string>
+<string name="dashboard_menu_erase_data">Borrar datos</string>
+<string name="dashboard_menu_delete_form">Borrar el Formulario</string>
+<string name="dashboard_menu_view">Mostrar gráficos</string>
+<string name="formeditor_menu_cancel">cancelar</string>
+<string name="formeditor_menu_save">Ahorrar</string>
+<string name="formeditor_menu_add_field">Agregar campo</string>
+<string name="dashboard_menu_show_reports">Informes</string>
+<string name="menu_done">Terminado</string>
+<string name="lbl_fieldname">Nombre:</string>
+<string name="lbl_fieldprompt">Descripción:</string>
+<string name="lbl_fieldtypechoose">tipo de campo</string>
+<string name="lbl_fields">Campos:</string>
+<string name="formeditor_menu_edit_forms">{Edit Fields}</string>
+
+<string name="btn_finishaddfield">Agregar</string>
+<string name="btn_canceladdfield">cancelar</string>
+<string name="yes">Sí</string>
+<string name="no">No</string>
+<string name="ok">Ok</string>
+<string name="alert">alerta</string>
+<string name="confirm_delete">¿Está seguro que desea eliminar?</string>
+
+<string name="no_msgs_to_chart">Esta forma no tiene mensajes o datos para trazar</string>
+<string name="no_data_to_chart">No hay datos para trazar.</string>
+
+<string name="formreview_menu_done">Hecho</string>
+<string name="formreview_menu_format">Mostrar Ejemplo</string>
+<string name="chart_menu_done">Hecho</string>
+<string name="chart_menu_change_variable">Cambio de variable</string>
+<string name="chart_menu_change_parameters">Cambiar intervalo de fechas</string>
+<string name="formreview_dump_csv">De salida CSV</string>
+<string name="formreview_schedule_dump_csv">Horario de salida CSV</string>
+<string name="formreview_upload_csv">Subir Informe</string>
+<string name="lbl_enddate">Fecha de finalización:</string>
+<string name="lbl_startdate">Fecha de comienzo:</string>
+<string name="range_btn_lastweek">Semana pasada</string>
+<string name="range_btn_lastmonth">Mes pasado</string>
+<string name="range_btn_lastday">Último día</string>
+
+<string name="lbl_totaldaterange">Daterange total:</string>
+<string name="lbl_chart_chartsubject">Gráfico Asunto:</string>
+<string name="lbl_chart_datasummary">Resumen de datos:</string>
+<string name="lbl_chart_totalmessages">Total de mensajes:</string>
+<string name="btn_daterange_startdate">Fecha de comienzo</string>
+<string name="btn_daterange_enddate">Fecha de finalización</string>
+<string name="range_btn_lastthreemonth">Tres meses</string>
+<string name="btn_entire_range">Rango completo</string>
+<string name="rad_last100">Última 100</string>
+<string name="rad_last500">500</string>
+<string name="rad_all">Todo</string>
+<string name="glbsettings_inprogress_ack">En respuesta Progreso Analizar</string>
+<string name="glbsettings_parse_ack">Responder con éxito Analizar</string>
+<string name="glbsettings_noparse_ack">Error al analizar Responder</string>
+<string name="glb_chk_noparse_text">Réplica sobre la no analiza</string>
+<string name="glb_chk_parse_text">Réplica sobre la exitosa analiza</string>
+<string name="glb_chk_inprogress_text">Réplica sobre la analiza en el progreso</string>
+<string name="glbsettings_heading">La configuración global de respuesta</string>
+<string name="glb_lbl_activeall">Activa todas las funciones de SMS</string>
+
+<string name="numberHint">1 a 55</string>
+<string name="lbl_outputFreq">Período para la salida en cuestión de segundos \ n (1 a 55 son los valores válidos)</string>
+<string name="settings_saved">Cambios guardados</string>
+<string name="refresh_cache">Actualizar la memoria caché</string>
+
+<string name="refresh">actualizar</string>
+
+<string name="lbl_forwardingNums">SMS a plazo a estos números (separados por comas)</string>
+
+<string name="lbl_deleteAfterCsvOut">Borrar los datos después de la salida CSV</string>
+
+<string name="lbl_toggleAutoCsvOutput">Activar automático de salida CSV</string>
+
+</resources>
