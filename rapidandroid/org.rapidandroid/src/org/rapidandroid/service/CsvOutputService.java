@@ -50,7 +50,7 @@ public class CsvOutputService extends IntentService {
 			// delete the old csv files for this form - don't want them to accumulate  on sdcard
 			File sdcard = Environment.getExternalStorageDirectory();
 			String state = Environment.getExternalStorageState();
-			File destinationdir = new File(sdcard, "rapidandroid/exports");
+			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ formPrefix + "_exports");
 			File[] files = destinationdir.listFiles(new FormPrefixFilter(formPrefix));
 			
 			if (files != null) {

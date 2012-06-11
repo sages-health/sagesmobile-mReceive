@@ -148,7 +148,7 @@ public class ParsedDataReporter {
 		try {
 
 			File sdcard = Environment.getExternalStorageDirectory();
-			File destinationdir = new File(sdcard, "rapidandroid/exports");
+			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ f.getPrefix() + "_exports");
 			destinationdir.mkdir();
 			Date now = new Date();
 			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.getYear()
