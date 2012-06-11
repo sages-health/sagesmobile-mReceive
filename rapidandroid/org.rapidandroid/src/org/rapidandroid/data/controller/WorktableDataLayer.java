@@ -384,9 +384,6 @@ public class WorktableDataLayer {
 			Field field = fields[i];
 			IParseResult res = results.get(i);
 			if (res != null) {
-				System.out.println("FOOBAR " + field.getName() + "-" + res.getValue());
-				res.getValue().toString().replaceAll("'", "''");
-				System.out.println("FOOBAR after " + field.getName() + "-" + res.getValue());
 				cv.put(RapidSmsDBConstants.FormData.COLUMN_PREFIX + field.getName(), res.getValue().toString());
 			} else {
 				cv.put(RapidSmsDBConstants.FormData.COLUMN_PREFIX + field.getName(), "");
