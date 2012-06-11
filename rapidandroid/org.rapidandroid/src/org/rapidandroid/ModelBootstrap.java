@@ -176,11 +176,14 @@ public class ModelBootstrap {
 				Log.d("dimagi", "********** Inserted SimpleFieldType into db: " + insertedTypeUri);
 
 			} else if (typeCursor.getCount() == 1 && typeCursor.moveToFirst()) {
-				// SAGES: update the fieldtype in the database -- the name has changed
+				// SAGES: update the fieldtype in the database -- the Name and/or Regex has changed
 				int nameColIndx = typeCursor.getColumnIndex(FieldType.NAME);
+				int regexColIndx = typeCursor.getColumnIndex(FieldType.REGEX);
+				
 				boolean isUpdatedFieldType = (!typeCursor.getString(nameColIndx).equals(thetype.getReadableName()));
-
-				if (isUpdatedFieldType) {
+				boolean isUpdatedRegex = (!typeCursor.getString(regexColIndx).equals(thetype.getRegex()));
+				
+				if (isUpdatedFieldType || isUpdatedRegex) {
 					ContentValues typecv = new ContentValues();
 					
 					//typecv.put(BaseColumns._ID, thetype.getId());
