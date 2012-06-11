@@ -84,7 +84,7 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "alphanumeric", 
-			"regex": "^(([A-Za-z\\d]+)|(\\.))($|\\s)",
+			"regex": "^(([A-Za-z\\d\\p{InLatin-1 Supplement}\\p{InHangul Compatibility Jamo}]+)|(\\.))($|\\s)",
 			"name": "alphanumeric"
 		}
 	}, 
