@@ -28,7 +28,7 @@ import org.rapidsms.java.core.parser.token.ITokenParser;
  *          Field model for the initial parsing flow for RapidAndroid
  * 
  */
-public class Field {
+public class Field implements java.io.Serializable {
 	private int fieldId;
 	private int sequenceId;
 	private String name;

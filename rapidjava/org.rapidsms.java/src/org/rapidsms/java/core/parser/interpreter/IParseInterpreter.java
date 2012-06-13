@@ -26,6 +26,6 @@ package org.rapidsms.java.core.parser.interpreter;
  * @author dmyung
  * @created Jan 23, 2009
  */
-public interface IParseInterpreter {
+public interface IParseInterpreter extends java.io.Serializable {
 	Object interpretValue(String token);
 }

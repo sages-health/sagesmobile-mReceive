@@ -17,9 +17,12 @@
 
 package org.rapidandroid.view.adapter;
 
+import java.util.ArrayList;
+
 import org.rapidandroid.view.SimpleFieldView;
 import org.rapidsms.java.core.model.Field;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -32,12 +35,12 @@ public class FieldViewAdapter extends BaseAdapter {
 
 	private Context mContext;
 
-	public FieldViewAdapter(Context context, Field[] fields) {
+	public FieldViewAdapter(Context context, ArrayList<Field> fields) {
 		mContext = context;
 		mFields = fields;
 	}
 
-	private Field[] mFields;
+	private ArrayList<Field> mFields;
 
 	/*
 	 * (non-Javadoc)
@@ -46,7 +49,7 @@ public class FieldViewAdapter extends BaseAdapter {
 	 */
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return mFields.length;
+		return mFields.size();
 	}
 
 	public Object getItem(int position) {
@@ -70,7 +73,7 @@ public class FieldViewAdapter extends BaseAdapter {
 	 */
 	public View getView(int position, View convertView, ViewGroup parent) {
 		SimpleFieldView fv;
-		Field f = mFields[position];
+		Field f = mFields.get(position);
 
 		if (convertView == null) {
 			fv = new SimpleFieldView(mContext, f);
