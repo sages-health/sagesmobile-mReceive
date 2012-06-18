@@ -85,5 +85,7 @@
 
 <string name="lbl_toggleAutoCsvOutput">Activate auto CSV output</string>
 <string name="lbl_test_nakia">THIS IS A TEST STRING</string>
+<string name="lbl_test_nakia_2">THIS IS ANOTHER TEST STRING</string>
+<string name="lbl_test_nakia_3">THIS IS ANOTHER TEST STRING 3</string>
 
 </resources>

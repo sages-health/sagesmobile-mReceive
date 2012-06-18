@@ -189,6 +189,8 @@ public final class R {
         public static final int lbl_forwardingNums=0x7f050048;
         public static final int lbl_outputFreq=0x7f050044;
         public static final int lbl_startdate=0x7f05002c;
+        public static final int lbl_test_nakia=0x7f05004b;
+        public static final int lbl_test_nakia_2=0x7f05004c;
         public static final int lbl_toggleAutoCsvOutput=0x7f05004a;
         public static final int lbl_totaldaterange=0x7f050030;
         public static final int menu_done=0x7f050014;
@@ -210,10 +212,10 @@ public final class R {
         public static final int settings_saved=0x7f050045;
         public static final int show_all_messages=0x7f050002;
         public static final int show_all_multisms_messages=0x7f050003;
-        public static final int txv_description=0x7f05004d;
-        public static final int txv_formname=0x7f05004b;
-        public static final int txv_formprefix=0x7f05004c;
-        public static final int txv_parsertype=0x7f05004e;
+        public static final int txv_description=0x7f05004f;
+        public static final int txv_formname=0x7f05004d;
+        public static final int txv_formprefix=0x7f05004e;
+        public static final int txv_parsertype=0x7f050050;
         public static final int yes=0x7f05001c;
     }
 }
