@@ -84,5 +84,6 @@
 <string name="lbl_deleteAfterCsvOut">Delete data after CSV output</string>
 
 <string name="lbl_toggleAutoCsvOutput">Activate auto CSV output</string>
+<string name="lbl_test_nakia">THIS IS A TEST STRING</string>
 
 </resources>
