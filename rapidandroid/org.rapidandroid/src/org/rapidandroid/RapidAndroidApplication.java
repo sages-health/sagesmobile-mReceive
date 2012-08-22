@@ -40,6 +40,7 @@ import android.util.Log;
 public class RapidAndroidApplication extends Application {
 
 	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
+	private static final String RAPIDANDROID_STARTINGUP="RAPIDANDROID IS STARTING UP!";
 	public static boolean logSystemHealth = true;
 	
 	/*
@@ -58,8 +59,8 @@ public class RapidAndroidApplication extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("RapidAndroidApplication", "RAPIDANDROID IS STARTING UP!");
-		if (logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.STARTUP, "RapidAndroid is starting up!", Log.INFO);
+		Log.d("RapidAndroidApplication", RAPIDANDROID_STARTINGUP);
+		if (logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.STARTUP, RAPIDANDROID_STARTINGUP, Log.INFO);
 		ApplicationGlobals.checkGlobals(this.getApplicationContext());
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
 		

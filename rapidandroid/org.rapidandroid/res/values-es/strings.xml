@@ -81,4 +81,6 @@
 
 <string name="lbl_toggleAutoCsvOutput">Activar automático de salida CSV</string>
 
+<string name="lbl_addfieldtitle">Add field test 1</string>
+
 </resources>

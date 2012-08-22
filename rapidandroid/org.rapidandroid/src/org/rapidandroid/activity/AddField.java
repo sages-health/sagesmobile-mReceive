@@ -66,7 +66,11 @@ public class AddField extends Activity {
 
 	private static final int MENU_SAVE = Menu.FIRST;
 	private static final int MENU_CANCEL = Menu.FIRST + 1;
-
+	private static final String ADD_FIELD = "Add Field";
+	private static final String ERROR_NO_FIELD_NAME = "Name: * Required field";
+	private static final String FIELD_NAME="Name: ";
+	private static final String ERROR_NO_PROMPT = "Prompt: * Required field";
+	private static final String PROMPT = "Prompt: ";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -76,7 +80,7 @@ public class AddField extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_field);
-		setTitle("Add field");
+		setTitle(ADD_FIELD);//changed from plain-text to variable NP 7/30/12
 		loadFieldTypes();
 
 		Bundle extras = getIntent().getExtras();
@@ -176,22 +180,22 @@ public class AddField extends Activity {
 		TextView lblFieldPrompt = (TextView) findViewById(R.id.lbl_fieldprompt);
 
 		if (etxName.getText().length() == 0) {
-			lblFieldName.setText("Name: * Required field");
+			lblFieldName.setText(ERROR_NO_FIELD_NAME);
 			// lblFieldName.setTextColor(R.color.solid_red);
 			return false;
 		} else {
 			// ugly validation logic
-			lblFieldName.setText("Name:");
+			lblFieldName.setText(FIELD_NAME);
 		}
 		EditText etxPrompt = (EditText) findViewById(R.id.etx_fieldprompt);
 		if (etxPrompt.getText().length() == 0) {
 
-			lblFieldPrompt.setText("Prompt: * Required field");
+			lblFieldPrompt.setText(ERROR_NO_PROMPT);
 			// lblFieldPrompt.setTextColor(R.color.solid_red);
 			return false;
 		} else {
 			// ugly validation logic
-			lblFieldPrompt.setText("Prompt:");
+			lblFieldPrompt.setText(PROMPT);
 		}
 		// iterate over the prior created fieldnames from the bundle
 		if (existingFields != null) {
@@ -204,7 +208,7 @@ public class AddField extends Activity {
 					break;
 				}
 			}
-			if (duplicate) {
+			if (duplicate) {//tHIS NEEDS TO BE CHANGED FOR BETTER EXCEPTION HANDLING 7/31/12
 				lblFieldName.setText("* Field name must be unique to this form");
 				return false;
 			}

@@ -17,7 +17,7 @@
 <string name="formeditor_menu_add_field">Ajouter un champ</string>
 <string name="dashboard_menu_show_reports">Reports</string>
 <string name="menu_done">Fini</string>
-<string name="lbl_fieldname">Name</string>
+<string name="lbl_fieldname">Nom</string>
 <string name="lbl_fieldprompt">Description:</string>
 <string name="lbl_fieldtypechoose">type de champ</string>
 <string name="lbl_fields">Domaines:</string>

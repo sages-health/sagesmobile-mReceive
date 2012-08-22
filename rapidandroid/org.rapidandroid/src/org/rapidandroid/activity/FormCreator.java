@@ -106,6 +106,9 @@ public class FormCreator extends Activity {
 	private static final int DIALOG_CONFIRM_CLOSURE = 4;
 	private static final int DIALOG_FORM_CREATE_FAIL = 5;
 
+	private static final int DIALOG_FORM_DUPLICATE_FORMNAME = 6;
+	private static final int DIALOG_FORM_DUPLICATE_PREFIX = 7;
+
 	private static final int DIALOGRESULT_CLOSE_INFORMATIONAL = 0;
 	private static final int DIALOGRESULT_OK_DONT_SAVE = 1;
 	private static final int DIALOGRESULT_CANCEL_KEEP_WORKING = 2;
@@ -211,8 +214,6 @@ public class FormCreator extends Activity {
 		}
 	}
 
-
-
 	private void saveState() {
 		// TODO Auto-generated method stub
 		// this.d
@@ -292,7 +293,6 @@ public class FormCreator extends Activity {
 		}
 	}
 
-
 	/**
 	 * Gets called from onActivityResult
 	 * 
@@ -310,13 +310,12 @@ public class FormCreator extends Activity {
 
 		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
 		int cnt = spin_forms.getCount();
-		for(int i=0;i<cnt;i++)
-		{
-			if(spin_forms.getItemAtPosition(i).toString().toLowerCase().contains(f.getParserType().name().toLowerCase()))
+		for (int i = 0; i < cnt; i++) {
+			if (spin_forms.getItemAtPosition(i).toString().toLowerCase()
+					.contains(f.getParserType().name().toLowerCase()))
 				spin_forms.setSelection(i);
 		}
-		
-		
+
 		// add fields
 		Field[] fields = f.getFields();
 		Arrays.sort(fields, new Comparator() {
@@ -336,7 +335,8 @@ public class FormCreator extends Activity {
 			b.putString(ResultConstants.RESULT_KEY_FIELDNAME, fi.getName());
 			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION,
 					fi.getDescription());
-			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType)fi.getFieldType()).getId());
+			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID,
+					((SimpleFieldType) fi.getFieldType()).getId());
 
 			addNewFieldFromActivity(b);
 		}
@@ -390,8 +390,9 @@ public class FormCreator extends Activity {
 
 		newField.setDescription(extras
 				.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-		int fieldTypeID = extras.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
-		
+		int fieldTypeID = extras
+				.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+
 		ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 		newField.setFieldType(fieldtype);
 
@@ -560,22 +561,26 @@ public class FormCreator extends Activity {
 		if (etxFormName.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFORMNAME;
 		}
-		if (etxFormPrefix.getText().length() == 0) {
+		/*if (etxFormPrefix.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOPREFIX;
-		}
+		}*/
 
 		if (this.mCurrentFields.size() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFIELDS;
 		}
 
-		// String prefixCandidate = etxFormPrefix.getText().toString();
-		// String nameCandidate = etxFormName.getText().toString();
-		//
-		// if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
-		// return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
-		// } else {
-		// return FormCreator.DIALOG_FORM_SAVEABLE;
-		// }
+		String prefixCandidate = etxFormPrefix.getText().toString();
+		String nameCandidate = etxFormName.getText().toString();
+		
+		/*if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
+			return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
+		}*/
+		
+		if (ModelTranslator.doesFormNameExist(nameCandidate)) {
+			return FormCreator.DIALOG_FORM_DUPLICATE_FORMNAME;
+		}
+		
+		// deleted repeat return code
 		return FormCreator.DIALOG_FORM_SAVEABLE;
 	}
 
@@ -733,8 +738,15 @@ public class FormCreator extends Activity {
 			break;
 		case DIALOG_FORM_INVALID_NOTUNIQUE:
 			title = "Invalid form";
-			message = "The form of this name and prefix already exists";
+			message = "The form of this name and/or prefix already exists";
 			break;
+		case DIALOG_FORM_DUPLICATE_FORMNAME:
+			title = "Duplicate Form Name";
+			message= " The form of this name already exists";
+			break;
+		case DIALOG_FORM_DUPLICATE_PREFIX:
+			title="Duplicate Form Prefix";
+			message= "The form of this prefix already exists";
 		case DIALOG_FORM_CREATE_FAIL:
 			title = "Form creation failed";
 			message = "Unable to create the form and its support tables.  Check the logs.";
