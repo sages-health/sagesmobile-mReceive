@@ -221,7 +221,7 @@ public class Dashboard extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setTitle("RapidAndroid :: Dashboard");
+		//setTitle();
 		setContentView(R.layout.dashboard);
 
 		this.initFormSpinner();
@@ -804,7 +804,7 @@ public class Dashboard extends Activity {
 		String[] monitors = new String[mAllForms.length + 2];
 
 		for (int i = 0; i < mAllForms.length; i++) {
-			monitors[i] = "Form: " + mAllForms[i].getFormName();
+			monitors[i] = getString(R.string.lbl_form) + mAllForms[i].getFormName();
 		}
 
 		// add some special selections:
@@ -849,7 +849,7 @@ public class Dashboard extends Activity {
 		}
 		TextView lbl_recents = (TextView) findViewById(R.id.lbl_dashboardmessages);
 
-		lbl_recents.setText(this.mListviewCursor.getCount() + " Messages");
+		lbl_recents.setText(this.mListviewCursor.getCount() + getString(R.string.lbl_messages));
 
 		ListView lsv = (ListView) findViewById(R.id.lsv_dashboardmessages);
 

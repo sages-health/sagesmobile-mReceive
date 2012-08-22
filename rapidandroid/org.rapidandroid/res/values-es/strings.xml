@@ -6,6 +6,11 @@
 <string name="lbl_formprefix">Prefijos</string>
 <string name="lbl_formchoose">Formularios:</string>
 <string name="lbl_formparser">Analizador Tipo</string>
+<string name="lbl_form">Forma:</string>
+<string name="lbl_messages">Mensajes</string>
+<string name="show_all_messages">Mostrar todos los mensajes</string>
+<string name="show_all_multisms_messages">Mostrar mensajes multipartes</string>
+<string name="dash_title">RapidAndroid:: Panel de información </string>
 <string name="lbl_dashboardmessages">Mensajes recientes:</string>
 <string name="dashboard_menu_create">Crear formulario</string>
 <string name="dashboard_menu_edit">Ver Formulario</string>

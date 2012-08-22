@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout android:id="@+id/widget28"
 	android:layout_width="fill_parent" android:orientation="vertical"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_height="fill_parent">
+	
 	<Spinner android:id="@+id/cbx_forms" android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 	</Spinner>
+	
 	<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
 		android:layout_width="fill_parent">
 		<RadioGroup android:id="@+id/RadioGroup01"

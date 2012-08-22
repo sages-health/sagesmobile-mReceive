@@ -11,6 +11,9 @@
 <string name="lbl_formchoose">Forms:</string>
 <string name="lbl_formparser">Parser Type</string>
 <string name="lbl_dashboardmessages">Recent Messages:</string>
+<string name="dash_title">RapidAndroid::Dashboard</string>
+<string name="lbl_form">Form:</string>
+<string name="lbl_messages">Messages</string>
 <string name="dashboard_menu_create">Create Form</string>
 <string name="dashboard_menu_edit">View Form</string>
 <string name="dashboard_menu_erase_data">Erase Data</string>
