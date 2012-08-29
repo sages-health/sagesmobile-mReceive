@@ -19,8 +19,10 @@
 <string name="dashboard_menu_erase_data">Erase Data</string>
 <string name="dashboard_menu_delete_form">Delete Form</string>
 <string name="dashboard_menu_view">Show Charts</string>
+<string name="dashboard_txt_wait">Please wait....</string>
 <string name="formeditor_menu_cancel">Cancel</string>
 <string name="formeditor_menu_save">Save</string>
+<string name="lbl_scroll_parser">Parse Mode:</string>
 <string name="formeditor_menu_add_field">Add Field</string>
 <string name="dashboard_menu_show_reports">Reports</string>
 <string name="menu_done">Finished</string>
@@ -29,6 +31,20 @@
 <string name="lbl_fieldtypechoose">Field Type:</string>
 <string name="lbl_fields">Fields:</string>
 <string name="formeditor_menu_edit_forms">Edit Fields</string>
+<string name="glb_change_settings">Change Settings</string>
+<string name="addfield_scroll_word">word</string>
+<string name="addfield_scroll_number">number</string>
+<string name="addfield_scroll_weight">weight</string>
+<string name="addfield_scroll_height">height</string>
+<string name="addfield_scroll_ratio">ratio</string>
+<string name="addfield_scroll_length">length</string>
+<string name="addfield_scroll_t_f">True/False</string>
+<string name="addfield_scroll_date1">Date/dd.dd.dddd</string>
+<string name="addfield_scroll_date2">Date/dddd.dd.dd</string>
+<string name="addfield_scroll_alphanumeric">alphanumeric</string>
+<string name="addfield_scroll_freetext">freetext</string>
+<string name="addfield_scroll_tropicalfruit">tropical fruit</string>
+<string name="addfield_scroll_diseaselist">diseaselist/1 to 3</string>
 
 <string name="btn_finishaddfield">Add</string>
 <string name="btn_canceladdfield">Cancel</string>
@@ -66,6 +82,7 @@
 <string name="rad_last100">Last 100</string>
 <string name="rad_last500">Last 500</string>
 <string name="rad_all">All</string>
+<string name="glbsettings_title">RapidAndroid :: Global Settings</string>
 <string name="glbsettings_inprogress_ack">In Progress Parse Reply</string>
 <string name="glbsettings_parse_ack">Successful Parse Reply</string>
 <string name="glbsettings_noparse_ack">Failed Parse Reply</string>
@@ -74,6 +91,7 @@
 <string name="glb_chk_inprogress_text">Reply on in progress parses</string>
 <string name="glbsettings_heading">Global reply settings</string>
 <string name="glb_lbl_activeall">Activate all SMS features</string>
+
 
 <string name="numberHint">1 to 55</string>
 <string name="lbl_outputFreq">Period for output in seconds \n(1 to 55 are valid values)</string>

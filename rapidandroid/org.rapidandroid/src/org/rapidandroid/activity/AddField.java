@@ -66,7 +66,7 @@ public class AddField extends Activity {
 
 	private static final int MENU_SAVE = Menu.FIRST;
 	private static final int MENU_CANCEL = Menu.FIRST + 1;
-	private static final String ADD_FIELD = "Add Field";
+	//private static final String ADD_FIELD ="Add Field" ;
 	private static final String ERROR_NO_FIELD_NAME = "Name: * Required field";
 	private static final String FIELD_NAME="Name: ";
 	private static final String ERROR_NO_PROMPT = "Prompt: * Required field";
@@ -80,7 +80,7 @@ public class AddField extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_field);
-		setTitle(ADD_FIELD);//changed from plain-text to variable NP 7/30/12
+		setTitle(getString(R.string.formeditor_menu_add_field));
 		loadFieldTypes();
 
 		Bundle extras = getIntent().getExtras();

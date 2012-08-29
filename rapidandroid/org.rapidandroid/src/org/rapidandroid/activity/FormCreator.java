@@ -470,7 +470,7 @@ public class FormCreator extends Activity {
 		String[] monitors = new String[mAllParsers.length];
 
 		for (int i = 0; i < mAllParsers.length; i++) {
-			monitors[i] = "Parse Mode: " + mAllParsers[i].getName();
+			monitors[i] = getString(R.string.lbl_scroll_parser) + mAllParsers[i].getName();
 		}
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,

@@ -7,6 +7,9 @@
 <string name="lbl_formchoose">Formulaires:</string>
 <string name="lbl_formparser">Type de Parser</string>
 <string name="lbl_dashboardmessages">Messages récents:</string>
+<string name="dash_title">RapidAndroid::tableau de bord</string>
+<string name="lbl_form">Forme:</string>
+<string name="lbl_messages">Messages</string>
 <string name="dashboard_menu_create">Créer un formulaire</string>
 <string name="dashboard_menu_edit">Voir la forme</string>
 <string name="dashboard_menu_erase_data">D\'effacement des données</string>
@@ -21,7 +24,21 @@
 <string name="lbl_fieldprompt">Description:</string>
 <string name="lbl_fieldtypechoose">type de champ</string>
 <string name="lbl_fields">Domaines:</string>
-<string name="formeditor_menu_edit_forms">{Edit Fields}</string>
+<string name="formeditor_menu_edit_forms">Modifier Les Champs</string>
+
+<string name="addfield_scroll_word">word</string>
+<string name="addfield_scroll_number">number</string>
+<string name="addfield_scroll_weight">weight</string>
+<string name="addfield_scroll_height">height</string>
+<string name="addfield_scroll_ratio">ratio</string>
+<string name="addfield_scroll_length">length</string>
+<string name="addfield_scroll_t_f">True/False</string>
+<string name="addfield_scroll_date1">Date/dd.dd.dddd</string>
+<string name="addfield_scroll_date2">Date/dddd.dd.dd</string>
+<string name="addfield_scroll_alphanumeric">alphanumeric</string>
+<string name="addfield_scroll_freetext">freetext</string>
+<string name="addfield_scroll_tropicalfruit">tropical fruit</string>
+<string name="addfield_scroll_diseaselist">diseaselist/1 to 3</string>
 
 <string name="btn_finishaddfield">Ajouter</string>
 <string name="btn_canceladdfield">Annuler</string>

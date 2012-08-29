@@ -56,7 +56,6 @@ public class GlobalSettings extends Activity {
 	 * 
 	 */
 	private static final String ACTIVITY_TITLE_STRING = "RapidAndroid :: Global Settings";
-	
 	/**
 	 * 
 	 */

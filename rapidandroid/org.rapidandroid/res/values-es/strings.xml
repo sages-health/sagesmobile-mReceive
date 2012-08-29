@@ -20,13 +20,28 @@
 <string name="formeditor_menu_cancel">cancelar</string>
 <string name="formeditor_menu_save">Ahorrar</string>
 <string name="formeditor_menu_add_field">Agregar campo</string>
+<string name="lbl_scroll_parser">Analizar el modo de:</string>
 <string name="dashboard_menu_show_reports">Informes</string>
 <string name="menu_done">Terminado</string>
 <string name="lbl_fieldname">Nombre:</string>
 <string name="lbl_fieldprompt">Descripción:</string>
 <string name="lbl_fieldtypechoose">tipo de campo</string>
 <string name="lbl_fields">Campos:</string>
-<string name="formeditor_menu_edit_forms">{Edit Fields}</string>
+<string name="formeditor_menu_edit_forms">Editar Campos</string>
+
+<string name="addfield_scroll_word">word</string>
+<string name="addfield_scroll_number">number</string>
+<string name="addfield_scroll_weight">weight</string>
+<string name="addfield_scroll_height">height</string>
+<string name="addfield_scroll_ratio">ratio</string>
+<string name="addfield_scroll_length">length</string>
+<string name="addfield_scroll_t_f">True/False</string>
+<string name="addfield_scroll_date1">Date/dd.dd.dddd</string>
+<string name="addfield_scroll_date2">Date/dddd.dd.dd</string>
+<string name="addfield_scroll_alphanumeric">alphanumeric</string>
+<string name="addfield_scroll_freetext">freetext</string>
+<string name="addfield_scroll_tropicalfruit">tropical fruit</string>
+<string name="addfield_scroll_diseaselist">diseaselist/1 to 3</string>
 
 <string name="btn_finishaddfield">Agregar</string>
 <string name="btn_canceladdfield">cancelar</string>

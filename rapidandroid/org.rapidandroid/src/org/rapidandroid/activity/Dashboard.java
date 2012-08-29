@@ -509,7 +509,7 @@ public class Dashboard extends Activity {
 		// menu.add(0, MENU_CHANGE_DATERANGE, 0,
 		// R.string.chart_menu_change_parameters.setIcon(android.R.drawable.ic_menu_recent_history);
 		menu.add(0, MENU_CHARTS_ID, 0, R.string.dashboard_menu_view).setIcon(android.R.drawable.ic_menu_sort_by_size);
-		menu.add(0, MENU_GLOBAL_SETTINGS, 0, "Change Settings").setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, MENU_GLOBAL_SETTINGS, 0, R.string.glb_change_settings).setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(1, MENU_DELETE_FORM, 0, R.string.dashboard_menu_delete_form).setIcon(android.R.drawable.ic_menu_delete);
 		// menu.add(0, MENU_SHOW_REPORTS, 0,
 		// R.string.dashboard_menu_show_reports);
