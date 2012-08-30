@@ -32,14 +32,14 @@ import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
+import org.rapidandroid.R;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.rapidandroid.R;
+
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.content.translation.ParsedDataTranslator;
@@ -125,7 +125,7 @@ public class FormReviewer extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setTitle("RapidAndroid :: Review Form");
+		setTitle(R.string.formreview_title);
 		setContentView(R.layout.form_edit);
 
 		Bundle extras = getIntent().getExtras();
@@ -213,7 +213,7 @@ public class FormReviewer extends Activity {
 						}
 					});
 					noDateDialog.setTitle(R.string.alert);
-					noDateDialog.setMessage("This form has no messages or data to output. Therefore, the output will only contain the header columns.");
+					noDateDialog.setMessage(R.string.csv_alert_message);
 					noDateDialog.show();
 					return true;
 				}
@@ -241,7 +241,7 @@ public class FormReviewer extends Activity {
 	protected Dialog onCreateDialog(int id) {
 		super.onCreateDialog(id);
 
-		String title = "Sample submission";
+		//String title = "Sample submission";
 
 		if (mForm == null) {
 			return null;
@@ -249,8 +249,8 @@ public class FormReviewer extends Activity {
 
 		StringBuilder sb = generateRandomMessage();
 
-		return new AlertDialog.Builder(FormReviewer.this).setTitle(title).setMessage(sb.toString().trim())
-															.setPositiveButton("OK", null).create();
+		return new AlertDialog.Builder(FormReviewer.this).setTitle(R.string.formreview_sample_submission).setMessage(sb.toString().trim())
+															.setPositiveButton(R.string.ok, null).create();
 
 	}
 
@@ -284,7 +284,7 @@ public class FormReviewer extends Activity {
 
 	private void alertCSVStatus() {
 
-		Toast.makeText(getApplicationContext(), "CSV Save Complete", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), R.string.prompt_csv_save_complete, Toast.LENGTH_LONG).show();
 
 	}
 
@@ -345,7 +345,7 @@ public class FormReviewer extends Activity {
 	 * 
 	 */
 	private void outputCSV() {
-		Toast.makeText(getApplicationContext(), "CSV output job has begun", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(),R.string.prompt_csv_job_begun, Toast.LENGTH_LONG).show();
 		// Fire off a thread to do some work that we shouldn't do directly in
 		// the UI thread
 		Thread t = new Thread() {

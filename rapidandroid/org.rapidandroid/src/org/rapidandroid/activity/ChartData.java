@@ -19,7 +19,7 @@ package org.rapidandroid.activity;
 
 import java.util.Date;
 
-import org.rapidandroid.R;
+
 import org.rapidandroid.activity.chart.ChartBroker;
 import org.rapidandroid.activity.chart.form.FormDataBroker;
 import org.rapidandroid.activity.chart.message.MessageDataBroker;
@@ -28,7 +28,7 @@ import org.rapidandroid.data.controller.MessageDataReporter;
 import org.rapidandroid.data.controller.ParsedDataReporter;
 import org.rapidsms.java.core.Constants;
 import org.rapidsms.java.core.model.Form;
-
+import org.rapidandroid.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -229,16 +229,15 @@ public class ChartData extends Activity {
 																					}).create();
 			case THINKING_DIALOG:
 				ProgressDialog loadingDialog = new ProgressDialog(this);
-				loadingDialog.setTitle("Please wait");
-				loadingDialog.setMessage("Drawing graph...");
+				loadingDialog.setTitle(R.string.prompt_graph_please_wait);
+				loadingDialog.setMessage(getText(R.string.prompt_graph_drawing).toString());
 				loadingDialog.setIndeterminate(true);
 				loadingDialog.setCancelable(false);
 				return loadingDialog;
 			case NO_DATA_DIALOG:
 				return new AlertDialog.Builder(ChartData.this)
-																.setTitle("No Data")
-																.setMessage(
-																			"Sorry, there was no data for the selected variable and date range.")
+																.setTitle(R.string.prompt_graph_no_data)
+																.setMessage(getText(R.string.prompt_graph_nodata_message).toString())
 																.setPositiveButton(
 																					"Ok",
 																					new DialogInterface.OnClickListener() {

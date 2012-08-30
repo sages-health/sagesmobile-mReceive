@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
-import org.rapidandroid.R;
+
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;

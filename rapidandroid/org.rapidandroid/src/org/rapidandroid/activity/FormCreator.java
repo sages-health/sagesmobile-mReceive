@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
-
+import org.rapidandroid.R;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.rapidandroid.R;
+
 import org.rapidandroid.activity.AddField.ResultConstants;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.view.adapter.FieldViewAdapter;

@@ -44,12 +44,14 @@
 <string name="btn_canceladdfield">Annuler</string>
 <string name="yes">Oui</string>
 <string name="no">Aucun</string>
-<string name="ok">OK</string>
+<string name="ok">Bien</string>
 <string name="alert">Alerter</string>
 <string name="confirm_delete">Etes-vous sur de vouloir supprimer?</string>
 
 <string name="no_msgs_to_chart">Cette forme n\'a pas de messages ou de données afin de tracer</string>
 <string name="no_data_to_chart">Il n\'y a pas de données afin de tracer.</string>
+
+<string name="messages_overtime">Messages au fil du temps</string>
 
 <string name="formreview_menu_done">Fait</string>
 <string name="formreview_menu_format">Montrer l\'exemple</string>
@@ -59,6 +61,9 @@
 <string name="formreview_dump_csv">CSV de sortie</string>
 <string name="formreview_schedule_dump_csv">Sortie annexe CSV</string>
 <string name="formreview_upload_csv">Téléchargez rapport</string>
+<string name="formlistview_title">Les Formulaires Créés</string>
+<string name="formreview_title">RapidAndroid :: Review Form</string>
+<string name="formreview_sample_submission">Soumission des échantillons</string>
 <string name="lbl_enddate">Date de fin:</string>
 <string name="lbl_startdate">Date de début:</string>
 <string name="range_btn_lastweek">La semaine dernière</string>
@@ -90,12 +95,21 @@
 <string name="settings_saved">Modifications enregistrées</string>
 <string name="refresh_cache">Actualiser le cache</string>
 
-<string name="refresh">actualiser</string>
+<string name="refresh">Actualiser</string>
 
 <string name="lbl_forwardingNums">SMS à terme vers ces numéros (séparés par des virgules)</string>
 
 <string name="lbl_deleteAfterCsvOut">Supprimer les données après la sortie CSV</string>
 
+<string name="csv_title">RapidAndroid :: CSV Scheduler et du transfert de</string>
+<string name="lbl_csv_update_settings">Mettre à jour les paramètres</string>
+<string name="csv_alert_message">Ce formulaire a pas de messages ou de données vers la sortie. Par conséquent la sortie ne contiendra que les colonnes d\&apos;en-tête.</string>
+<string name="prompt_csv_job_begun">Travail de sortie CSV a commencé</string>
+<string name="prompt_csv_save_complete">CSV Enregistrer Remplissez</string>
 <string name="lbl_toggleAutoCsvOutput">Activer auto CSV de sortie</string>
 
+<string name="prompt_graph_please_wait">S\&apos;il vous plaît attendre</string>
+<string name="prompt_graph_drawing">Dessin graphique.........</string>
+<string name="prompt_graph_no_data">Pas de données</string>
+<string name="prompt_graph_nodata_message">Désolé, il n\&apos;y a pas de données pour la période sélectionnée et variées.</string>
 </resources>

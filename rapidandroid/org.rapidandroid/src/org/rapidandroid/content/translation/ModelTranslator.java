@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.rapidandroid.R;
+
 import org.rapidandroid.activity.FormCreator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;

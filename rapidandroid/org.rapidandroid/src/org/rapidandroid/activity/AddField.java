@@ -20,11 +20,11 @@
  */
 package org.rapidandroid.activity;
 
-import org.rapidandroid.R;
+
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidsms.java.core.model.SimpleFieldType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
-
+import org.rapidandroid.R;
 import android.app.Activity;
 import android.content.Intent;
 

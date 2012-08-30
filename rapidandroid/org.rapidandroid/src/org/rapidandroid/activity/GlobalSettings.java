@@ -27,9 +27,9 @@ import java.io.InputStreamReader;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.rapidandroid.ApplicationGlobals;
-import org.rapidandroid.R;
-import org.rapidandroid.receiver.SmsParseReceiver;
 
+import org.rapidandroid.receiver.SmsParseReceiver;
+import org.rapidandroid.R;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
