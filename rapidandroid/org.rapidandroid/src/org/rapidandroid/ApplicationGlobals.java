@@ -43,6 +43,7 @@ public class ApplicationGlobals {
 
 	private static boolean globalsLoaded = false;
 	
+	private static boolean mActiveLogging = false; 
 	private static boolean mActive = false; 
 	private static boolean mReplyParse = false;
 	private static boolean mReplyInProgress = false;
@@ -52,7 +53,10 @@ public class ApplicationGlobals {
 	private static String mReplyParseInProgressText = "";
 	private static String mReplyFailText = "";
 	
-	
+	/**
+	 * If global settings have not been loaded, loads them from the global settings file.
+	 * @param context
+	 */
 	public static void initGlobals(Context context) {
 		if(!globalsLoaded) {
 			JSONObject globals = ApplicationGlobals.loadSettingsFromFile(context);
@@ -64,6 +68,14 @@ public class ApplicationGlobals {
 				} else {
 					mActive = false;
 				}
+				
+				if(globals.has(KEY_ACTIVE_LOGGING)) {
+					mActiveLogging = globals.getBoolean(KEY_ACTIVE_LOGGING);
+					
+				} else {
+					mActiveLogging = false;
+				}
+				
 				mReplyParse = globals.getBoolean(KEY_PARSE_REPLY);
 				mReplyInProgress = globals.getBoolean(KEY_INPROGRESS_REPLY);
 				mReplyFail = globals.getBoolean(KEY_FAILED_REPLY);
@@ -77,6 +89,10 @@ public class ApplicationGlobals {
 			}
 			
 		}
+	}
+	
+	public static boolean doLog(){
+		return mActiveLogging;
 	}
 	
 	public static boolean doReplyOnFail() {
@@ -128,7 +144,10 @@ public class ApplicationGlobals {
 		return mReplyFailText;
 	}
 	
-	
+	/**
+	 * Creates a global settings file if does not exist. For default values, all interactive features disabled.
+	 * @param context
+	 */
 	public static void checkGlobals(Context context) {		
 		File f = context.getFileStreamPath(SETTINGS_FILE);
 		if (!f.exists()) {
@@ -138,11 +157,15 @@ public class ApplicationGlobals {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
-			saveGlobalSettings(context, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Try again:");
+			saveGlobalSettings(context, false, false, false, "Message parsing in progress", false, "Message parsed successfully, thank you", false, "Unable to understand your message, please try again");
 			
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public static final String KEY_ACTIVE_LOGGING = "ActivateLogging";
 	
 	/**
 	 * 
@@ -208,6 +231,11 @@ public class ApplicationGlobals {
 				readobject.put(KEY_ACTIVE_ALL, false);
 			}
 			
+			if(!readobject.has(KEY_ACTIVE_LOGGING)) {
+				//dmyung hack to keep compatability with new version
+				readobject.put(KEY_ACTIVE_LOGGING, false);
+			}
+			
 //			mParseCheckbox.setChecked(readobject.getBoolean(KEY_PARSE_REPLY));
 //			mParseReplyText.setText(readobject.getString(KEY_PARSE_REPLY_TEXT));
 //			mNoparseCheckBox.setChecked(readobject.getBoolean(KEY_FAILED_REPLY));
@@ -238,13 +266,24 @@ public class ApplicationGlobals {
 		}
 	}
 	
+
 	/**
 	 * 
+	 * @param context
+	 * @param activateLogging
+	 * @param activateAll
+	 * @param inProgressReply
+	 * @param inProgressReplyText
+	 * @param parseReply
+	 * @param parseReplyText
+	 * @param failedReply
+	 * @param failedReplyText
 	 */
-	public static void saveGlobalSettings(Context context,boolean activateAll, boolean inProgressReply, String inProgressReplyText, boolean parseReply, String parseReplyText, boolean failedReply, String failedReplyText) {		
+	public static void saveGlobalSettings(Context context,boolean activateLogging, boolean activateAll, boolean inProgressReply, String inProgressReplyText, boolean parseReply, String parseReplyText, boolean failedReply, String failedReplyText) {		
 		JSONObject settingsObj = new JSONObject();
 		FileOutputStream fos = null;
 		try {
+			settingsObj.put(KEY_ACTIVE_LOGGING, activateLogging);
 			settingsObj.put(KEY_ACTIVE_ALL, activateAll);
 			settingsObj.put(KEY_INPROGRESS_REPLY, inProgressReply);
 			settingsObj.put(KEY_PARSE_INPROGRESS_TEXT, inProgressReplyText);
