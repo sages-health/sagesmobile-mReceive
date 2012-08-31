@@ -725,38 +725,38 @@ public class FormCreator extends Activity {
 
 		switch (id) {
 		case DIALOG_FORM_INVALID_NOFIELDS:
-			title = "Invalid form";
-			message = "You must have at least one field for this form to save";
+			title = getText(R.string.invalid_form_title).toString();
+			message = getText(R.string.invalid_form_Nofield_message).toString();
 			break;
 		case DIALOG_FORM_INVALID_NOFORMNAME:
-			title = "Invalid form";
-			message = "You must enter a formname";
+			title = getText(R.string.invalid_form_title).toString();
+			message = getText(R.string.invalid_form_Noformname_message).toString();
 			break;
 		case DIALOG_FORM_INVALID_NOPREFIX:
-			title = "Invalid form";
-			message = "You must enter a prefix";
+			title = getText(R.string.invalid_form_title).toString();
+			message = getText(R.string.invalid_form_Noprefix_message).toString();
 			break;
 		case DIALOG_FORM_INVALID_NOTUNIQUE:
-			title = "Invalid form";
-			message = "The form of this name and/or prefix already exists";
+			title = getText(R.string.invalid_form_title).toString();
+			message = getText(R.string.invalid_form_Notunique_message).toString();
 			break;
 		case DIALOG_FORM_DUPLICATE_FORMNAME:
-			title = "Duplicate Form Name";
-			message= " The form of this name already exists";
+			title = getText(R.string.invalid_form_duplicate_formname).toString();
+			message= getText(R.string.invalid_form_duplicate_formname_message).toString();
 			break;
 		case DIALOG_FORM_DUPLICATE_PREFIX:
-			title="Duplicate Form Prefix";
-			message= "The form of this prefix already exists";
+			title=getText(R.string.invalid_form_duplicate_formprefix).toString();
+			message= getText(R.string.invalid_form_duplicate_formprefix_message).toString();
 		case DIALOG_FORM_CREATE_FAIL:
-			title = "Form creation failed";
-			message = "Unable to create the form and its support tables.  Check the logs.";
+			title = getText(R.string.invalid_form_create_fail).toString();
+			message = getText(R.string.invalid_form_create_fail_message).toString();
 			return new AlertDialog.Builder(FormCreator.this).setTitle(title)
 					.setMessage(message).setPositiveButton("Ok", null).create();
 		case DIALOG_CONFIRM_CLOSURE:
 			// for confirm closure, we actually just return the dialog as we
 			// want it here.
-			title = "Confirm Closure";
-			message = "Are you sure you want to close without saving changes?";
+			title = getText(R.string.invalid_form_confirm_close).toString();
+			message = getText(R.string.invalid_form_confirm_close_message).toString();
 			return new AlertDialog.Builder(FormCreator.this)
 					.setTitle(title)
 					.setMessage(message)
@@ -766,7 +766,7 @@ public class FormCreator extends Activity {
 										int whichButton) {
 									finish();
 								}
-							}).setNegativeButton("No, keep working", null)
+							}).setNegativeButton(getText(R.string.prompt_keep_working).toString(), null)
 					.create();
 		default:
 			return null;
@@ -780,7 +780,7 @@ public class FormCreator extends Activity {
 	public void onBackPressed() {
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 
-		dialog.setMessage("Save Changes First?");
+		dialog.setMessage(getText(R.string.prompt_backpressed_savechanges).toString());
 		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {

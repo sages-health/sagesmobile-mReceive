@@ -9,6 +9,31 @@
 <string name="lbl_dashboardmessages">Messages récents:</string>
 <string name="dash_title">RapidAndroid::tableau de bord</string>
 <string name="lbl_form">Forme:</string>
+<string name="invalid_form_title">Forme Invalide</string>
+
+
+<string name="invalid_form_Nofield_message">Vous devez avoir au moins un champ de ce formulaire pour enregistrer</string>
+
+<string name="invalid_form_Noformname_message">Vous devez entrer un formname</string>
+
+<string name="invalid_form_Noprefix_message">Vous devez entrer un préfixe</string>
+
+<string name="invalid_form_Notunique_message">Ce formulaire n\&apos;est pas unique</string>
+
+<string name="invalid_form_duplicate_formname">Dupliquer Nom du formulaire</string>
+<string name="invalid_form_duplicate_formname_message">La forme de ce nom existe déjà</string>
+<string name="invalid_form_duplicate_formprefix">Dupliquer Préfixe formulaire</string>
+<string name="invalid_form_duplicate_formprefix_message">La forme de ce préfixe existe déjà</string>
+
+<string name="invalid_form_create_fail">La création de formulaires échoué</string>
+<string name="invalid_form_create_fail_message">Impossible de créer le formulaire et ses tables de pensions alimentaires. Vérifiez les journaux.</string>
+<string name="invalid_form_confirm_close">Confirmer la fermeture</string>
+<string name="invalid_form_confirm_close_message">Etes-vous sûr que vous voulez fermer sans enregistrer les modifications?</string>
+
+<string name="prompt_backpressed_savechanges">Enregistrer les modifications en premier?</string>
+<string name="prompt_keep_working">Non, continuer à travailler</string>
+
+
 <string name="lbl_messages">Messages</string>
 <string name="dashboard_menu_create">Créer un formulaire</string>
 <string name="dashboard_menu_edit">Voir la forme</string>
@@ -18,6 +43,11 @@
 <string name="formeditor_menu_cancel">Annuler</string>
 <string name="formeditor_menu_save">Sauver</string>
 <string name="formeditor_menu_add_field">Ajouter un champ</string>
+
+<string name="error_nofieldname_required"> Nom * Champ obligatoire</string>
+<string name="error_noprompt">Description: * Champ obligatoire</string>
+<string name="duplicate_fieldname">* Nom du champ doit être unique pour cette forme</string>
+
 <string name="dashboard_menu_show_reports">Reports</string>
 <string name="menu_done">Fini</string>
 <string name="lbl_fieldname">Nom</string>
@@ -50,7 +80,7 @@
 
 <string name="no_msgs_to_chart">Cette forme n\'a pas de messages ou de données afin de tracer</string>
 <string name="no_data_to_chart">Il n\'y a pas de données afin de tracer.</string>
-
+<string name="chart_choose_field_title">Choisissez domaine</string>
 <string name="messages_overtime">Messages au fil du temps</string>
 
 <string name="formreview_menu_done">Fait</string>

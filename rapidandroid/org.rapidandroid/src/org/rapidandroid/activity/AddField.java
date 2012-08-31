@@ -67,10 +67,10 @@ public class AddField extends Activity {
 	private static final int MENU_SAVE = Menu.FIRST;
 	private static final int MENU_CANCEL = Menu.FIRST + 1;
 	//private static final String ADD_FIELD ="Add Field" ;
-	private static final String ERROR_NO_FIELD_NAME = "Name: * Required field";
-	private static final String FIELD_NAME="Name: ";
-	private static final String ERROR_NO_PROMPT = "Prompt: * Required field";
-	private static final String PROMPT = "Prompt: ";
+	private  final String ERROR_NO_FIELD_NAME = getText(R.string.error_nofieldname_required).toString();
+	private  final String FIELD_NAME=getText(R.string.lbl_fieldname).toString();
+	private  final String ERROR_NO_PROMPT = getText(R.string.error_noprompt).toString();
+	private  final String PROMPT = getText(R.string.lbl_fieldprompt).toString();
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -209,7 +209,7 @@ public class AddField extends Activity {
 				}
 			}
 			if (duplicate) {//tHIS NEEDS TO BE CHANGED FOR BETTER EXCEPTION HANDLING 7/31/12
-				lblFieldName.setText("* Field name must be unique to this form");
+				lblFieldName.setText(getText(R.string.duplicate_fieldname).toString());
 				return false;
 			}
 		}

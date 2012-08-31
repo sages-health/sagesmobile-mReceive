@@ -10,6 +10,31 @@
 <string name="lbl_formprefix">Prefix</string>
 <string name="lbl_formchoose">Forms:</string>
 <string name="lbl_formparser">Parser Type</string>
+<string name="invalid_form_title">Invalid Form</string>
+
+
+<string name="invalid_form_Nofield_message">You must have at least one field for this form to save</string>
+
+<string name="invalid_form_Noformname_message">You must enter a formname</string>
+
+<string name="invalid_form_Noprefix_message">You must enter a prefix</string>
+
+<string name="invalid_form_Notunique_message">This form is not unique</string>
+
+<string name="invalid_form_duplicate_formname">Duplicate Form Name</string>
+<string name="invalid_form_duplicate_formname_message">The form of this name already exists</string>
+<string name="invalid_form_duplicate_formprefix">Duplicate Form Prefix</string>
+<string name="invalid_form_duplicate_formprefix_message">The form of this prefix already exists</string>
+
+<string name="invalid_form_create_fail">Form creation failed</string>
+<string name="invalid_form_create_fail_message">Unable to create the form and its support tables.  Check the logs.</string>
+<string name="invalid_form_confirm_close">Confirm Closure</string>
+<string name="invalid_form_confirm_close_message">Are you sure you want to close without saving changes?</string>
+
+<string name="prompt_backpressed_savechanges">Save Changes First?</string>
+<string name="prompt_keep_working">No, keep working</string>
+
+
 <string name="lbl_dashboardmessages">Recent Messages:</string>
 <string name="dash_title">RapidAndroid::Dashboard</string>
 <string name="lbl_form">Form:</string>
@@ -31,6 +56,11 @@
 <string name="lbl_fieldtypechoose">Field Type:</string>
 <string name="lbl_fields">Fields:</string>
 <string name="formeditor_menu_edit_forms">Edit Fields</string>
+
+<string name="error_nofieldname_required"> Name * Required field</string>
+<string name="error_noprompt">Description: * Required field</string>
+<string name="duplicate_fieldname">* Field name must be unique to this form</string>
+
 <string name="glb_change_settings">Change Settings</string>
 <string name="addfield_scroll_word">word</string>
 <string name="addfield_scroll_number">number</string>
@@ -56,6 +86,7 @@
 
 <string name="no_msgs_to_chart">This form has no messages or data to chart</string>
 <string name="no_data_to_chart">There is no data to chart.</string>
+<string name="chart_choose_field_title">Choose Field</string>
 
 <string name="messages_overtime">Messages over time</string>
 

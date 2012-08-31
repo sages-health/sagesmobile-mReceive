@@ -7,6 +7,31 @@
 <string name="lbl_formchoose">Formularios:</string>
 <string name="lbl_formparser">Analizador Tipo</string>
 <string name="lbl_form">Forma:</string>
+<string name="invalid_form_title">Formulario no es válido</string>
+
+
+<string name="invalid_form_Nofield_message">Debe tener al menos un campo para esta forma de ahorrar</string>
+
+<string name="invalid_form_Noformname_message">Debe introducir un FormName</string>
+
+<string name="invalid_form_Noprefix_message">Debe introducir un prefijo</string>
+
+<string name="invalid_form_Notunique_message">Esta forma no es sólo</string>
+
+<string name="invalid_form_duplicate_formname">Duplicar Nombre del formulario</string>
+<string name="invalid_form_duplicate_formname_message">La forma de este nombre ya existe</string>
+<string name="invalid_form_duplicate_formprefix">Duplicar Forma Prefijo</string>
+<string name="invalid_form_duplicate_formprefix_message">La forma de este prefijo ya existe</string>
+
+<string name="invalid_form_create_fail"> La Creación de formularios no</string>
+<string name="invalid_form_create_fail_message">No se puede crear el formulario y sus tablas de apoyo. Compruebe los registros.</string>
+<string name="invalid_form_confirm_close">Confirmar Cierree</string>
+<string name="invalid_form_confirm_close_message">¿Está seguro que desea cerrar sin guardar los cambios?</string>
+
+<string name="prompt_backpressed_savechanges">Guardar cambios en primer lugar?</string>
+<string name="prompt_keep_working">No, sigue trabajando</string>
+
+
 <string name="lbl_messages">Mensajes</string>
 <string name="show_all_messages">Mostrar todos los mensajes</string>
 <string name="show_all_multisms_messages">Mostrar mensajes multipartes</string>
@@ -20,6 +45,11 @@
 <string name="formeditor_menu_cancel">cancelar</string>
 <string name="formeditor_menu_save">Ahorrar</string>
 <string name="formeditor_menu_add_field">Agregar campo</string>
+
+<string name="error_nofieldname_required"> Nombre: * Campo obligatorio</string>
+<string name="error_noprompt">Descripción: * Campo obligatorio</string>
+<string name="duplicate_fieldname"> * Nombre El campo debe ser único a esta forma</string>
+
 <string name="lbl_scroll_parser">Analizar el modo de:</string>
 <string name="dashboard_menu_show_reports">Informes</string>
 <string name="menu_done">Terminado</string>
@@ -44,7 +74,7 @@
 <string name="addfield_scroll_diseaselist">diseaselist/1 to 3</string>
 
 <string name="btn_finishaddfield">Agregar</string>
-<string name="btn_canceladdfield">cancelar</string>
+<string name="btn_canceladdfield">Cancelar</string>
 <string name="yes">Sí</string>
 <string name="no">No</string>
 <string name="ok">Ok</string>
@@ -53,7 +83,7 @@
 
 <string name="no_msgs_to_chart">Esta forma no tiene mensajes o datos para trazar</string>
 <string name="no_data_to_chart">No hay datos para trazar.</string>
-
+<string name="chart_choose_field_title">Elija el campo</string>
 <string name="messages_overtime">Mensajes a través del tiempo</string>
 
 <string name="formreview_menu_done">Hecho</string>

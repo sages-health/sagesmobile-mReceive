@@ -194,7 +194,7 @@ public class ChartData extends Activity {
 		switch (id) {
 			case MENU_CHANGE_VARIABLE:
 				return new AlertDialog.Builder(ChartData.this)
-																.setTitle("Choose Field")
+																.setTitle(R.string.chart_choose_field_title)
 																.setSingleChoiceItems(
 																						mBroker.getVariables(),
 																						0,
@@ -209,7 +209,7 @@ public class ChartData extends Activity {
 																							}
 																						})
 																.setPositiveButton(
-																					"Ok",
+																					R.string.ok,
 																					new DialogInterface.OnClickListener() {
 																						public void onClick(
 																								DialogInterface dialog,
@@ -219,7 +219,7 @@ public class ChartData extends Activity {
 																						}
 																					})
 																.setNegativeButton(
-																					"Cancel",
+																					R.string.formeditor_menu_cancel,
 																					new DialogInterface.OnClickListener() {
 																						public void onClick(
 																								DialogInterface dialog,
