@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
+import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidsms.java.core.Constants;
@@ -116,7 +117,16 @@ public class ParsedDataReporter {
 		return ret;
 	}
 
-	public synchronized static void exportFormDataToCSV(Context context, Form f, Calendar startDate, Calendar endDate) {
+	/**
+	 * 
+	 * @param context
+	 * @param f
+	 * @param startDate
+	 * @param endDate
+	 * @return true if the export occurred successfully
+	 */
+	public synchronized static boolean exportFormDataToCSV(Context context, Form f, Calendar startDate, Calendar endDate) {
+		boolean success = true;
 		endDate.add(Calendar.DATE, 1);
 		SmsDbHelper mHelper = new SmsDbHelper(context);
 		// build the query
@@ -148,13 +158,12 @@ public class ParsedDataReporter {
 		try {
 
 			File sdcard = Environment.getExternalStorageDirectory();
-			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ f.getPrefix() + "_exports");
+			File destinationdir = new File(sdcard, RapidAndroidApplication.DIR_RAPIDANDROID_EXPORTS + "/"+ f.getPrefix() + "_exports");
 			destinationdir.mkdir();
 			Date now = new Date();
 			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.getYear()
 					+ now.getMonth() + now.getDate() + "-" + now.getHours() + now.getMinutes() + ".csv");
 			
-		
 			destinationfile.createNewFile();
 			fOut = new FileOutputStream(destinationfile);
 			String[] cols = cr.getColumnNames();
@@ -187,6 +196,7 @@ public class ParsedDataReporter {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			success = false;
 		} finally {
 			cr.close();
 			db.close();
@@ -199,6 +209,7 @@ public class ParsedDataReporter {
 					e.printStackTrace();
 				}
 			}
+			return success;
 			// compressFile(destinationfile);
 		}
 
