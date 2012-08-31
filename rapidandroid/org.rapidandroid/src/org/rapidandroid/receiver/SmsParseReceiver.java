@@ -49,6 +49,7 @@ import android.util.Log;
  * 
  */
 public class SmsParseReceiver extends BroadcastReceiver {
+	private static SystemHealthTracking healthTracker = new SystemHealthTracking(SmsParseReceiver.class);
 
 	private static String[] prefixes = null;
 	private static Form[] forms = null;
@@ -117,8 +118,7 @@ public class SmsParseReceiver extends BroadcastReceiver {
 
 		Form form = determineForm(body);
 		if (form == null) {
-			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_FAIL, "SmsParseReceiver--no form matched", Log.INFO);
-
+			healthTracker.logInfo(SagesEventType.SMS_PARSE_FAIL, "No form matched");
 			if (ApplicationGlobals.doReplyOnFail()) {
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
@@ -149,15 +149,16 @@ public class SmsParseReceiver extends BroadcastReceiver {
 				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
 				context.sendBroadcast(broadcast);
 				
-				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
+				healthTracker.logInfo(SagesEventType.SMS_PARSE_SUCCESS, "Success messaged parsed for " + form.getPrefix());
 
 			}
 			
 			// parse failure reply
 			// results would be null after the result of a StrictParser
 			if (results == null) {
-				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_PARSE_FAIL, "SmsParseReceiver", Log.INFO);
+				healthTracker.logInfo(SagesEventType.SMS_PARSE_FAIL, "Failure, message not parsed properly for " + form.getPrefix());
 
+				
 				if (ApplicationGlobals.doReplyOnFail()){
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));

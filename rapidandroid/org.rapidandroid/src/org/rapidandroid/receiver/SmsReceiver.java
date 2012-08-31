@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.SystemHealthTracking.SagesEventType;
+import org.rapidandroid.activity.Dashboard;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.MessageBodyParser;
@@ -72,6 +73,7 @@ import android.util.Log;
  * 
  */
 public class SmsReceiver extends BroadcastReceiver {
+	private static SystemHealthTracking healthTracker = new SystemHealthTracking(SmsReceiver.class);
 
 	/*
 	 * (non-Javadoc)
@@ -247,6 +249,8 @@ public class SmsReceiver extends BroadcastReceiver {
 			
 		} catch (Exception ex) {
 			Log.d("SmsReceiver.insertMessageToSagesWorkTable", "Error writing into worktable: " + ex.getMessage());
+			healthTracker.logError("SmsReceiver.insertMessageToSagesWorkTable--Error writing into worktable: " + ex.getMessage());
+
 		}
 	}
 
@@ -280,7 +284,7 @@ public class SmsReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.SMS_RECEIVED, "SmsReceiver", Log.INFO);
+		healthTracker.logInfo(SagesEventType.SMS_RECEIVED);
 
 		SmsMessage msgs[] = getMessagesFromIntent(intent);
 
@@ -289,6 +293,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
 			if (message != null && message.length() > 0) {
 				Log.d("MessageListener", message);
+				healthTracker.logDebug(SagesEventType.SMS_RECEIVED, "message= " + message);
 
 				// //Our trigger message must be generic and human redable
 				// because it will end up
