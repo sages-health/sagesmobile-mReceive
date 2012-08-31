@@ -10,6 +10,27 @@ import de.mindpipe.android.logging.log4j.LogConfigurator;
 /**
  * SOURCE: http://muratonnet.com/index.php/2012/02/29/use-log4j-in-android/
  * @author Murat Aras
+ * 
+ * Example Usage:
+ 		Logger mLog = Logger.getLogger(RapidAndroidApplication.class);
+
+ 		// write some logs
+		mLog.error("This is an error");
+		mLog.info("This is an info");
+		mLog.warn("This is a warn");
+		 
+		// write some exception
+		try {
+		    String dummyString = null;
+		    if (dummyString.equals("something")) {
+		        int dummyInt = 1;
+		    }
+		} catch (Exception ex) {
+		    mLog.error(ex.toString(), ex);
+		}
+		
+		String replytxt = ApplicationGlobals.getParseInProgressText();
+		mLog.info("reply text = " + replytxt);
  *
  */
 public class Log4jHelper {
