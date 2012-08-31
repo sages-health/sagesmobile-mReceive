@@ -2,12 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.rapidandroid" android:versionName="01.31.2012.01" android:versionCode="012012">
 
+			<uses-sdk android:minSdkVersion="4"></uses-sdk>
+			
 	<application android:label="@string/app_name" android:name="RapidAndroidApplication" android:icon="@drawable/rapidandroid" android:debuggable="true">
 		<provider android:authorities="org.rapidandroid.provider.RapidSms" 
 							android:name=".content.RapidSmsContentProvider">
 		</provider>
 				
-		<activity android:label="@string/dash_title" android:name=".activity.Dashboard">
+		
+		<activity android:label="@string/app_name" android:name=".activity.Dashboard">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -128,4 +131,5 @@
 		<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
 		<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
 		<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest> 
