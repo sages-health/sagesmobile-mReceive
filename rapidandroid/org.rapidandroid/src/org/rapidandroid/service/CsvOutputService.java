@@ -7,6 +7,7 @@ package org.rapidandroid.service;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.activity.CsvOutputScheduler;
 import org.rapidandroid.activity.FormReviewer;
 import org.rapidandroid.content.translation.ModelTranslator;
@@ -50,7 +51,7 @@ public class CsvOutputService extends IntentService {
 			// delete the old csv files for this form - don't want them to accumulate  on sdcard
 			File sdcard = Environment.getExternalStorageDirectory();
 			String state = Environment.getExternalStorageState();
-			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ formPrefix + "_exports");
+			File destinationdir = new File(sdcard, RapidAndroidApplication.DIR_RAPIDANDROID_EXPORTS + "/"+ formPrefix + "_exports");
 			File[] files = destinationdir.listFiles(new FormPrefixFilter(formPrefix));
 			
 			if (files != null) {
@@ -108,7 +109,6 @@ public class CsvOutputService extends IntentService {
 				}
 			}
 		}
-		//TODO POKU remove the "in use indicator file"
 		Log.d("CsvOutputService","completed running and ran at intervals of " + autoCsvFrequency + " seconds.");
 	}
 	
