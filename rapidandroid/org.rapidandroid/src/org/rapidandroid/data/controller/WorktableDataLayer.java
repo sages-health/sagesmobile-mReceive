@@ -303,6 +303,7 @@ public class WorktableDataLayer {
 			phonelookup.put(c.getLong(col_tx_id), c.getString(col_phone));
 			Log.d("WorktableDataLayer:buildsenderphones", "tx_id= " + c.getLong(col_tx_id)+"  , phone= "+ c.getString(col_phone));
 		}
+		if (c != null)c.close();
 		return phonelookup;
 		
 	}

@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.rapidandroid.ApplicationGlobals;
 import org.rapidandroid.R;
+import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.receiver.SmsParseReceiver;
 
 import android.app.Activity;
@@ -65,6 +66,7 @@ public class GlobalSettings extends Activity {
 	private static final int MENU_DONE = Menu.FIRST;
 	
 	private CheckBox mActiveSwitch;
+	private CheckBox mActiveLoggingSwitch;
 	private CheckBox mParseInProgressCheckbox;
 	private EditText mParseInProgressReplyText;
 	private CheckBox mParseCheckbox;
@@ -124,6 +126,8 @@ public class GlobalSettings extends Activity {
 		setContentView(R.layout.global_settings);
 
 		
+		mActiveLoggingSwitch = (CheckBox) findViewById(R.id.glb_chk_logging);
+
 		mActiveSwitch = (CheckBox) findViewById(R.id.glb_chk_activeall);
 		mActiveSwitch.setOnClickListener(mCheckChangeListener);
 		
@@ -161,6 +165,7 @@ public class GlobalSettings extends Activity {
 		// TODO Auto-generated method stub
 		JSONObject globals = ApplicationGlobals.loadSettingsFromFile(this);
 		try {
+			mActiveLoggingSwitch.setChecked(globals.getBoolean(ApplicationGlobals.KEY_ACTIVE_LOGGING));			
 			mActiveSwitch.setChecked(globals.getBoolean(ApplicationGlobals.KEY_ACTIVE_ALL));			
 			mParseCheckbox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_PARSE_REPLY));
 			mParseReplyText.setText(globals.getString(ApplicationGlobals.KEY_PARSE_REPLY_TEXT));
@@ -210,13 +215,17 @@ public class GlobalSettings extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		ApplicationGlobals.saveGlobalSettings(this,mActiveSwitch.isChecked(),
+		ApplicationGlobals.saveGlobalSettings(this,mActiveLoggingSwitch.isChecked(), 
+											  mActiveSwitch.isChecked(),
 											  mParseInProgressCheckbox.isChecked(),
 											  mParseInProgressReplyText.getText().toString(),
 											  mParseCheckbox.isChecked(), 
 											  mParseReplyText.getText().toString(), 
 		                                      mNoparseCheckBox.isChecked(), 
 		                                      mNoparseReplyText.getText().toString());
+		SystemHealthTracking.setLoggingEnabled(mActiveLoggingSwitch.isChecked());
+		Log.d("GlobalSettings", "logging toggled");
+
 	}
 
 	
