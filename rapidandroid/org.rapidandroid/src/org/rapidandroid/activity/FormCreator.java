@@ -106,9 +106,6 @@ public class FormCreator extends Activity {
 	private static final int DIALOG_CONFIRM_CLOSURE = 4;
 	private static final int DIALOG_FORM_CREATE_FAIL = 5;
 
-	private static final int DIALOG_FORM_DUPLICATE_FORMNAME = 6;
-	private static final int DIALOG_FORM_DUPLICATE_PREFIX = 7;
-
 	private static final int DIALOGRESULT_CLOSE_INFORMATIONAL = 0;
 	private static final int DIALOGRESULT_OK_DONT_SAVE = 1;
 	private static final int DIALOGRESULT_CANCEL_KEEP_WORKING = 2;
@@ -214,6 +211,8 @@ public class FormCreator extends Activity {
 		}
 	}
 
+
+
 	private void saveState() {
 		// TODO Auto-generated method stub
 		// this.d
@@ -236,15 +235,9 @@ public class FormCreator extends Activity {
 
 					JSONObject fieldobj = new JSONObject();
 
-					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME,
-							f.getName());
-					fieldobj.put(
-							AddField.ResultConstants.RESULT_KEY_DESCRIPTION,
-							f.getDescription());
-					fieldobj.put(
-							AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID,
-							((SimpleFieldType) f.getFieldType()).getId());
-
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME,	f.getName());
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_DESCRIPTION, f.getDescription());
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType) f.getFieldType()).getId());
 					savedstate.put("Field" + i, fieldobj);
 				}
 			}
@@ -281,8 +274,7 @@ public class FormCreator extends Activity {
 				do {
 					checkForFields = readobject.has("Field" + i);
 					if (checkForFields) {
-						JSONObject fieldBundle = (JSONObject) readobject
-								.get("Field" + i);
+						JSONObject fieldBundle = (JSONObject) readobject.get("Field" + i);
 						restoreFieldFromState(fieldBundle);
 						i++;
 					}
@@ -292,6 +284,7 @@ public class FormCreator extends Activity {
 			}
 		}
 	}
+
 
 	/**
 	 * Gets called from onActivityResult
@@ -310,12 +303,13 @@ public class FormCreator extends Activity {
 
 		Spinner spin_forms = (Spinner) findViewById(R.id.spinner_formparser);
 		int cnt = spin_forms.getCount();
-		for (int i = 0; i < cnt; i++) {
-			if (spin_forms.getItemAtPosition(i).toString().toLowerCase()
-					.contains(f.getParserType().name().toLowerCase()))
+		for(int i=0;i<cnt;i++)
+		{
+			if(spin_forms.getItemAtPosition(i).toString().toLowerCase().contains(f.getParserType().name().toLowerCase()))
 				spin_forms.setSelection(i);
 		}
-
+		
+		
 		// add fields
 		Field[] fields = f.getFields();
 		Arrays.sort(fields, new Comparator() {
@@ -333,10 +327,8 @@ public class FormCreator extends Activity {
 		for (Field fi : fields) {
 			Bundle b = new Bundle();
 			b.putString(ResultConstants.RESULT_KEY_FIELDNAME, fi.getName());
-			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION,
-					fi.getDescription());
-			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID,
-					((SimpleFieldType) fi.getFieldType()).getId());
+			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION, fi.getDescription());
+			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType)fi.getFieldType()).getId());
 
 			addNewFieldFromActivity(b);
 		}
@@ -390,9 +382,8 @@ public class FormCreator extends Activity {
 
 		newField.setDescription(extras
 				.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-		int fieldTypeID = extras
-				.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
-
+		int fieldTypeID = extras.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+		
 		ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 		newField.setFieldType(fieldtype);
 
@@ -413,12 +404,9 @@ public class FormCreator extends Activity {
 		try {
 			Field newField = new Field();
 			newField.setFieldId(-1);
-			newField.setName(fieldjson
-					.getString(ResultConstants.RESULT_KEY_FIELDNAME));
-			newField.setDescription(fieldjson
-					.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-			int fieldTypeID = fieldjson
-					.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+			newField.setName(fieldjson.getString(ResultConstants.RESULT_KEY_FIELDNAME));
+			newField.setDescription(fieldjson.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
+			int fieldTypeID = fieldjson.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
 			ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 			newField.setFieldType(fieldtype);
 
@@ -561,26 +549,22 @@ public class FormCreator extends Activity {
 		if (etxFormName.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFORMNAME;
 		}
-		/*if (etxFormPrefix.getText().length() == 0) {
+		if (etxFormPrefix.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOPREFIX;
-		}*/
+		}
 
 		if (this.mCurrentFields.size() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFIELDS;
 		}
 
-		String prefixCandidate = etxFormPrefix.getText().toString();
-		String nameCandidate = etxFormName.getText().toString();
-		
-		/*if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
-			return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
-		}*/
-		
-		if (ModelTranslator.doesFormNameExist(nameCandidate)) {
-			return FormCreator.DIALOG_FORM_DUPLICATE_FORMNAME;
-		}
-		
-		// deleted repeat return code
+		// String prefixCandidate = etxFormPrefix.getText().toString();
+		// String nameCandidate = etxFormName.getText().toString();
+		//
+		// if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
+		// return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
+		// } else {
+		// return FormCreator.DIALOG_FORM_SAVEABLE;
+		// }
 		return FormCreator.DIALOG_FORM_SAVEABLE;
 	}
 
@@ -597,8 +581,7 @@ public class FormCreator extends Activity {
 		Spinner spinnerParserType = (Spinner) findViewById(R.id.spinner_formparser);
 		int parserPosition = spinnerParserType.getSelectedItemPosition();
 
-		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition]
-				.getName().toUpperCase());
+		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
 
 		Form formToSave = new Form();
 		formToSave.setFormName(etxFormName.getText().toString().trim());
@@ -607,8 +590,7 @@ public class FormCreator extends Activity {
 		formToSave.setParserType(parserType);
 		// (Message[])parsedMessages.keySet().toArray(new
 		// Message[parsedMessages.keySet().size()]);
-		Field[] fieldArray = this.mCurrentFields
-				.toArray(new Field[mCurrentFields.size()]);
+		Field[] fieldArray = this.mCurrentFields.toArray(new Field[mCurrentFields.size()]);
 		formToSave.setFields(fieldArray);
 
 		try {
@@ -631,9 +613,7 @@ public class FormCreator extends Activity {
 
 		// some sanity checks:
 		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
-		if (lsvFields.getCount() == 0 || this.mCurrentFields == null
-				|| this.mCurrentFields.size() == 0) {
-
+		if (lsvFields.getCount() == 0 || this.mCurrentFields == null || this.mCurrentFields.size() == 0) {
 			return true;
 		}
 
@@ -641,8 +621,7 @@ public class FormCreator extends Activity {
 			return true;
 		}
 
-		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
 		switch (item.getItemId()) {
 		// TODO: IMPLEMENT CONTEXT MENU
@@ -738,15 +717,8 @@ public class FormCreator extends Activity {
 			break;
 		case DIALOG_FORM_INVALID_NOTUNIQUE:
 			title = "Invalid form";
-			message = "The form of this name and/or prefix already exists";
+			message = "The form of this name and prefix already exists";
 			break;
-		case DIALOG_FORM_DUPLICATE_FORMNAME:
-			title = "Duplicate Form Name";
-			message= " The form of this name already exists";
-			break;
-		case DIALOG_FORM_DUPLICATE_PREFIX:
-			title="Duplicate Form Prefix";
-			message= "The form of this prefix already exists";
 		case DIALOG_FORM_CREATE_FAIL:
 			title = "Form creation failed";
 			message = "Unable to create the form and its support tables.  Check the logs.";

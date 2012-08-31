@@ -95,7 +95,6 @@ public class ModelTranslator {
 		whereclause.append(RapidSmsDBConstants.Form.PREFIX + "='"
 				+ prefixCandidate + "'");
 		whereclause.append(" OR ");
-		
 		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='"
 				+ nameCandidate + "'");
 		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
@@ -109,24 +108,7 @@ public class ModelTranslator {
 			return true;
 		}
 	}
-	public static boolean doesFormNameExist(String nameCandidate) {
-		// next let's see if this form name is unique
-		Uri formExistUri = RapidSmsDBConstants.Form.CONTENT_URI;
-		StringBuilder whereclause = new StringBuilder();
-		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='"
-				+ nameCandidate + "'");
-		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
-				null, whereclause.toString(), null, null);
 
-		if (existsCursor.getCount() == 0) {
-			existsCursor.close();
-			return false;
-		} else {
-			existsCursor.close();
-			return true;
-		}
-	}
-	
 	public static void editFormToDatabase(Form f) {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
