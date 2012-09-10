@@ -32,5 +32,4 @@ public class ActivityConstants {
 	// public static final String REVIEW_FORM = "review_form";
 
 	public static final String DATE_RANGE = "date_range";
-
 }

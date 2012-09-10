@@ -46,12 +46,14 @@ import org.rapidsms.java.core.parser.StrictRegexParser;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -131,6 +133,7 @@ public class FormCreator extends Activity {
 	private int selectedFieldPosition = -1;
 
 	private FieldViewAdapter fieldViewAdapter;
+	private Cursor cursor;
 
 	/*
 	 * (non-Javadoc)
@@ -142,7 +145,7 @@ public class FormCreator extends Activity {
 		super.onCreate(savedInstanceState);
 
 		mCurrentFields = new ArrayList<Field>();
-
+		Cursor cursor;
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.form_create);
 
@@ -572,9 +575,10 @@ public class FormCreator extends Activity {
 		String prefixCandidate = etxFormPrefix.getText().toString();
 		String nameCandidate = etxFormName.getText().toString();
 		
-		/*if (ModelTranslator.doesFormExist(prefixCandidate, nameCandidate)) {
+		if (ModelTranslator.doesFormPrefixExist(prefixCandidate)) {
+			this.cursor=ModelTranslator.formExistCursor(prefixCandidate, nameCandidate);
 			return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
-		}*/
+		}
 		
 		if (ModelTranslator.doesFormNameExist(nameCandidate)) {
 			return FormCreator.DIALOG_FORM_DUPLICATE_FORMNAME;
@@ -738,7 +742,8 @@ public class FormCreator extends Activity {
 			break;
 		case DIALOG_FORM_INVALID_NOTUNIQUE:
 			title = getText(R.string.invalid_form_title).toString();
-			message = getText(R.string.invalid_form_Notunique_message).toString();
+			message = getText(R.string.invalid_form_Notunique_message).toString()+"\n"+ this.cursor.toString();
+			this.cursor.close();
 			break;
 		case DIALOG_FORM_DUPLICATE_FORMNAME:
 			title = getText(R.string.invalid_form_duplicate_formname).toString();
@@ -777,12 +782,14 @@ public class FormCreator extends Activity {
 
 	}
 
+	@SuppressLint("NewApi")
 	public void onBackPressed() {
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 
 		dialog.setMessage(getText(R.string.prompt_backpressed_savechanges).toString());
 		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
 				new DialogInterface.OnClickListener() {
+					@SuppressLint("NewApi")
 					public void onClick(DialogInterface dialog, int which) {
 						doSave();
 						finish();
@@ -791,6 +798,7 @@ public class FormCreator extends Activity {
 
 		dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "No",
 				new DialogInterface.OnClickListener() {
+					@SuppressLint("NewApi")
 					public void onClick(DialogInterface dialog, int which) {
 						finish();
 					}

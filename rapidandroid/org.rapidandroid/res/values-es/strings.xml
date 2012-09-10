@@ -97,6 +97,7 @@
 <string name="formlistview_title">Los formularios creados</string>
 <string name="formreview_title">RapidAndroid :: Revise Forma</string>
 <string name="formreview_sample_submission">Muestra de Sumisión</string>
+<string name="form_delete_message">No se puede eliminar un formulario que contiene datos o mensajes</string>
 <string name="lbl_enddate">Fecha de finalización:</string>
 <string name="lbl_startdate">Fecha de comienzo:</string>
 <string name="range_btn_lastweek">Semana pasada</string>
@@ -114,9 +115,9 @@
 <string name="rad_last100">Última 100</string>
 <string name="rad_last500">500</string>
 <string name="rad_all">Todo</string>
-<string name="glbsettings_inprogress_ack">En respuesta Progreso Analizar</string>
-<string name="glbsettings_parse_ack">Responder con éxito Analizar</string>
-<string name="glbsettings_noparse_ack">Error al analizar Responder</string>
+<string name="glbsettings_inprogress_ack">Mensaje de análisis en progreso</string>
+<string name="glbsettings_parse_ack">Mensaje analizado correctamente, muchas gracias</string>
+<string name="glbsettings_noparse_ack">Inténtelo de nuevo</string>
 <string name="glb_chk_noparse_text">Réplica sobre la no analiza</string>
 <string name="glb_chk_parse_text">Réplica sobre la exitosa analiza</string>
 <string name="glb_chk_inprogress_text">Réplica sobre la analiza en el progreso</string>

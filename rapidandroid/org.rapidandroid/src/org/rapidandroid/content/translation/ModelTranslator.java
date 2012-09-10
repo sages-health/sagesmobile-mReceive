@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-
 import org.rapidandroid.activity.FormCreator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;
@@ -88,28 +87,29 @@ public class ModelTranslator {
 	 * @param nameCandidate
 	 * @return
 	 */
-	public static boolean doesFormExist(String prefixCandidate,
-			String nameCandidate) {
+	public static boolean doesFormPrefixExist(String prefixCandidate) {
 		// next let's see if this form is unique
 		Uri formExistUri = RapidSmsDBConstants.Form.CONTENT_URI;
 		StringBuilder whereclause = new StringBuilder();
 		whereclause.append(RapidSmsDBConstants.Form.PREFIX + "='"
 				+ prefixCandidate + "'");
-		whereclause.append(" OR ");
-		
+		/*whereclause.append(" OR ");
+
 		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='"
 				+ nameCandidate + "'");
-		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
+*/		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
 				null, whereclause.toString(), null, null);
 
 		if (existsCursor.getCount() == 0) {
 			existsCursor.close();
 			return false;
 		} else {
+
 			existsCursor.close();
 			return true;
 		}
 	}
+
 	public static boolean doesFormNameExist(String nameCandidate) {
 		// next let's see if this form name is unique
 		Uri formExistUri = RapidSmsDBConstants.Form.CONTENT_URI;
@@ -127,61 +127,79 @@ public class ModelTranslator {
 			return true;
 		}
 	}
-	
+
+	public static Cursor formExistCursor(String prefixCandidate,
+			String nameCandidate) {
+		// next let's see if this form is unique
+		Uri formExistUri = RapidSmsDBConstants.Form.CONTENT_URI;
+		StringBuilder whereclause = new StringBuilder();
+		whereclause.append(RapidSmsDBConstants.Form.PREFIX + "='"
+				+ prefixCandidate + "'");
+		whereclause.append(" OR ");
+
+		whereclause.append(RapidSmsDBConstants.Form.FORMNAME + "='"
+				+ nameCandidate + "'");
+		Cursor existsCursor = mContext.getContentResolver().query(formExistUri,
+				null, whereclause.toString(), null, null);
+
+		return existsCursor;
+
+	}
+
 	public static void editFormToDatabase(Form f) {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-		try
-		{
-			Cursor c = db.rawQuery("select * from formdata_" + f.getPrefix() + ";",	null);
+		try {
+			Cursor c = db.rawQuery("select * from formdata_" + f.getPrefix()
+					+ ";", null);
 			if (c.getCount() > 0) {
 				// there was data collected with previous form/table so we need
 				// rename that table
-				// to a different prefix, update the prefix name in the forms table,
+				// to a different prefix, update the prefix name in the forms
+				// table,
 				// and generate a new formID and field equivalents for the
 				// updated table
-	
+
 				// rename table
 				SimpleDateFormat sdf = new SimpleDateFormat("HHmmss_ddMMyyyy");
 				String newPrefix = f.getPrefix() + "_"
 						+ sdf.format(new Date(System.currentTimeMillis()));
-				db.execSQL("alter table formdata_" + f.getPrefix()	+ " rename to formdata_" + newPrefix);
-	
+				db.execSQL("alter table formdata_" + f.getPrefix()
+						+ " rename to formdata_" + newPrefix);
+
 				// update name and prefix in forms table
 				db.execSQL("update rapidandroid_form set prefix='" + newPrefix
 						+ "', " + "formname='" + newPrefix + "' where _id="
 						+ f.getFormId());
-	
+
 				Log.e("INFO",
 						"Renaming table due to duplicate prefix since there is data in table.");
-				f.setFormId(-1); // must set to -1 or it might try to reuse an id
+				f.setFormId(-1); // must set to -1 or it might try to reuse an
+									// id
 				addFormToDatabase(f);
 				return;
 			} else {
-	
+
 				// there is no data in previous form so we can drop the table
 				// associated with it,
-				// keep the form ID and simply update the fields associated with it
+				// keep the form ID and simply update the fields associated with
+				// it
 				// in the field table
-	
+
 				db.execSQL("drop table formdata_" + f.getPrefix());
 				Log.e("INFO",
 						"Dropped table due to duplicate prefix since no data in table.");
 			}
+		} catch (Exception ex) {
+			Log.e("INFO", ex.getMessage(), ex);
 		}
-		catch(Exception ex)
-		{
-			Log.e("INFO",ex.getMessage(),ex);
-		}
-		
+
 		updateFormData(f);
 	}
-	
-	
-	private static void updateFormData(Form f)
-	{
+
+	private static void updateFormData(Form f) {
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		
+
 		ContentValues typecv = new ContentValues();
 		if (f.getFormId() != -1) {
 			typecv.put(BaseColumns._ID, f.getFormId());
@@ -193,19 +211,21 @@ public class ModelTranslator {
 		typecv.put(RapidSmsDBConstants.Form.PREFIX, f.getPrefix());
 		typecv.put(RapidSmsDBConstants.Form.DESCRIPTION, f.getDescription());
 
-		db.update("rapidandroid_form", typecv, "_id=?",	new String[] { f.getFormId() + "" });
+		db.update("rapidandroid_form", typecv, "_id=?",
+				new String[] { f.getFormId() + "" });
 
 		Field[] fields = f.getFields();
 
 		// first remove existing fields with reference to form, and then
 		// re-add the updated ones
-		db.delete("rapidandroid_field", "form_id=?",new String[] { f.getFormId() + "" });
+		db.delete("rapidandroid_field", "form_id=?",
+				new String[] { f.getFormId() + "" });
 
 		Log.d("dimagi", "****** Begin fields loop: " + fields.length);
 		for (int j = 0; j < fields.length; j++) {
 			Field thefield = fields[j];
-			Log.d("dimagi", "******** Iterating through fields: "
-					+ thefield.getName());
+			Log.d("dimagi",
+					"******** Iterating through fields: " + thefield.getName());
 			Uri fieldUri = RapidSmsDBConstants.Field.CONTENT_URI;
 			StringBuilder where = new StringBuilder();
 			where.append("name='" + thefield.getName() + "' AND ");
@@ -220,8 +240,7 @@ public class ModelTranslator {
 				if (thefield.getFieldId() != -1) {
 					fieldcv.put(BaseColumns._ID, thefield.getFieldId());
 				}
-				fieldcv.put(RapidSmsDBConstants.Field.NAME,
-						thefield.getName());
+				fieldcv.put(RapidSmsDBConstants.Field.NAME, thefield.getName());
 				fieldcv.put(RapidSmsDBConstants.Field.FORM, f.getFormId());
 				fieldcv.put(RapidSmsDBConstants.Field.PROMPT,
 						thefield.getDescription());
@@ -229,12 +248,10 @@ public class ModelTranslator {
 						thefield.getSequenceId());
 
 				fieldcv.put(RapidSmsDBConstants.Field.FIELDTYPE,
-						((SimpleFieldType) (thefield.getFieldType()))
-								.getId());
+						((SimpleFieldType) (thefield.getFieldType())).getId());
 
-				Uri insertedFieldUri = mContext.getContentResolver()
-						.insert(RapidSmsDBConstants.Field.CONTENT_URI,
-								fieldcv);
+				Uri insertedFieldUri = mContext.getContentResolver().insert(
+						RapidSmsDBConstants.Field.CONTENT_URI, fieldcv);
 				Log.d("dimagi", "********** Inserted Field into db: "
 						+ insertedFieldUri);
 			} else {
@@ -247,7 +264,6 @@ public class ModelTranslator {
 
 		SmsParseReceiver.initFormCache();
 	}
-	
 
 	/**
 	 * Add a form to to the rapidandroid_form table, inserting new fields as
@@ -658,22 +674,22 @@ public class ModelTranslator {
 	}
 
 	/**
-	 * NOTE: This method will always return 1 due to every 
-	 * value in the hashtable being of SimpleFieldType class.
-	 * Do not use this method to get the actual ID of the FieldType.
-	 * Instead, cast the ITokenParser to a SimpleFieldType and then call
-	 * getId();
+	 * NOTE: This method will always return 1 due to every value in the
+	 * hashtable being of SimpleFieldType class. Do not use this method to get
+	 * the actual ID of the FieldType. Instead, cast the ITokenParser to a
+	 * SimpleFieldType and then call getId();
+	 * 
 	 * @param p
 	 * @return
 	 */
 	public static int getFieldTypeId(ITokenParser p) {
 		for (Integer key : fieldTypeHash.keySet()) {
 			ITokenParser ip = fieldTypeHash.get(key);
-			
-//			Log.e("MARK 1",p.getReadableName());
-//			Log.e("MARK 2",ip.getClass().getName());
-//			Log.e("MARK 3",p.getClass().getName());
-			
+
+			// Log.e("MARK 1",p.getReadableName());
+			// Log.e("MARK 2",ip.getClass().getName());
+			// Log.e("MARK 3",p.getClass().getName());
+
 			if (ip.getClass().getName().equals(p.getClass().getName()))
 				return key.intValue();
 		}
@@ -681,8 +697,8 @@ public class ModelTranslator {
 	}
 
 	public static ITokenParser getFieldType(int type_id) {
-//		Log.e("FOOBAR","Field type id: " + type_id);
-		
+		// Log.e("FOOBAR","Field type id: " + type_id);
+
 		// //real way
 		// public static SimpleFieldType getFieldType(ContentProvider provider,
 		// int type_id) { // hack
@@ -731,10 +747,9 @@ public class ModelTranslator {
 		SimpleFieldType newType = new SimpleFieldType(id, dataType, regex, name);
 		fieldTypeHash.put(typeInt, newType);
 		typeCursor.close();
-		
-//		Log.e("FOOBAR","Field type returned: " + newType.getReadableName());
 
-		
+		// Log.e("FOOBAR","Field type returned: " + newType.getReadableName());
+
 		return newType;
 
 	}

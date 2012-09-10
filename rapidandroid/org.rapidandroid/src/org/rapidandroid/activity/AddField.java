@@ -67,10 +67,12 @@ public class AddField extends Activity {
 	private static final int MENU_SAVE = Menu.FIRST;
 	private static final int MENU_CANCEL = Menu.FIRST + 1;
 	//private static final String ADD_FIELD ="Add Field" ;
-	private  final String ERROR_NO_FIELD_NAME = getText(R.string.error_nofieldname_required).toString();
-	private  final String FIELD_NAME=getText(R.string.lbl_fieldname).toString();
-	private  final String ERROR_NO_PROMPT = getText(R.string.error_noprompt).toString();
-	private  final String PROMPT = getText(R.string.lbl_fieldprompt).toString();
+	
+	private  static String ERROR_NO_FIELD_NAME = "Error no field";
+	private  static String FIELD_NAME="field name";
+	private  static String ERROR_NO_PROMPT = " Error no prompt";
+	private  static String PROMPT = " Prompt";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -138,6 +140,11 @@ public class AddField extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		ERROR_NO_FIELD_NAME = getText(R.string.error_nofieldname_required).toString();
+		FIELD_NAME=getText(R.string.lbl_fieldname).toString();
+		ERROR_NO_PROMPT = getText(R.string.error_noprompt).toString();
+		PROMPT = getText(R.string.lbl_fieldprompt).toString();
+		
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_SAVE, 0, R.string.formeditor_menu_save).setIcon(android.R.drawable.ic_menu_save);
 		menu.add(0, MENU_CANCEL, 0, R.string.formeditor_menu_cancel)
