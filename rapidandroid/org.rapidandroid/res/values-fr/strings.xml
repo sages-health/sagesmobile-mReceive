@@ -100,6 +100,9 @@
 <string name="range_btn_lastweek">La semaine dernière</string>
 <string name="range_btn_lastmonth">Mois dernier</string>
 <string name="range_btn_lastday">Dernier jour</string>
+<string name="messages_overtime_title">Messages au fil du temps</string>
+<string name="select_daterange_title">Sélectionnez Date</string>
+<string name="Illegal_arg_startdate">Cette activité doit être appelé avec une date de début appropriée dans le passé</string>
 
 <string name="lbl_totaldaterange">Daterange totale:</string>
 <string name="lbl_chart_chartsubject">Objet Graphique:</string>

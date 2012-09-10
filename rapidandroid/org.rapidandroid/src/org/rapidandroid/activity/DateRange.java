@@ -96,7 +96,7 @@ public class DateRange extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setTitle("Select Date Range");
+		setTitle(R.string.select_daterange_title);
 		setContentView(R.layout.date_range);
 		setEventListeners();
 		Bundle extras = getIntent().getExtras();
@@ -104,7 +104,7 @@ public class DateRange extends Activity {
 		if (extras != null) {
 			if (!extras.containsKey(CallParams.ACTIVITY_ARG_STARTDATE)) {
 				throw new IllegalArgumentException(
-													"This activity must be called with an appropriate startdate in the past.");
+													getText(R.string.Illegal_arg_startdate).toString());
 			}
 
 			mStartDate = new Date(extras.getLong(CallParams.ACTIVITY_ARG_STARTDATE));
