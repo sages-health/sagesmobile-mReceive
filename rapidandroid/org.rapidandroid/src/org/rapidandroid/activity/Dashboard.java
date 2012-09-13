@@ -223,7 +223,7 @@ public class Dashboard extends Activity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		//setTitle();
 		setContentView(R.layout.dashboard);
-
+		setTitle(R.string.dash_title);
 		this.initFormSpinner();
 		// Set the event listeners for the spinner and the listview
 		Spinner spin_forms = (Spinner) findViewById(R.id.cbx_forms);

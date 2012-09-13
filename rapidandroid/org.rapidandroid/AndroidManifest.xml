@@ -7,7 +7,7 @@
 							android:name=".content.RapidSmsContentProvider">
 		</provider>
 				
-		<activity android:label="@string/dash_title" android:name=".activity.Dashboard">
+		<activity android:name=".activity.Dashboard">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
