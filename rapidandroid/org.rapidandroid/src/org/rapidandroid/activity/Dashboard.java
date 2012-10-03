@@ -934,7 +934,7 @@ public class Dashboard extends Activity {
 
 			if (mListviewCursor.getCount() == 0) {
 				lsv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-														new String[] { "No data" }));
+														new String[] { getText(R.string.prompt_graph_no_data).toString() }));
 				return;
 			}
 
