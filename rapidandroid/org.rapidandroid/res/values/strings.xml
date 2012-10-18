@@ -26,6 +26,10 @@
 <string name="invalid_form_duplicate_formprefix">Duplicate Form Prefix</string>
 <string name="invalid_form_duplicate_formprefix_message">The form of this prefix already exists</string>
 
+
+<string name="invalid_form_whitespace_formname_message">The form name cannot contain a space</string>
+<string name="invalid_form_whitespace_formprefix_message">The form prefix cannot contain a space</string>
+
 <string name="invalid_form_create_fail">Form creation failed</string>
 <string name="invalid_form_create_fail_message">Unable to create the form and its support tables.  Check the logs.</string>
 <string name="invalid_form_confirm_close">Confirm Closure</string>
