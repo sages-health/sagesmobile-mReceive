@@ -50,21 +50,9 @@ import android.widget.EditText;
  * @author SAGES/pokuam1 - Modifications for parse in progress settings
  */
 public class GlobalSettings extends Activity {
-
-
-	/**
-	 * 
-	 */
 	private static String ACTIVITY_TITLE_STRING = "Glb title";
-	private static String GLOBAL_INPROGRESS_ACK="in progress ack";
-	private static String GLOBAL_PARSE_ACK="parse ack";
-	private static String GLOBAL_NO_PARSE_ACK=" no parse ack ";
-	private static String GLOBAL_CHECK_PARSE_TEXT="check parse text";
-	private static String GLOBAL_CHECK_IN_PROGRESS_TEXT="check in-progress text";
-	
-	/**
-	 * 
-	 */
+
+
 	public static final String LOG_DEBUG_KEY = "GlobalSettings";
 	
 	private static final int MENU_DONE = Menu.FIRST;
@@ -124,15 +112,8 @@ public class GlobalSettings extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		
-		//assign string resource value 
-		ACTIVITY_TITLE_STRING=getText(R.string.glbsettings_inprogress_ack).toString();
-		 GLOBAL_INPROGRESS_ACK=getText(R.string.glbsettings_parse_ack).toString();
-		 GLOBAL_PARSE_ACK=getText(R.string.glbsettings_noparse_ack).toString();
-		 GLOBAL_NO_PARSE_ACK=getText(R.string.glb_chk_noparse_text).toString();
-		 GLOBAL_CHECK_PARSE_TEXT=getText(R.string.glb_chk_parse_text).toString();
-		 GLOBAL_CHECK_IN_PROGRESS_TEXT=getText(R.string.glb_chk_inprogress_text).toString();
-		super.onCreate(savedInstanceState);
+
+	super.onCreate(savedInstanceState);
 		
 		
 		
@@ -170,35 +151,7 @@ public class GlobalSettings extends Activity {
 		mCacheRefreshButton = (Button) findViewById(R.id.glbsettings_bttn_cache);
 		mCacheRefreshButton.setOnClickListener(mCacheRefreshButtonListener);
 	}
-//Resource Get methods for Application Globals
-	public static String getGLOBAL_INPROGRESS_ACK() {
-		return GLOBAL_INPROGRESS_ACK;
-	}
 
-
-
-	public static String getGLOBAL_PARSE_ACK() {
-		return GLOBAL_PARSE_ACK;
-	}
-
-	
-	public static String getGLOBAL_NO_PARSE_ACK() {
-		return GLOBAL_NO_PARSE_ACK;
-	}
-
-	
-
-	public static String getGLOBAL_CHECK_PARSE_TEXT() {
-		return GLOBAL_CHECK_PARSE_TEXT;
-	}
-
-	
-
-	public static String getGLOBAL_CHECK_IN_PROGRESS_TEXT() {
-		return GLOBAL_CHECK_IN_PROGRESS_TEXT;
-	}
-
-	
 
 	/**
 	 * 
@@ -209,11 +162,11 @@ public class GlobalSettings extends Activity {
 		try {
 			mActiveSwitch.setChecked(globals.getBoolean(ApplicationGlobals.KEY_ACTIVE_ALL));			
 			mParseCheckbox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_PARSE_REPLY));
-			mParseReplyText.setText( GLOBAL_CHECK_PARSE_TEXT);
+			mParseReplyText.setText(globals.getString(ApplicationGlobals.KEY_PARSE_REPLY_TEXT));
 			mNoparseCheckBox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_FAILED_REPLY));
-			mNoparseReplyText.setText(GLOBAL_NO_PARSE_ACK);
+			mNoparseReplyText.setText(globals.getString(ApplicationGlobals.KEY_FAILED_REPLY_TEXT));
 			mParseInProgressCheckbox.setChecked(globals.getBoolean(ApplicationGlobals.KEY_INPROGRESS_REPLY));
-			mParseInProgressReplyText.setText(GLOBAL_CHECK_IN_PROGRESS_TEXT);
+			mParseInProgressReplyText.setText(globals.getString(ApplicationGlobals.KEY_PARSE_INPROGRESS_TEXT));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
