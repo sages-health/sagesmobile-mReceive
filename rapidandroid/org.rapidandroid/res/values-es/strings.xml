@@ -32,7 +32,7 @@
 <string name="prompt_keep_working">No, sigue trabajando</string>
 
 
-<string name="lbl_messages">Mensajes</string>
+<string name="lbl_messages"> Mensajes</string>
 <string name="show_all_messages">Mostrar todos los mensajes</string>
 <string name="show_all_multisms_messages">Mostrar mensajes multipartes</string>
 <string name="dash_title">RapidAndroid:: Panel de información </string>

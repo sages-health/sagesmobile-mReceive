@@ -849,7 +849,7 @@ public class Dashboard extends Activity {
 		}
 		TextView lbl_recents = (TextView) findViewById(R.id.lbl_dashboardmessages);
 
-		lbl_recents.setText(this.mListviewCursor.getCount() + getString(R.string.lbl_messages));
+		lbl_recents.setText(this.mListviewCursor.getCount() +" "+ getString(R.string.lbl_messages));
 
 		ListView lsv = (ListView) findViewById(R.id.lsv_dashboardmessages);
 

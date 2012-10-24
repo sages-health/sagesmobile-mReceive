@@ -34,7 +34,7 @@
 <string name="prompt_keep_working">Non, continuer à travailler</string>
 
 
-<string name="lbl_messages">Messages</string>
+<string name="lbl_messages"> Messages</string>
 <string name="dashboard_menu_create">Créer un formulaire</string>
 <string name="dashboard_menu_edit">Voir la forme</string>
 <string name="dashboard_menu_erase_data">D\'effacement des données</string>
