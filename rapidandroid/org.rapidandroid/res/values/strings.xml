@@ -40,7 +40,7 @@
 
 
 <string name="lbl_dashboardmessages">Recent Messages:</string>
-<string name="dash_title">RapidAndroid::Dashboard</string>
+<string name="dash_title">RapidAndroid : Dashboard</string>
 <string name="lbl_form">Form:</string>
 <string name="lbl_messages"> Messages</string>
 <string name="dashboard_menu_create">Create Form</string>
@@ -125,7 +125,7 @@
 <string name="rad_last100">Last 100</string>
 <string name="rad_last500">Last 500</string>
 <string name="rad_all">All</string>
-<string name="glbsettings_title">RapidAndroid :: Global Settings</string>
+<string name="glbsettings_title">RapidAndroid : Global Settings</string>
 <string name="glbsettings_inprogress_ack">Message parsing in progress</string>
 <string name="glbsettings_parse_ack">Message parsed successfully, thank you</string>
 <string name="glbsettings_noparse_ack">Try again</string>
@@ -144,7 +144,7 @@
 <string name="refresh">Refresh</string>
 
 <string name="lbl_forwardingNums">Forward SMS to these numbers (separate with comma)</string>
-<string name="csv_title">RapidAndroid:: CSV Scheduler  Forwarding</string>
+<string name="csv_title">RapidAndroid : CSV Scheduler  Forwarding</string>
 <string name="lbl_csv_update_settings">Update Settings</string>
 <string name="lbl_deleteAfterCsvOut">Delete data after CSV output</string>
 <string name="csv_alert_message">This form has no messages or data to output. Therefore, the output will only contain the header columns.</string>
