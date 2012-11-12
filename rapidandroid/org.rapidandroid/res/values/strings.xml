@@ -26,6 +26,10 @@
 <string name="invalid_form_duplicate_formprefix">Duplicate Form Prefix</string>
 <string name="invalid_form_duplicate_formprefix_message">The form of this prefix already exists</string>
 
+
+<string name="invalid_form_whitespace_formname_message">The form name cannot contain a space</string>
+<string name="invalid_form_whitespace_formprefix_message">The form prefix cannot contain a space</string>
+
 <string name="invalid_form_create_fail">Form creation failed</string>
 <string name="invalid_form_create_fail_message">Unable to create the form and its support tables.  Check the logs.</string>
 <string name="invalid_form_confirm_close">Confirm Closure</string>
@@ -36,9 +40,9 @@
 
 
 <string name="lbl_dashboardmessages">Recent Messages:</string>
-<string name="dash_title">RapidAndroid::Dashboard</string>
+<string name="dash_title">RapidAndroid :: Dashboard</string>
 <string name="lbl_form">Form:</string>
-<string name="lbl_messages">Messages</string>
+<string name="lbl_messages"> Messages</string>
 <string name="dashboard_menu_create">Create Form</string>
 <string name="dashboard_menu_edit">View Form</string>
 <string name="dashboard_menu_erase_data">Erase Data</string>
@@ -140,7 +144,7 @@
 <string name="refresh">Refresh</string>
 
 <string name="lbl_forwardingNums">Forward SMS to these numbers (separate with comma)</string>
-<string name="csv_title">RapidAndroid:: CSV Scheduler  Forwarding</string>
+<string name="csv_title">RapidAndroid :: CSV Scheduler  Forwarding</string>
 <string name="lbl_csv_update_settings">Update Settings</string>
 <string name="lbl_deleteAfterCsvOut">Delete data after CSV output</string>
 <string name="csv_alert_message">This form has no messages or data to output. Therefore, the output will only contain the header columns.</string>

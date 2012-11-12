@@ -38,7 +38,7 @@
 <string name="lbl_dashboardmessages">ข้อความล่าสุด:</string>
 <string name="dash_title">RapidAndroid::หน้าปัด</string>
 <string name="lbl_form">รูปแบบ:</string>
-<string name="lbl_messages">ข้อความ</string>
+<string name="lbl_messages"> ข้อความ</string>
 <string name="dashboard_menu_create">สร้างแบบฟอร์ม</string>
 <string name="dashboard_menu_edit">ดูแบบฟอร์ม</string>
 <string name="dashboard_menu_erase_data">ลบข้อมูล</string>

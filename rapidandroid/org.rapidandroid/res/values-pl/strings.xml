@@ -36,9 +36,9 @@
 
 
 <string name="lbl_dashboardmessages">Ostatnie wiadomości:</string>
-<string name="dash_title">RapidAndroid::tablica rozdzielcza</string>
+<string name="dash_title">RapidAndroid: tablica rozdzielcza</string>
 <string name="lbl_form">Forma:</string>
-<string name="lbl_messages">wiadomości</string>
+<string name="lbl_messages"> wiadomości</string>
 <string name="dashboard_menu_create">Utwórz formularz</string>
 <string name="dashboard_menu_edit">Widok formularza</string>
 <string name="dashboard_menu_erase_data">Kasowanie danych</string>
@@ -100,7 +100,7 @@
 <string name="formreview_dump_csv">Produkcja CSV</string>
 <string name="formreview_schedule_dump_csv">Harmonogram Produkcja CSV</string>
 <string name="formreview_upload_csv">Przesłać raport</string>
-<string name="formreview_title">RapidAndroid :: Formularz przeglądu</string>
+<string name="formreview_title">RapidAndroid: Formularz przeglądu</string>
 <string name="formreview_sample_submission">Składanie Sample</string>
 <string name="lbl_enddate">Data końcowa:</string>
 <string name="lbl_startdate">Data rozpoczęcia:</string>
@@ -121,7 +121,7 @@
 <string name="rad_last100">ostatnie 100</string>
 <string name="rad_last500">ostantnie 500</string>
 <string name="rad_all">wszystko</string>
-<string name="glbsettings_title">RapidAndroid :: globalne ustawienia</string>
+<string name="glbsettings_title">RapidAndroid: globalne ustawienia</string>
 <string name="glbsettings_inprogress_ack">Parsowania wiadomości w toku</string>
 <string name="glbsettings_parse_ack">Wiadomość analizowany pomyślnie, Dziękuję</string>
 <string name="glbsettings_noparse_ack">Spróbuj ponownie</string>
@@ -140,7 +140,7 @@
 <string name="refresh">Odświeżać</string>
 
 <string name="lbl_forwardingNums">Napastnik krótka wiadomość serwis te numery (oddzielone przecinkami)</string>
-<string name="csv_title">RapidAndroid:: CSV Ekspedycja Scheduler</string>
+<string name="csv_title">RapidAndroid: CSV Ekspedycja Scheduler</string>
 <string name="lbl_csv_update_settings">Aktualizuj ustawienia</string>
 <string name="lbl_deleteAfterCsvOut">Usuwanie danych po wyjściu CSV</string>
 <string name="csv_alert_message">Formularz ten nie ma wiadomości lub danych wyjściowych. Dlatego produkcja będzie zawierać tylko kolumny nagłówka.</string>

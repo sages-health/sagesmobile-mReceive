@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.rapidandroid.R;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,6 +71,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,6 +114,9 @@ public class FormCreator extends Activity {
 
 	private static final int DIALOG_FORM_DUPLICATE_FORMNAME = 6;
 	private static final int DIALOG_FORM_DUPLICATE_PREFIX = 7;
+	
+	private static final int DIALOG_FORM_INVALID_FORMNAME_WHITESPACE = 8;
+	private static final int DIALOG_FORM_INVALID_PREFIX_WHITESPACE = 9;
 
 	private static final int DIALOGRESULT_CLOSE_INFORMATIONAL = 0;
 	private static final int DIALOGRESULT_OK_DONT_SAVE = 1;
@@ -134,7 +141,10 @@ public class FormCreator extends Activity {
 
 	private FieldViewAdapter fieldViewAdapter;
 	private Cursor cursor;
-
+	
+	//Hold values of inserted prefix and formname
+	private String prefixCandidate=null;
+	private String nameCandidate=null;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -560,7 +570,23 @@ public class FormCreator extends Activity {
 		// EditText etxDescription =
 		// (EditText)findViewById(R.id.etx_description);
 		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
-
+		
+		
+		// Check formname and prefix for whitespace
+		Pattern pattern = Pattern.compile("\\s");
+		Matcher matcherformName = pattern.matcher(etxFormName.getText());
+		Matcher matcherPrefix = pattern.matcher(etxFormPrefix.getText());
+		boolean foundFormName = matcherformName.find();
+		boolean foundFormPrefix = matcherPrefix.find();
+		
+		if(foundFormName){
+			return FormCreator.DIALOG_FORM_INVALID_FORMNAME_WHITESPACE;
+		}
+		
+		if(foundFormPrefix){
+			return FormCreator.DIALOG_FORM_INVALID_PREFIX_WHITESPACE;
+		}
+		
 		if (etxFormName.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFORMNAME;
 		}
@@ -572,17 +598,20 @@ public class FormCreator extends Activity {
 			return FormCreator.DIALOG_FORM_INVALID_NOFIELDS;
 		}
 
-		String prefixCandidate = etxFormPrefix.getText().toString();
-		String nameCandidate = etxFormName.getText().toString();
+		 this.prefixCandidate = etxFormPrefix.getText().toString();
+		 this.nameCandidate = etxFormName.getText().toString();
 		
-		if (ModelTranslator.doesFormPrefixExist(prefixCandidate)) {
-			this.cursor=ModelTranslator.formExistCursor(prefixCandidate, nameCandidate);
-			return FormCreator.DIALOG_FORM_INVALID_NOTUNIQUE;
+		 if (ModelTranslator.doesFormNameExist(this.nameCandidate)) {
+				this.cursor=ModelTranslator.formExistCursor(this.prefixCandidate, this.nameCandidate);
+				return FormCreator.DIALOG_FORM_DUPLICATE_FORMNAME;
+			}
+		 
+		 if (ModelTranslator.doesFormPrefixExist(this.prefixCandidate)) {
+			this.cursor=ModelTranslator.formExistCursor(this.prefixCandidate, this.nameCandidate);
+			return FormCreator.DIALOG_FORM_DUPLICATE_PREFIX;
 		}
 		
-		if (ModelTranslator.doesFormNameExist(nameCandidate)) {
-			return FormCreator.DIALOG_FORM_DUPLICATE_FORMNAME;
-		}
+		
 		
 		// deleted repeat return code
 		return FormCreator.DIALOG_FORM_SAVEABLE;
@@ -726,7 +755,7 @@ public class FormCreator extends Activity {
 		super.onCreateDialog(id);
 		String title = "";
 		String message = "";
-
+		String cursorData=null;
 		switch (id) {
 		case DIALOG_FORM_INVALID_NOFIELDS:
 			title = getText(R.string.invalid_form_title).toString();
@@ -737,21 +766,40 @@ public class FormCreator extends Activity {
 			message = getText(R.string.invalid_form_Noformname_message).toString();
 			break;
 		case DIALOG_FORM_INVALID_NOPREFIX:
-			title = getText(R.string.invalid_form_title).toString();
-			message = getText(R.string.invalid_form_Noprefix_message).toString();
+			while (this.cursor.moveToNext()) {
+		        	 title = getText(R.string.invalid_form_title).toString();
+		        	 message = getText(R.string.invalid_form_Noprefix_message).toString();}
 			break;
 		case DIALOG_FORM_INVALID_NOTUNIQUE:
 			title = getText(R.string.invalid_form_title).toString();
-			message = getText(R.string.invalid_form_Notunique_message).toString()+"\n"+ this.cursor.toString();
+			message =getText(R.string.invalid_form_Notunique_message).toString();
+			break;
+		
+		case DIALOG_FORM_INVALID_FORMNAME_WHITESPACE:
+			title = getText(R.string.invalid_form_title).toString();
+			message =getText(R.string.invalid_form_whitespace_formname_message).toString();
+			break;
+			
+		case DIALOG_FORM_INVALID_PREFIX_WHITESPACE:
+			title = getText(R.string.invalid_form_title).toString();
+			message =getText(R.string.invalid_form_whitespace_formprefix_message).toString();
+			break;
+			
+		case DIALOG_FORM_DUPLICATE_FORMNAME:
+			while (this.cursor.moveToNext()) {
+		         if(this.nameCandidate.equals(this.cursor.getString(1)))  {
+		        	 title = getText(R.string.invalid_form_duplicate_formname).toString();
+		        	 message = getText(R.string.invalid_form_duplicate_formname_message).toString();}}
 			this.cursor.close();
 			break;
-		case DIALOG_FORM_DUPLICATE_FORMNAME:
-			title = getText(R.string.invalid_form_duplicate_formname).toString();
-			message= getText(R.string.invalid_form_duplicate_formname_message).toString();
-			break;
 		case DIALOG_FORM_DUPLICATE_PREFIX:
-			title=getText(R.string.invalid_form_duplicate_formprefix).toString();
-			message= getText(R.string.invalid_form_duplicate_formprefix_message).toString();
+			while (this.cursor.moveToNext()) {
+		         if(this.prefixCandidate.equals(this.cursor.getString(2)))  {
+		        	 title = getText(R.string.invalid_form_duplicate_formprefix).toString();
+		        	 message = getText(R.string.invalid_form_duplicate_formprefix_message).toString();}}
+			this.cursor.close();
+			break;
+		
 		case DIALOG_FORM_CREATE_FAIL:
 			title = getText(R.string.invalid_form_create_fail).toString();
 			message = getText(R.string.invalid_form_create_fail_message).toString();
