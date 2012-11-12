@@ -3,9 +3,13 @@ rapidjava/org.rapidsms.java/bin/
 rapidandroid/org.rapidandroid/bin*
 rapidandroid/org.rapidandroid/gen/
 
+rapidandroid/org.rapidandroid/project.properties
+rapidandroid/org.rapidandroid/.classpath
+rapidjava/org.rapidsms.java/.settings/
 
 #       .gitignore
 #       rapidandroid/org.rapidandroid/adjoa.txt
 #       rapidandroid/org.rapidandroid/bin/classes/
 #       rapidandroid/org.rapidandroid/gen/
 #       rapidjava/org.rapidsms.java/bin/
+
