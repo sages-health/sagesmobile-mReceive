@@ -74,6 +74,7 @@
 <string name="glb_chk_inprogress_text">Reply on in progress parses</string>
 <string name="glbsettings_heading">Global reply settings</string>
 <string name="glb_lbl_activeall">Activate all SMS features</string>
+<string name="glb_lbl_logging">Activate Logging</string>
 
 <string name="numberHint">1 to 55</string>
 <string name="lbl_outputFreq">Period for output in seconds \n(1 to 55 are valid values)</string>
