@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
+
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
@@ -128,7 +129,7 @@ public class ParsedDataTranslator {
 				} else if (type.equals("datemdy")) {
 					parsedValue = cursor.getLong(i + Message.COL_PARSED_FIELDS_OFFSET);
 				}
-
+				
 				SimpleParseResult res = new SimpleParseResult(formFields[i].getFieldType(), null, parsedValue);
 				singleParsed[fieldcount++] = res;
 			}

@@ -1,91 +1,157 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="hello">Hello World, rapidandroid</string>
-<string name="not_implemented">Not implemented yet!</string>
-<string name="show_all_messages">Show all Messages</string>
-<string name="show_all_multisms_messages">Show Multipart Messages</string>
+<string name="hello">Hey!, rapidandroid</string>
+<string name="not_implemented">Jeszcze nie zaimplementowane!</string>
+<string name="show_all_messages">Pokaż wszystkie wiadomości</string>
+<string name="show_all_multisms_messages">Pokaż wiadomości wieloczęściowe</string>
 <string name="app_name">RapidAndroid</string>
 <string name="lbl_formname">Nazwa</string>
 <string name="lbl_description">Opis</string>
 <string name="lbl_formprefix">Prefiks</string>
 <string name="lbl_formchoose">Formularze:</string>
-<string name="lbl_formparser">Typ parser</string>
-<string name="lbl_dashboardmessages">Najnowsze wiadomości:</string>
-<string name="dashboard_menu_create">tworzyć formularze</string>
-<string name="dashboard_menu_edit">obejrzeć formularze</string>
-<string name="dashboard_menu_erase_data">Kasowania danych</string>
-<string name="dashboard_menu_delete_form">Kasowania formularze</string>
-<string name="dashboard_menu_view">pokazują wykresy</string>
+<string name="lbl_formparser">Parser Typ</string>
+<string name="invalid_form_title">Nieważny Forma</string>
+
+
+<string name="invalid_form_Nofield_message">Musisz mieć co najmniej jedno pole do tego formularza, aby zapisać</string>
+
+<string name="invalid_form_Noformname_message">Musisz wprowadzić nazwę formularza</string>
+
+<string name="invalid_form_Noprefix_message">Należy wpisać prefiks</string>
+
+<string name="invalid_form_Notunique_message">Forma ta nie jest wyjątkowa</string>
+
+<string name="invalid_form_duplicate_formname">Duplikat nazwa formularza</string>
+<string name="invalid_form_duplicate_formname_message">Forma tej nazwie już istnieje</string>
+<string name="invalid_form_duplicate_formprefix">Duplikat Prefiks Forma</string>
+<string name="invalid_form_duplicate_formprefix_message">Formularz tego prefiksu już istnieje</string>
+
+<string name="invalid_form_create_fail">Formularz nie tworzenie</string>
+<string name="invalid_form_create_fail_message">Nie można stworzyć postać i jej tabele wsparcia. Sprawdź dzienniki.</string>
+<string name="invalid_form_confirm_close">Potwierdź Zamknięcie</string>
+<string name="invalid_form_confirm_close_message">Czy na pewno chcesz zamknąć bez zapisywania zmian?</string>
+
+<string name="prompt_backpressed_savechanges">Zapisz zmiany Pierwszy?</string>
+<string name="prompt_keep_working">Nie, nadal pracować</string>
+
+
+<string name="lbl_dashboardmessages">Ostatnie wiadomości:</string>
+<string name="dash_title">RapidAndroid: tablica rozdzielcza</string>
+<string name="lbl_form">Forma:</string>
+<string name="lbl_messages"> wiadomości</string>
+<string name="dashboard_menu_create">Utwórz formularz</string>
+<string name="dashboard_menu_edit">Widok formularza</string>
+<string name="dashboard_menu_erase_data">Kasowanie danych</string>
+<string name="dashboard_menu_delete_form">Usuń formularz</string>
+<string name="dashboard_menu_view">pokaż wykresy</string>
+<string name="dashboard_txt_wait">Proszę czekać....</string>
 <string name="formeditor_menu_cancel">anulować</string>
-<string name="formeditor_menu_save">zaoszczędzić</string>
-<string name="formeditor_menu_add_field">dodać pole</string>
+<string name="formeditor_menu_save">uratować</string>
+<string name="lbl_scroll_parser">Analizować tryb:</string>
+<string name="formeditor_menu_add_field">Dodaj pole</string>
 <string name="dashboard_menu_show_reports">Raporty</string>
 <string name="menu_done">Gotowy</string>
 <string name="lbl_fieldname">Nazwa:</string>
-<string name="lbl_fieldprompt">opis:</string>
+<string name="lbl_fieldprompt">Opis:</string>
 <string name="lbl_fieldtypechoose">Typ pola:</string>
-<string name="lbl_fields">Pole:</string>
-<string name="formeditor_menu_edit_forms">Edycji pole</string>
+<string name="lbl_fields">Pola:</string>
+<string name="formeditor_menu_edit_forms">Pola edycyjne</string>
 
-<string name="btn_finishaddfield">dodać</string>
-<string name="btn_canceladdfield">anulować</string>
+<string name="error_nofieldname_required"> Nazwa * Pole wymagane</string>
+<string name="error_noprompt">Opis: * Pole wymagane</string>
+<string name="duplicate_fieldname">* Nazwa pola musi być unikalna dla tej formy</string>
+
+<string name="glb_change_settings">Zmień ustawienia</string>
+<string name="addfield_scroll_word">Słowo</string>
+<string name="addfield_scroll_number">liczba</string>
+<string name="addfield_scroll_weight">waga</string>
+<string name="addfield_scroll_height">wysokość</string>
+<string name="addfield_scroll_ratio">stosunek</string>
+<string name="addfield_scroll_length">długość</string>
+<string name="addfield_scroll_t_f">Prawdziwy/Fałszywy</string>
+<string name="addfield_scroll_date1">Data/dd.dd.dddd</string>
+<string name="addfield_scroll_date2">Data/dddd.dd.dd</string>
+<string name="addfield_scroll_alphanumeric">alfanumeryczny</string>
+<string name="addfield_scroll_freetext">dowolny tekst</string>
+<string name="addfield_scroll_tropicalfruit">owoce tropikalne</string>
+<string name="addfield_scroll_diseaselist">lista chorób/Od 1 do 3</string>
+
+<string name="btn_finishaddfield">Dodać</string>
+<string name="btn_canceladdfield">Anulować</string>
 <string name="yes">Tak</string>
 <string name="no">Nie</string>
-<string name="ok">Ok</string>
-<string name="alert">zaalarmować</string>
+<string name="ok">Dobrze</string>
+<string name="alert">Azujny</string>
 <string name="confirm_delete">Czy na pewno chcesz usunąć?</string>
 
-<string name="no_msgs_to_chart">Ta forma ma żadnych wiadomości lub danych do wykresu</string>
-<string name="no_data_to_chart">Brak danych do chart.</string>
+<string name="no_msgs_to_chart">Formularz ten nie ma wiadomości lub danych do wykresu</string>
+<string name="no_data_to_chart">Brak jest danych na wykresie.</string>
+<string name="chart_choose_field_title">Wybierz pole</string>
 
-<string name="formreview_menu_done">dopracowany</string>
-<string name="formreview_menu_format">Show Example</string>
-<string name="chart_menu_done">dopracowany</string>
-<string name="chart_menu_change_variable">Change Variable</string>
-<string name="chart_menu_change_parameters">Change Date Range</string>
-<string name="formreview_dump_csv">Output CSV</string>
-<string name="formreview_schedule_dump_csv">Schedule Output CSV</string>
-<string name="formreview_upload_csv">Upload Report</string>
-<string name="lbl_enddate">End date:</string>
-<string name="lbl_startdate">Start date:</string>
-<string name="range_btn_lastweek">Last Week</string>
-<string name="range_btn_lastmonth">Last Month</string>
-<string name="range_btn_lastday">Last Day</string>
+<string name="messages_overtime">Wiadomości w czasie</string>
 
-<string name="lbl_totaldaterange">Total Daterange:</string>
-<string name="lbl_chart_chartsubject">Chart Subject:</string>
-<string name="lbl_chart_datasummary">Data Summary:</string>
-<string name="lbl_chart_totalmessages">Total Messages:</string>
-<string name="btn_daterange_startdate">Start Date</string>
-<string name="btn_daterange_enddate">End Date</string>
-<string name="range_btn_lastthreemonth">Three Months</string>
-<string name="btn_entire_range">Entire Range</string>
-<string name="rad_last100">ostatni 100</string>
-<string name="rad_last500">ostatni 500</string>
-<string name="rad_all">Wszystko</string>
-<string name="glbsettings_inprogress_ack">In Progress Parse Reply</string>
-<string name="glbsettings_parse_ack">Successful Parse Reply</string>
-<string name="glbsettings_noparse_ack">Failed Parse Reply</string>
-<string name="glb_chk_noparse_text">Reply on failed parses</string>
-<string name="glb_chk_parse_text">Reply on successful parses</string>
-<string name="glb_chk_inprogress_text">Reply on in progress parses</string>
-<string name="glbsettings_heading">Global reply settings</string>
-<string name="glb_lbl_activeall">Activate all SMS features</string>
+<string name="formreview_menu_done">Sporządzono</string>
+<string name="formreview_menu_format">Pokaż przykład</string>
+<string name="formlistview_title">Stworzone Forms</string>
+<string name="form_delete_message">Nie można usunąć formularz zawierający dane lub wiadomości</string>
+<string name="chart_menu_done">Sporządzono</string>
+<string name="chart_menu_change_variable">Zmień zmienną</string>
+<string name="chart_menu_change_parameters">Zmienić zakres dat</string>
+<string name="formreview_dump_csv">Produkcja CSV</string>
+<string name="formreview_schedule_dump_csv">Harmonogram Produkcja CSV</string>
+<string name="formreview_upload_csv">Przesłać raport</string>
+<string name="formreview_title">RapidAndroid: Formularz przeglądu</string>
+<string name="formreview_sample_submission">Składanie Sample</string>
+<string name="lbl_enddate">Data końcowa:</string>
+<string name="lbl_startdate">Data rozpoczęcia:</string>
+<string name="range_btn_lastweek">w zeszłym tygodniu</string>
+<string name="range_btn_lastmonth">w zeszłym miesiącu</string>
+<string name="range_btn_lastday">ostatni dzień</string>
+<string name="messages_overtime_title">Komunikaty w czasie</string>
+<string name="select_daterange_title">Wybierz zakres dat</string>
+<string name="Illegal_arg_startdate">Działalność ta musi być wywołana z odpowiednią datą rozpoczęcia w przeszłości</string>
+<string name="lbl_totaldaterange">Całkowity zakres dat:</string>
+<string name="lbl_chart_chartsubject">Temat Chart:</string>
+<string name="lbl_chart_datasummary">Podsumowanie danych:</string>
+<string name="lbl_chart_totalmessages">Wszystkich wiadomości:</string>
+<string name="btn_daterange_startdate">Data rozpoczęcia</string>
+<string name="btn_daterange_enddate">Data końca</string>
+<string name="range_btn_lastthreemonth">Trzy miesiące</string>
+<string name="btn_entire_range">Cały asortyment</string>
+<string name="rad_last100">ostatnie 100</string>
+<string name="rad_last500">ostantnie 500</string>
+<string name="rad_all">wszystko</string>
+<string name="glbsettings_title">RapidAndroid: globalne ustawienia</string>
+<string name="glbsettings_inprogress_ack">Parsowania wiadomości w toku</string>
+<string name="glbsettings_parse_ack">Wiadomość analizowany pomyślnie, Dziękuję</string>
+<string name="glbsettings_noparse_ack">Spróbuj ponownie</string>
+<string name="glb_chk_noparse_text">Odpowiedz na nie analizuje</string>
+<string name="glb_chk_parse_text">Odpowiedz na udany analizuje</string>
+<string name="glb_chk_inprogress_text">Odpowiedz na analizuje postępy w</string>
+<string name="glbsettings_heading">Globalne ustawienia odpowiedzi</string>
+<string name="glb_lbl_activeall">Uaktywnić wszystkie funkcje usługowe krótkich wiadomości</string>
 
-<string name="numberHint">1 to 55</string>
-<string name="lbl_outputFreq">Period for output in seconds \n(1 to 55 are valid values)</string>
-<string name="settings_saved">Changes Saved</string>
-<string name="refresh_cache">Refresh the cache</string>
 
-<string name="refresh">Refresh</string>
+<string name="numberHint">1 do 55</string>
+<string name="lbl_outputFreq">Okres wyjścia w sekundach \n(1 do 55 są prawidłowe wartości)</string>
+<string name="settings_saved">zmiany Zapisano</string>
+<string name="refresh_cache">Odświeżenia pamięci podręcznej</string>
 
-<string name="lbl_forwardingNums">Forward SMS to these numbers (separate with comma)</string>
+<string name="refresh">Odświeżać</string>
 
-<string name="lbl_deleteAfterCsvOut">Delete data after CSV output</string>
+<string name="lbl_forwardingNums">Napastnik krótka wiadomość serwis te numery (oddzielone przecinkami)</string>
+<string name="csv_title">RapidAndroid: CSV Ekspedycja Scheduler</string>
+<string name="lbl_csv_update_settings">Aktualizuj ustawienia</string>
+<string name="lbl_deleteAfterCsvOut">Usuwanie danych po wyjściu CSV</string>
+<string name="csv_alert_message">Formularz ten nie ma wiadomości lub danych wyjściowych. Dlatego produkcja będzie zawierać tylko kolumny nagłówka.</string>
+<string name="prompt_csv_job_begun">CSV praca produkcja rozpoczęła</string>
+<string name="prompt_csv_save_complete">CSV Zapisz wypełnić</string>
 
-<string name="lbl_toggleAutoCsvOutput">Activate auto CSV output</string>
-<string name="lbl_test_nakia">THIS IS A TEST STRING</string>
-<string name="lbl_test_nakia_2">THIS IS ANOTHER TEST STRING</string>
-<string name="lbl_test_nakia_3">THIS IS ANOTHER TEST STRING 3</string>
+<string name="lbl_toggleAutoCsvOutput">Aktywuj auto CSV wyjście</string>
+
+<string name="prompt_graph_please_wait">Proszę czekać</string>
+<string name="prompt_graph_drawing">Rysowanie wykresu.........</string>
+<string name="prompt_graph_no_data">Brak danych</string>
+<string name="prompt_graph_nodata_message">Niestety, nie było dane dla wybranej zmiennej i zakres dat</string>
 
 </resources>

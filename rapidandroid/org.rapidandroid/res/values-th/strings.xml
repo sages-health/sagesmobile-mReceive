@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+<string name="hello">สวัสดี</string>
+<string name="not_implemented">ยังไม่ได้ใช้!</string>
+<string name="show_all_messages">แสดงข้อความทั้งหมด</string>
+<string name="show_all_multisms_messages">แสดงข้อความส่วนจากหลายส่วน</string>
+<string name="app_name">RapidAndroid</string>
+<string name="lbl_formname">ชื่อ</string>
+<string name="lbl_description">ลักษณะ</string>
+<string name="lbl_formprefix">อุปสรรค</string>
+<string name="lbl_formchoose">รูปแบบ:</string>
+<string name="lbl_formparser">แยก ประเภท</string>
+<string name="invalid_form_title">แบบฟอร์มที่ไม่ถูกต้อง</string>
+
+
+<string name="invalid_form_Nofield_message">คุณต้องมีอย่างน้อยหนึ่งเขตข้อมูลสำหรับรูปแบบนี้เพื่อประหยัด</string>
+
+<string name="invalid_form_Noformname_message">คุณต้องป้อนชื่อฟอร์ม</string>
+
+<string name="invalid_form_Noprefix_message">คุณต้องใส่คำนำหน้า</string>
+
+<string name="invalid_form_Notunique_message">รูปแบบนี้จะไม่ซ้ำ</string>
+
+<string name="invalid_form_duplicate_formname">ซ้ำชื่อฟอร์ม</string>
+<string name="invalid_form_duplicate_formname_message">รูปแบบของชื่อนี้มีอยู่แล้ว</string>
+<string name="invalid_form_duplicate_formprefix">คำนำหน้าซ้ำแบบ</string>
+<string name="invalid_form_duplicate_formprefix_message">รูปแบบของคำนำหน้านี้อยู่แล้ว</string>
+
+<string name="invalid_form_create_fail">ล้มเหลวในการสร้างรูปแบบ</string>
+<string name="invalid_form_create_fail_message">ไม่สามารถที่จะสร้างรูปแบบและตารางการสนับสนุน ตรวจสอบบันทึก</string>
+<string name="invalid_form_confirm_close">ยืนยันการปิด</string>
+<string name="invalid_form_confirm_close_message">คุณแน่ใจหรือว่าคุณต้องการปิดโดยไม่บันทึกการเปลี่ยนแปลงหรือไม่</string>
+
+<string name="prompt_backpressed_savechanges">บันทึกการเปลี่ยนแปลง แรกหรือไม่?</string>
+<string name="prompt_keep_working">ไม่มีให้ทำงาน</string>
+
+
+<string name="lbl_dashboardmessages">ข้อความล่าสุด:</string>
+<string name="dash_title">RapidAndroid::หน้าปัด</string>
+<string name="lbl_form">รูปแบบ:</string>
+<string name="lbl_messages"> ข้อความ</string>
+<string name="dashboard_menu_create">สร้างแบบฟอร์ม</string>
+<string name="dashboard_menu_edit">ดูแบบฟอร์ม</string>
+<string name="dashboard_menu_erase_data">ลบข้อมูล</string>
+<string name="dashboard_menu_delete_form">ลบรูปแบบ</string>
+<string name="dashboard_menu_view">แสดงแผนภูมิ</string>
+<string name="dashboard_txt_wait">โปรดรอสักครู่ ....</string>
+<string name="formeditor_menu_cancel">ยกเลิก</string>
+<string name="formeditor_menu_save">ประหยัด</string>
+<string name="lbl_scroll_parser">แยก โหมด:</string>
+<string name="formeditor_menu_add_field">เพิ่มเขตข้อมูล</string>
+<string name="dashboard_menu_show_reports">รายงาน</string>
+<string name="menu_done">เสร็จ</string>
+<string name="lbl_fieldname">ชื่อ:</string>
+<string name="lbl_fieldprompt">รายละเอียด:</string>
+<string name="lbl_fieldtypechoose">ฟิลด์ชนิด:</string>
+<string name="lbl_fields">เขต:</string>
+<string name="formeditor_menu_edit_forms">แก้ไขเขต</string>
+
+<string name="error_nofieldname_required">ชื่อฟิลด์ที่จำเป็น</string>
+<string name="error_noprompt">รายละเอียด: ฟิลด์ที่จำเป็น</string>
+<string name="duplicate_fieldname">* ชื่อเขตจะต้องไม่ซ้ำกับรูปแบบนี้ </string>
+
+<string name="glb_change_settings">เปลี่ยนการตั้งค่า</string>
+<string name="addfield_scroll_word">คำ</string>
+<string name="addfield_scroll_number">จำนวน</string>
+<string name="addfield_scroll_weight">น้ำหนัก</string>
+<string name="addfield_scroll_height">ความสูง</string>
+<string name="addfield_scroll_ratio">อัตราส่วน</string>
+<string name="addfield_scroll_length">ระยะเวลา</string>
+<string name="addfield_scroll_t_f">จริง/เท็จ</string>
+<string name="addfield_scroll_date1">วันที่/dd.dd.dddd</string>
+<string name="addfield_scroll_date2">วันที่/dddd.dd.dd</string>
+<string name="addfield_scroll_alphanumeric">ตัวอักษรและตัวเลข</string>
+<string name="addfield_scroll_freetext">ข้อความฟรี</string>
+<string name="addfield_scroll_tropicalfruit">ผลไม้เขตร้อน</string>
+<string name="addfield_scroll_diseaselist">รายการโรค/1 ถึง 3</string>
+
+<string name="btn_finishaddfield">เพิ่ม</string>
+<string name="btn_canceladdfield">ยกเลิก</string>
+<string name="yes">ใช่</string>
+<string name="no">ไม่</string>
+<string name="ok">ถูก</string>
+<string name="alert">เตือนภัย</string>
+<string name="confirm_delete">คุณแน่ใจหรือว่าต้องการลบ</string>
+
+<string name="no_msgs_to_chart">แบบนี้มีไม่มีข้อความหรือข้อมูลในการทำแผนที่</string>
+<string name="no_data_to_chart">ไม่มีข้อมูลในการทำแผนที่เป็น</string>
+<string name="chart_choose_field_title">เลือกฟิลด์</string>
+
+<string name="messages_overtime">ข้อความเมื่อเวลาผ่านไป</string>
+
+<string name="formreview_menu_done">ทำ</string>
+<string name="formreview_menu_format">แสดงตัวอย่าง</string>
+<string name="formlistview_title">แบบฟอร์มที่สร้างไว้</string>
+<string name="form_delete_message">คุณไม่สามารถลบรูปแบบที่มีข้อมูลหรือข้อความ</string>
+<string name="chart_menu_done">ทำ</string>
+<string name="chart_menu_change_variable">เปลี่ยนตัวแปร</string>
+<string name="chart_menu_change_parameters">เปลี่ยนช่วงวันที่</string>
+<string name="formreview_dump_csv">CSV เอาท์พุท</string>
+<string name="formreview_schedule_dump_csv">ตาราง CSV เอาท์พุท</string>
+<string name="formreview_upload_csv">อัพโหลดรายงาน</string>
+<string name="formreview_title">RapidAndroid :: ดูรูปแบบการ</string>
+<string name="formreview_sample_submission">ส่งตัวอย่าง</string>
+<string name="lbl_enddate">วันที่สิ้นสุด:</string>
+<string name="lbl_startdate">วันที่เริ่มต้น:</string>
+<string name="range_btn_lastweek">สัปดาห์ที่</string>
+<string name="range_btn_lastmonth">เดือนก่อน</string>
+<string name="range_btn_lastday">วันสุดท้าย</string>
+<string name="messages_overtime_title">ข้อความเมื่อเวลาผ่านไป</string>
+<string name="select_daterange_title">เลือกช่วงวันที่</string>
+<string name="Illegal_arg_startdate">กิจกรรมนี้ต้องเรียก startdate เหมาะสมในอดีต</string>
+<string name="lbl_totaldaterange">ช่วงวันที่รวม:</string>
+<string name="lbl_chart_chartsubject">เรื่องกราฟ:</string>
+<string name="lbl_chart_datasummary">สรุปข้อมูล:</string>
+<string name="lbl_chart_totalmessages">ข้อความทั้งหมด:</string>
+<string name="btn_daterange_startdate">วันที่เริ่มต้น</string>
+<string name="btn_daterange_enddate">วันที่สิ้นสุด</string>
+<string name="range_btn_lastthreemonth">สามเดือน</string>
+<string name="btn_entire_range">ทั้งช่วง</string>
+<string name="rad_last100">ล่าสุด 100</string>
+<string name="rad_last500">ล่าสุด  500</string>
+<string name="rad_all">ทั้งหมด</string>
+<string name="glbsettings_title">RapidAndroid :: การตั้งค่าสากล</string>
+<string name="glbsettings_inprogress_ack">แยกข้อความในความคืบหน้า</string>
+<string name="glbsettings_parse_ack">ข้อความแจงประสบความสำเร็จขอขอบคุณ</string>
+<string name="glbsettings_noparse_ack">ลองอีกครั้ง</string>
+<string name="glb_chk_noparse_text">ตอบเมื่อล้มเหลวจะแยกวิเคราะห์</string>
+<string name="glb_chk_parse_text">ตอบเมื่อประสบความสำเร็จจะแยกวิเคราะห์</string>
+<string name="glb_chk_inprogress_text">ตอบเมื่อแยกวิเคราะห์ในความคืบหน้า</string>
+<string name="glbsettings_heading">การตั้งค่า ทั่วโลกlตอบ</string>
+<string name="glb_lbl_activeall">เปิดใช้งานคุณสมบัติทั้งหมดบริการข้อความสั้น</string>
+
+
+<string name="numberHint">1 ไปยัง 55</string>
+<string name="lbl_outputFreq"> ระยะเวลาสำหรับการส่งออกในไม่กี่วินาที\n(1 ไปยัง 55 ค่าที่ถูกต้องเป็น)</string>
+<string name="settings_saved">การเปลี่ยนแปลงที่บันทึกไว้</string>
+<string name="refresh_cache">รีเฟรชแคช</string>
+
+<string name="refresh">รีเฟรช</string>
+
+<string name="lbl_forwardingNums">บริการข้อความสั้นไปข้างหน้าเพื่อตัวเลขเหล่านี้ (แยกด้วยเครื่องหมายจุลภาค)</string>
+<string name="csv_title">RapidAndroid:: CSV การส่งต่อกำหนดการ</string>
+<string name="lbl_csv_update_settings">ปรับปรุงการตั้งค่า</string>
+<string name="lbl_deleteAfterCsvOut">ลบข้อมูลหลังจากออก CSV</string>
+<string name="csv_alert_message"> แบบนี้มีไม่มีข้อความหรือข้อมูลไปยังเอาท์พุท ดังนั้นการส่งออกจะมีเฉพาะส่วนหัวคอลัมน์</string>
+<string name="prompt_csv_job_begun">CSV งานเอาท์พุทได้เริ่ม</string>
+<string name="prompt_csv_save_complete">CSV บันทึกเสร็จสมบูรณ์</string>
+
+<string name="lbl_toggleAutoCsvOutput">เปิดใช้งานโดยอัตโนมัติออก CSV</string>
+
+<string name="prompt_graph_please_wait">โปรดรอสักครู่</string>
+<string name="prompt_graph_drawing">วาดกราฟ.........</string>
+<string name="prompt_graph_no_data">ไม่มีข้อมูล</string>
+<string name="prompt_graph_nodata_message">ขออภัยไม่มีข้อมูลสำหรับตัวแปรที่เลือกและช่วงวันที่เป็น</string>
+
+</resources>

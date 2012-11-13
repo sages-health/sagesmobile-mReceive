@@ -40,7 +40,6 @@ import android.util.Log;
 public class ApplicationGlobals {
 
 
-
 	private static boolean globalsLoaded = false;
 	
 	private static boolean mActiveLogging = false; 
