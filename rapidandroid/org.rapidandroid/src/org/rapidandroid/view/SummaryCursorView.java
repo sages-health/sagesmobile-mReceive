@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.rapidsms.java.core.model.Message;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.view.Gravity;

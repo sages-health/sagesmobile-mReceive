@@ -21,22 +21,15 @@
 package org.rapidandroid.activity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.rapidandroid.R;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import org.rapidandroid.R;
 import org.rapidandroid.activity.AddField.ResultConstants;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.view.adapter.FieldViewAdapter;
@@ -53,7 +46,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -66,15 +58,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Activity window for creating a new form.
@@ -90,6 +79,8 @@ import android.widget.Toast;
  */
 
 public class FormCreator extends Activity {
+	protected Menu testMenu;
+	protected MenuItem testMenuItem;
 	private static final int MENU_SAVE = Menu.FIRST;
 	private static final int MENU_EDIT_FORMS = Menu.FIRST + 1;
 	private static final int MENU_ADD_FIELD = Menu.FIRST + 2;
@@ -504,6 +495,7 @@ public class FormCreator extends Activity {
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_SAVE, 0, R.string.formeditor_menu_save).setIcon(
 				android.R.drawable.ic_menu_save);
@@ -513,6 +505,7 @@ public class FormCreator extends Activity {
 				.setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, MENU_CANCEL, 0, R.string.formeditor_menu_cancel).setIcon(
 				android.R.drawable.ic_menu_close_clear_cancel);
+		testMenu=menu;
 		return true;
 	}
 
@@ -523,6 +516,7 @@ public class FormCreator extends Activity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		testMenuItem = item;
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 		case MENU_SAVE:
@@ -858,6 +852,13 @@ public class FormCreator extends Activity {
 					}
 				});
 		dialog.show();
+	}
+	//For testing Purposes only
+	public Menu getMenu(){
+		return testMenu;
+	}
+	public MenuItem getMenuItem(){
+		return testMenuItem;
 	}
 
 }

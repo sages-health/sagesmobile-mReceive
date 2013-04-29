@@ -148,13 +148,19 @@ public class ParsedDataReporter {
 		try {
 
 			File sdcard = Environment.getExternalStorageDirectory();
+			System.out.println("THis is the sdcard location "+sdcard.toString());
 			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ f.getPrefix() + "_exports");
-			destinationdir.mkdir();
+			System.out.println("This is the directory we want to create: "+destinationdir.toString());
+			if(destinationdir.mkdir())
+				System.out.println("Directory created");
+			else
+				System.out.println("Directory was not created");
+			
 			Date now = new Date();
 			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.getYear()
 					+ now.getMonth() + now.getDate() + "-" + now.getHours() + now.getMinutes() + ".csv");
 			
-		
+		System.out.println("This is the file location"+destinationfile.toString());
 			destinationfile.createNewFile();
 			fOut = new FileOutputStream(destinationfile);
 			String[] cols = cr.getColumnNames();
