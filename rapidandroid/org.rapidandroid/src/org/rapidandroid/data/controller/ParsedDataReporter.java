@@ -146,21 +146,27 @@ public class ParsedDataReporter {
 		FileOutputStream fOut = null;
 		
 		try {
-
+			//Must create directory recursively 4/30/13 and call mkdir() on each new directory powelnv1
 			File sdcard = Environment.getExternalStorageDirectory();
-			System.out.println("THis is the sdcard location "+sdcard.toString());
-			File destinationdir = new File(sdcard, "rapidandroid/exports/"+ f.getPrefix() + "_exports");
-			System.out.println("This is the directory we want to create: "+destinationdir.toString());
-			if(destinationdir.mkdir())
-				System.out.println("Directory created");
-			else
-				System.out.println("Directory was not created");
+			//System.out.println("THis is the sdcard location "+sdcard.toString());
+			//File destinationdir = new File(sdcard, "rapidandroid/exports/"+ f.getPrefix() + "_exports");
+			
+			sdcard.mkdir();
+			File rapidandroidDir= new File(sdcard,"rapidandroid");
+			rapidandroidDir.mkdir();
+			File exportsDir = new File(rapidandroidDir,"exports");
+			exportsDir.mkdir();
+			File destinationdir = new File(exportsDir,f.getPrefix() + "_exports");
+
+			//System.out.println("This is the directory we want to create: "+destinationdir.toString());
+			destinationdir.mkdir();
+			
 			
 			Date now = new Date();
 			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.getYear()
 					+ now.getMonth() + now.getDate() + "-" + now.getHours() + now.getMinutes() + ".csv");
 			
-		System.out.println("This is the file location"+destinationfile.toString());
+		//System.out.println("This is the file location"+destinationfile.toString());
 			destinationfile.createNewFile();
 			fOut = new FileOutputStream(destinationfile);
 			String[] cols = cr.getColumnNames();
