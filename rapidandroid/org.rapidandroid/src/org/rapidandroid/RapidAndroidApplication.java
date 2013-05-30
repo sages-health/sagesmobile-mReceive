@@ -23,14 +23,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Date;
 
-import org.rapidandroid.SystemHealthTracking.SagesEventType;
+import org.apache.log4j.Logger;
 import org.rapidandroid.activity.CsvOutputScheduler;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -39,6 +39,42 @@ import android.util.Log;
  */
 public class RapidAndroidApplication extends Application {
 
+	public static final String DIR_RAPIDANDROID_LOGS = "rapidandroid/logs";
+	public static final String DIR_RAPIDANDROID_EXPORTS = "rapidandroid/exports";
+
+	private void configureLog4j() {
+        String fileName = Environment.getExternalStorageDirectory() + "/" + DIR_RAPIDANDROID_LOGS + "/"
+                + SystemHealthTracking.logName; 
+        String filePattern = "%d - [%c] - %p : %m%n";
+        int maxBackupSize = 10;
+        long maxFileSize = 1024 * 1024;
+ 
+        Log4jHelper.Configure(fileName, filePattern, maxBackupSize, maxFileSize);
+    }
+
+	/**
+	 * Initializes the logs directory on the sdcard
+	 * TODO: behavior if sdcard not mounted
+	 */
+	private void makeLogDir() {
+		File sdcard = Environment.getExternalStorageDirectory();
+		File logDestination = new File(sdcard, DIR_RAPIDANDROID_LOGS);
+		if (logDestination.mkdir()){
+			Log.d("RapidAndroidApplication", DIR_RAPIDANDROID_LOGS + " directory created");
+		}
+	}
+	 
+	/**
+	 * Initializes the exports directory on the sdcard
+	 * TODO: behavior if sdcard not mounted
+	 */
+	private void makeExportsDir() {
+		File sdcard = Environment.getExternalStorageDirectory();
+		File exportsDestination = new File(sdcard, DIR_RAPIDANDROID_EXPORTS);
+		if (exportsDestination.mkdir()){
+			Log.d("RapidAndroidApplication", DIR_RAPIDANDROID_EXPORTS + "directory created");
+		}
+	}
 	static String prefsFileName = CsvOutputScheduler.sharedPreferenceFilename;
 	public static boolean logSystemHealth = true;
 	
@@ -51,18 +87,27 @@ public class RapidAndroidApplication extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		//Debug.startMethodTracing("rapidandroid_application");
-		try {
-			SystemHealthTracking.initDataStore(this);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d("RapidAndroidApplication", "RAPIDANDROID IS STARTING UP!");
-		if (logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.STARTUP, "RapidAndroid is starting up!", Log.INFO);
-		ApplicationGlobals.checkGlobals(this.getApplicationContext());
-		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
 		
+		// create  rapidandroid/logs & rapidandroid/exports directories
+		makeLogDir();
+		makeExportsDir();
+		
+		// configure log4j
+		configureLog4j();
+
+		//Debug.startMethodTracing("rapidandroid_application");
+		ApplicationGlobals.checkGlobals(this.getApplicationContext());
+		ApplicationGlobals.initGlobals(this.getApplicationContext());
+		Log.d("RapidAndroidApplication", "RAPIDANDROID IS STARTING UP!");
+		
+		Logger mLog = Logger.getLogger(RapidAndroidApplication.class);
+		mLog.info("is logging on = " + ApplicationGlobals.doLog());
+		logSystemHealth = ApplicationGlobals.doLog();
+		SystemHealthTracking.setLoggingEnabled(logSystemHealth);
+		SystemHealthTracking healthTracker = new SystemHealthTracking(RapidAndroidApplication.class);
+		healthTracker.logInfo("RapidAndroid starting and using the new System Health Tracking Log");
+		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
+		healthTracker.logInfo("Now launching the Dashboard.");
 	}
 	
 	/**
@@ -90,7 +135,7 @@ public class RapidAndroidApplication extends Application {
 			
 		} catch (IOException e) {
 			
-		}finally {
+		} finally {
 			try {
 		      if (fin != null) {
 	                fin.close();

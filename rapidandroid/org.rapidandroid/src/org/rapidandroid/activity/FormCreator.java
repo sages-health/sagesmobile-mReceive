@@ -235,15 +235,9 @@ public class FormCreator extends Activity {
 
 					JSONObject fieldobj = new JSONObject();
 
-					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME,
-							f.getName());
-					fieldobj.put(
-							AddField.ResultConstants.RESULT_KEY_DESCRIPTION,
-							f.getDescription());
-					fieldobj.put(
-							AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID,
-							((SimpleFieldType) f.getFieldType()).getId());
-
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDNAME,	f.getName());
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_DESCRIPTION, f.getDescription());
+					fieldobj.put(AddField.ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType) f.getFieldType()).getId());
 					savedstate.put("Field" + i, fieldobj);
 				}
 			}
@@ -280,8 +274,7 @@ public class FormCreator extends Activity {
 				do {
 					checkForFields = readobject.has("Field" + i);
 					if (checkForFields) {
-						JSONObject fieldBundle = (JSONObject) readobject
-								.get("Field" + i);
+						JSONObject fieldBundle = (JSONObject) readobject.get("Field" + i);
 						restoreFieldFromState(fieldBundle);
 						i++;
 					}
@@ -334,8 +327,7 @@ public class FormCreator extends Activity {
 		for (Field fi : fields) {
 			Bundle b = new Bundle();
 			b.putString(ResultConstants.RESULT_KEY_FIELDNAME, fi.getName());
-			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION,
-					fi.getDescription());
+			b.putString(ResultConstants.RESULT_KEY_DESCRIPTION, fi.getDescription());
 			b.putInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID, ((SimpleFieldType)fi.getFieldType()).getId());
 
 			addNewFieldFromActivity(b);
@@ -412,12 +404,9 @@ public class FormCreator extends Activity {
 		try {
 			Field newField = new Field();
 			newField.setFieldId(-1);
-			newField.setName(fieldjson
-					.getString(ResultConstants.RESULT_KEY_FIELDNAME));
-			newField.setDescription(fieldjson
-					.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
-			int fieldTypeID = fieldjson
-					.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
+			newField.setName(fieldjson.getString(ResultConstants.RESULT_KEY_FIELDNAME));
+			newField.setDescription(fieldjson.getString(ResultConstants.RESULT_KEY_DESCRIPTION));
+			int fieldTypeID = fieldjson.getInt(ResultConstants.RESULT_KEY_FIELDTYPE_ID);
 			ITokenParser fieldtype = ModelTranslator.getFieldType(fieldTypeID);
 			newField.setFieldType(fieldtype);
 
@@ -592,8 +581,7 @@ public class FormCreator extends Activity {
 		Spinner spinnerParserType = (Spinner) findViewById(R.id.spinner_formparser);
 		int parserPosition = spinnerParserType.getSelectedItemPosition();
 
-		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition]
-				.getName().toUpperCase());
+		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
 
 		Form formToSave = new Form();
 		formToSave.setFormName(etxFormName.getText().toString().trim());
@@ -602,8 +590,7 @@ public class FormCreator extends Activity {
 		formToSave.setParserType(parserType);
 		// (Message[])parsedMessages.keySet().toArray(new
 		// Message[parsedMessages.keySet().size()]);
-		Field[] fieldArray = this.mCurrentFields
-				.toArray(new Field[mCurrentFields.size()]);
+		Field[] fieldArray = this.mCurrentFields.toArray(new Field[mCurrentFields.size()]);
 		formToSave.setFields(fieldArray);
 
 		try {
@@ -626,9 +613,7 @@ public class FormCreator extends Activity {
 
 		// some sanity checks:
 		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
-		if (lsvFields.getCount() == 0 || this.mCurrentFields == null
-				|| this.mCurrentFields.size() == 0) {
-
+		if (lsvFields.getCount() == 0 || this.mCurrentFields == null || this.mCurrentFields.size() == 0) {
 			return true;
 		}
 
@@ -636,8 +621,7 @@ public class FormCreator extends Activity {
 			return true;
 		}
 
-		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
 		switch (item.getItemId()) {
 		// TODO: IMPLEMENT CONTEXT MENU

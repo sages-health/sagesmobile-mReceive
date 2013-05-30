@@ -42,7 +42,8 @@ public class FloatInterpreter implements IParseInterpreter {
 
 	public FloatInterpreter() {
 		// MUST HAVE ZERO GROUPS AND OTHER TOKENIZING JUNK
-		mPattern = Pattern.compile("\\d+\\.*\\d*");
+		//mPattern = Pattern.compile("\\d+\\.*\\d*");
+		mPattern = Pattern.compile("-?\\d+\\.?\\d*"); //-?\d+\.?\d*
 	}
 
 	public Object interpretValue(String token) {

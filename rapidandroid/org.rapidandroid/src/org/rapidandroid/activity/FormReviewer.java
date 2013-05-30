@@ -85,6 +85,12 @@ import android.widget.Toast;
 
 public class FormReviewer extends Activity {
 
+	private static final String FILE_UPLOAD_BEGUN = "File upload begun";
+	private static final String FILE_UPLOAD_FAILED = "File upload failed";
+	private static final String FILE_UPLOAD_SUCCESSFUL = "File upload successful";
+	private static final String CSV_SAVE_COMPLETE = "CSV Save Complete";
+	private static final String CSV_SAVE_FAILED = "CSV Save Failed";
+
 	public class CallParams {
 		public static final String REVIEW_FORM = "review_form";
 	}
@@ -276,15 +282,18 @@ public class FormReviewer extends Activity {
 
 	private void alertUploadStatus() {
 		if (success) {
-			Toast.makeText(getApplicationContext(), "File upload successful", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), FILE_UPLOAD_SUCCESSFUL, Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(getApplicationContext(), "File upload failed", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), FILE_UPLOAD_FAILED, Toast.LENGTH_LONG).show();
 		}
 	}
 
 	private void alertCSVStatus() {
-
-		Toast.makeText(getApplicationContext(), "CSV Save Complete", Toast.LENGTH_LONG).show();
+		if (success) {
+			Toast.makeText(getApplicationContext(), CSV_SAVE_COMPLETE, Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(getApplicationContext(), CSV_SAVE_FAILED, Toast.LENGTH_LONG).show();
+		}
 
 	}
 
@@ -302,7 +311,7 @@ public class FormReviewer extends Activity {
 	}
 
 	private void uploadFile(final String filename) {
-		Toast.makeText(getApplicationContext(), "File upload begun", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), FILE_UPLOAD_BEGUN, Toast.LENGTH_LONG).show();
 		Thread t = new Thread() {
 			@Override
 			public void run() {
@@ -354,7 +363,7 @@ public class FormReviewer extends Activity {
 				Calendar now = Calendar.getInstance();
 				Calendar then = Calendar.getInstance();
 				then.set(Calendar.YEAR, 1990);
-				ParsedDataReporter.exportFormDataToCSV(getBaseContext(), mForm, then, now);
+				success = ParsedDataReporter.exportFormDataToCSV(getBaseContext(), mForm, then, now);
 				mDebugHandler.post(mCsvSaveCompleted);
 
 			}

@@ -24,7 +24,9 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.rapidandroid.ApplicationGlobals;
 import org.rapidandroid.R;
+import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.data.controller.DashboardDataLayer;
@@ -82,7 +84,8 @@ import android.widget.ViewSwitcher;
  * 
  */
 public class Dashboard extends Activity {
-
+	SystemHealthTracking healthTracker = new SystemHealthTracking(Dashboard.class);
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -92,6 +95,7 @@ public class Dashboard extends Activity {
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
+		ApplicationGlobals.initGlobals(this);
 	}
 
 	/*
@@ -103,6 +107,7 @@ public class Dashboard extends Activity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		ApplicationGlobals.initGlobals(this);
 	}
 
 	private SingleRowHeaderView headerView;
@@ -220,6 +225,9 @@ public class Dashboard extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ApplicationGlobals.initGlobals(this);
+		
+		healthTracker.logInfo("Dashboard creating.");
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setTitle("RapidAndroid :: Dashboard");
 		setContentView(R.layout.dashboard);
@@ -298,6 +306,7 @@ public class Dashboard extends Activity {
 					               mListviewCursor = null;
 					               beginListViewReload();
 					               db.close();
+					               healthTracker.logInfo("Deleted a record.");
 					           }
 					       })
 					       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -519,15 +528,19 @@ public class Dashboard extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+		SystemHealthTracking healthTracker = new SystemHealthTracking(Dashboard.class);
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 			case MENU_CREATE_ID:
+				healthTracker.logInfo("Create Form selected from menu.");
 				startActivityFormCreate();
 				return true;
 			case MENU_FORM_REVIEW_ID:
+				healthTracker.logInfo("View Form for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startActivityFormReview();
 				return true;
 			case MENU_ERASE_DATA:
+				healthTracker.logInfo("Erase all Data for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startDialogEraseData();
 				return true;
 
@@ -535,13 +548,16 @@ public class Dashboard extends Activity {
 				// startDateRangeActivity();
 				// return true;
 			case MENU_CHARTS_ID:
+				healthTracker.logInfo("Show Charts for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startActivityChart();
 				return true;
 			case MENU_GLOBAL_SETTINGS:
+				healthTracker.logInfo("Change Settings selected from menu.");
 				startActivityGlobalSettings();
 				return true;
 			// SAGES/pokuam1
 			case MENU_DELETE_FORM:
+				healthTracker.logInfo("Delete Form " + mChosenForm.getPrefix() + " was selected from menu.");
 				startDialogDeleteForm();
 				return true;
 		}
@@ -562,6 +578,7 @@ public class Dashboard extends Activity {
 			noDateDialog.setTitle(R.string.alert);
 			noDateDialog.setMessage("You cannot delete a form containing data or messages");
 			noDateDialog.show();
+			healthTracker.logInfo("Could not delete form "+ mChosenForm.getPrefix() + "--it still had data messages.");
 		} else {	
 		Builder deleteFormDialog = new AlertDialog.Builder(this);
 		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
@@ -578,10 +595,12 @@ public class Dashboard extends Activity {
 	               //int rows = db.delete(table, whereClause, whereArgs);
 	               //mListviewCursor = null;
 	        	   initFormSpinner();
+	        	   healthTracker.logInfo("User decided to delete Form " + formPrefix +".");
 	           }
 	       })
 	       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
 	           public void onClick(DialogInterface dialog, int id) {
+	        	   healthTracker.logInfo("User decided NOT to delete Form " + formPrefix +".");
 	                dialog.cancel();
 	           }
 	       });
@@ -785,6 +804,7 @@ public class Dashboard extends Activity {
 			i.putExtra(ChartData.CallParams.CHART_MESSAGES, true);
 		} else if (mShowAllMultismsMessages){
 			Toast.makeText(getApplicationContext(), getString(R.string.not_implemented), Toast.LENGTH_SHORT).show();
+			return;
 		}
 
 		// i.putExtra(ChartData.CallParams.START_DATE, mStartDate.getTime());

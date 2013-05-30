@@ -51,18 +51,21 @@ import android.util.Log;
  * @created Jan 27, 2009 Summary:
  */
 public class ModelBootstrap {
+	private static SystemHealthTracking healthTracker = new SystemHealthTracking(ModelBootstrap.class);
 
 	private static Context mContext;
 
 	private static HashMap<Integer, Form> formIdCache = new HashMap<Integer, Form>();
 	private static HashMap<Integer, Vector<Field>> fieldToFormHash = new HashMap<Integer, Vector<Field>>();
 	private static HashMap<Integer, SimpleFieldType> fieldTypeHash = new HashMap<Integer, SimpleFieldType>();
-
+	
+	
 	public static void InitApplicationDatabase(Context context) {
 		mContext = context;
 		// SAGES/pokuam1: force check existence of tables and forms
 		if (true) {
 		//if (isFieldTypeTableEmpty()) {
+			healthTracker.logInfo("Bootstrapping fieldtypes, fields, and forms.");
 			applicationInitialFormFieldTypesBootstrap();
 		}
 		MessageTranslator.updateMonitorHash(context);
@@ -139,7 +142,7 @@ public class ModelBootstrap {
 	 * external-custom-fieldtypes: place them here: /sdcard/rapidandroid/externalcustomfieldtypes.json
 	 */
 	private static void applicationInitialFormFieldTypesBootstrap() {
-
+		healthTracker.logInfo("Loading field types and forms from assets.");
 		loadFieldTypesFromAssets();
 		insertFieldTypesIntoDBIfNecessary();
 

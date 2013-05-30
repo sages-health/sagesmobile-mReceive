@@ -15,7 +15,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.WorktableDataLayer;
-import org.rapidandroid.service.Demodulator;
+
+import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
 
 import android.content.ContentValues;
 import android.database.Cursor;

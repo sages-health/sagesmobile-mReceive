@@ -12,6 +12,10 @@
 			android:layout_height="wrap_content" android:text="@string/glbsettings_heading"
 			style="?android:attr/listSeparatorTextViewStyle">
 		</TextView>
+		
+		<CheckBox android:layout_height="wrap_content"
+		    	android:layout_width="fill_parent" android:id="@+id/glb_chk_logging"
+		    	android:text="@string/glb_lbl_logging"></CheckBox>
 		<CheckBox android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:id="@+id/glb_chk_activeall"
 			android:text="@string/glb_lbl_activeall"></CheckBox>

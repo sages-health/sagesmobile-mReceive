@@ -5,6 +5,7 @@
 package org.rapidandroid.activity;
 import org.rapidandroid.R;
 import org.rapidandroid.RapidAndroidApplication;
+import org.rapidandroid.SystemHealthTracking;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -35,7 +36,9 @@ import android.widget.ToggleButton;
  * @created Mar 23, 2011
  */
 public class CsvOutputScheduler extends Activity {
-	    private SharedPreferences preferences;
+		private static SystemHealthTracking healthTracker = new SystemHealthTracking(CsvOutputScheduler.class);
+	    
+		private SharedPreferences preferences;
 	    public static final String TOGGLE_VAR = "_isAutoCsvOn";
 	    public static final String FREQUENCY_VAR = "_autoCsvFrequency";
 	    public static final String DELETE_VAR = "_isDeleteOn";
@@ -44,7 +47,7 @@ public class CsvOutputScheduler extends Activity {
 	    public static final String sharedPreferenceFilename = "RapidAndroidSettings";
 	    
 		public static final String t = CsvOutputScheduler.class.getSimpleName();
-		
+
 		private static final int MENU_DONE = Menu.FIRST;
 //TODO POKUAM1 - IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
 	    
@@ -60,7 +63,7 @@ public class CsvOutputScheduler extends Activity {
         preferences = RapidAndroidApplication.loadPreferences(this);
         final int formId = extras.getInt(FormReviewer.CallParams.REVIEW_FORM);
         boolean isAutoCsvOn = preferences.getBoolean(formId + TOGGLE_VAR, false);
-        int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 1);
+        int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 30);
         //boolean isDeleteOn = preferences.getBoolean(formId + DELETE_VAR, false);
         boolean isForwardingOn = preferences.getBoolean(formId + FORWARDING_VAR, false);
         String forwardingNums = preferences.getString(formId + FORWARDING_NUMS, "");
@@ -78,6 +81,7 @@ public class CsvOutputScheduler extends Activity {
 				Editor editor = preferences.edit();
 				editor.putBoolean(formId + FORWARDING_VAR, isChecked);
 				editor.commit();
+				healthTracker.logDebug("SMS Forwarding enabled: " + isChecked);
 			}
 		});
         final EditText frequencyTextField = (EditText)findViewById(R.id.etx_outputFreq);
@@ -135,6 +139,7 @@ public class CsvOutputScheduler extends Activity {
 				Editor editor = preferences.edit();
 				editor.putBoolean(formId + TOGGLE_VAR, isChecked);
 				editor.commit();
+				healthTracker.logDebug("Automated CSV output enabled: " + isChecked);
 			}
 		});
  
@@ -181,6 +186,7 @@ public class CsvOutputScheduler extends Activity {
 		switch (item.getItemId()) {
 			case MENU_DONE:
 				finish();
+				healthTracker.logInfo("Settings saved. Leaving " + t);
 				break;
 		}
 		return true;

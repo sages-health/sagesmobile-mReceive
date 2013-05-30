@@ -48,7 +48,7 @@ public class FormListView extends Activity implements OnItemClickListener //, It
 //		lv.setOnItemLongClickListener(this);
 		lv.setOnItemClickListener(this);
 
-		this.setTitle("Created Forms");
+		this.setTitle(R.string.formlistview_title);
 
 		setContentView(lv);
 	}

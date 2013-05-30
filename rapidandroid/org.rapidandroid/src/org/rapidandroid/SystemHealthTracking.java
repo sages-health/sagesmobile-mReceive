@@ -6,26 +6,91 @@ package org.rapidandroid;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
+
+import org.apache.log4j.Logger;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 /**
+ * Handles logging various event types for troubleshooting/debugging/monitoring system health
+ * 
  * @author pokuam1
  * @created Apr 25, 2012
  */
 public class SystemHealthTracking {
 
+	private Logger logger;
+	private static boolean loggingEnabled;
 	
+	public enum SagesEventType {
+		SMS_RECEIVED, SMS_SENT, DASHBOARD_OPENED, CSV_OUTPUT_AUTO, STARTUP, SMS_PARSE_FAIL, MULTIPART_SMS, SMS_PARSE_SUCCESS, MULTIPART_SMS_PARSE_SUCCESS, MULTIPART_SMS_PARSE_FAIL, MULTIPART_SMS_SAVED
+	} 
+
+	
+	public static boolean isLoggingEnabled() {
+		return loggingEnabled;
+	}
+
+	public static void setLoggingEnabled(boolean loggingEnabled) {
+		SystemHealthTracking.loggingEnabled = loggingEnabled;
+	}
+
+	public SystemHealthTracking(Class clazz){
+		this.logger = Logger.getLogger(clazz);
+	}
+	
+	public Logger getLogger() {
+		return this.logger;
+	}
+	
+	public void logInfo(Object msg){
+		if (loggingEnabled) {
+			logger.info(msg);
+		}
+	};
+	public void logWarn(Object msg){
+		if (loggingEnabled) {
+			logger.warn(msg);
+		}
+	};
+	public void logDebug(Object msg){
+		if (loggingEnabled) {
+			logger.debug(msg);
+		}
+	};
+	public void logError(Object msg){
+		if (loggingEnabled) {
+			logger.error(msg);
+		}
+	};
+	public void logInfo(SagesEventType evt, Object msg){
+		if (loggingEnabled) {
+			logger.info("[" + evt + "]" + msg);
+		}
+	};
+	public void logWarn(SagesEventType evt, Object msg){
+		if (loggingEnabled) {
+			logger.warn("[" + evt + "]" + msg);
+		}
+	};
+	public void logDebug(SagesEventType evt, Object msg){
+		if (loggingEnabled) {
+			logger.debug("[" + evt + "]" + msg);
+		}
+	};
+	public void logError(SagesEventType evt, Object msg){
+		if (loggingEnabled) {
+			logger.error("[" + evt + "]" + msg);
+		}
+	};
+
 	private static boolean mExternalStorageAvailable = false;
 	private static boolean mExternalStorageWriteable = false;
 	private static File sdcard = Environment.getExternalStorageDirectory();
 	private static String state = Environment.getExternalStorageState();
-	private static String logName = "sages_sys_health_track.log";
+	public static String logName = "sages_system_health.log";
 	private static File sdLogFile;
 	
 	public static void initDataStore(Context context) throws FileNotFoundException{
@@ -59,14 +124,14 @@ public class SystemHealthTracking {
 		}
 	};
 	
-	/**
+/*	*//**
 	 * 
 	 * @param context
 	 * @param date
 	 * @param eventType
 	 * @param message
 	 * @param severityLevel
-	 */
+	 *//*
 	synchronized public static void logEvent(Context context, Date date, SagesEventType eventType, String message, int severityLevel){
 		FileOutputStream fos;
 		try {
@@ -112,10 +177,7 @@ public class SystemHealthTracking {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-	}
+	}*/
 	
-	public enum SagesEventType {
-		SMS_RECEIVED, SMS_SENT, DASHBOARD_OPENED, CSV_OUTPUT_AUTO, STARTUP, SMS_PARSE_FAIL, MULTIPART_SMS, SMS_PARSE_SUCCESS, MULTIPART_SMS_PARSE_SUCCESS, MULTIPART_SMS_PARSE_FAIL, MULTIPART_SMS_SAVED
-	} 
 	
 }

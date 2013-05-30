@@ -48,6 +48,7 @@ import android.util.Log;
  * @created Feb 7, 2012
  */
 public class QueueAndPollService extends IntentService {
+	private static SystemHealthTracking healthTracker = new SystemHealthTracking(QueueAndPollService.class);
 
 	private static String[] prefixes = null;
 	private static Form[] forms = null;
@@ -96,14 +97,16 @@ public class QueueAndPollService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		
 		if (intent.getBooleanExtra("timerMode", false)){
-			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService cleanup timer", Log.INFO);
+			healthTracker.logInfo(SagesEventType.MULTIPART_SMS, "QueueAndPollService cleanup timer.");
 
 			Log.d(t, "timer mode...calling cleanupTimer()....");
+			healthTracker.logDebug(SagesEventType.MULTIPART_SMS, "timer mode...calling cleanupTimer()....");
+
 			cleanupTimer();
 			return;
 		}
 		
-		if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService normal mode", Log.INFO);
+		healthTracker.logInfo(SagesEventType.MULTIPART_SMS, "QueueAndPollService normal mode.");
 
 		int monitor_msg_id = intent.getIntExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, 0);
 		String current_sender_phone = intent.getStringExtra(RapidSmsDBConstants.Message.PHONE);
@@ -128,7 +131,7 @@ public class QueueAndPollService extends IntentService {
 			
 		} catch (Exception e) {
 			Log.e(t, "Unable to retrieve ttl statuses. Contact admin.");
-			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, "QueueAndPollService--error getting ttl status " + e.getMessage() , Log.ERROR);
+			healthTracker.logError(SagesEventType.MULTIPART_SMS, "QueueAndPollService-- error getting ttl status -- " + e.getMessage());
 
 			e.printStackTrace();
 			smsManager.sendTextMessage(current_sender_phone, null, "Receiver had trouble processing stale data. Contact admin.", null, null);
@@ -273,7 +276,7 @@ public class QueueAndPollService extends IntentService {
 					
 				if (!badData && ApplicationGlobals.doReplyOnParse()){
 					smsManager.sendTextMessage(sender_phone_for_blobs, null, txId + " was completely successful for: " + successfulFormsTxId, null, null);
-					if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
+					healthTracker.logInfo(SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, "QueueAndPollService-- SmsParseReceiver.");
 
 				}
 			}
@@ -283,8 +286,8 @@ public class QueueAndPollService extends IntentService {
 		} catch (Exception e){
 			e.printStackTrace();
 			Log.e(t, e.getMessage());
-			if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(this, new Date(), SagesEventType.MULTIPART_SMS, t + " " + e.getMessage() , Log.ERROR);
-
+			healthTracker.logError( SagesEventType.MULTIPART_SMS, t + " " + e.getMessage() + " -- and using the new System Health Tracking Log");
+			
 		} finally {
 			WorktableDataLayer.endTransaction();
 			Log.d("Q&P","END TX[1]");
@@ -357,6 +360,7 @@ public class QueueAndPollService extends IntentService {
  * @created Apr 20, 2012
  */
 public static class SmsParseUtility {
+	private static SystemHealthTracking healthTracker = new SystemHealthTracking(SmsParseUtility.class);
 
 	private static String[] prefixes = null;
 	private static Form[] forms = null;
@@ -458,12 +462,13 @@ public static class SmsParseUtility {
 					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
 					if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
 				}
-				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, "SmsParseReceiver", Log.INFO);
+			   	healthTracker.logInfo( SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, t + " SmsParseReceiver.");
 			}
 
 			// Parse failure reply (if StrictParser was used, results would be null) 
 			if (results == null) {
-				if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_PARSE_FAIL, "SmsParseReceiver", Log.INFO);
+			   	healthTracker.logInfo( SagesEventType.MULTIPART_SMS_PARSE_FAIL, t + " SmsParseReceiver -- results of parse were null.");
+			   	 
 				if (ApplicationGlobals.doReplyOnFail()){
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
@@ -478,7 +483,8 @@ public static class SmsParseUtility {
 			}
 			
 			 rowid = WorktableDataLayer.InsertFormData(context, form, msgid, results);
-			 if (RapidAndroidApplication.logSystemHealth) SystemHealthTracking.logEvent(context, new Date(), SagesEventType.MULTIPART_SMS_SAVED, "SmsParseReceiver", Log.INFO);
+		   	 healthTracker.logInfo( SagesEventType.MULTIPART_SMS, t + " SmsParseReceiver.");
+	
 			 outcome.putExtra("rowid", rowid);
 			 outcome.putExtra("form", form);
 			 
