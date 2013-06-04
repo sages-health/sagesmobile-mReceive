@@ -3,6 +3,7 @@
 	<name>org.rapidandroid</name>
 	<comment></comment>
 	<projects>
+		<project>org.rapidsms.java</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
