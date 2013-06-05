@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 
 import android.content.Context;

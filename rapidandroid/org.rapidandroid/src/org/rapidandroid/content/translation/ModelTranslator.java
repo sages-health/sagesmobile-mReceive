@@ -22,20 +22,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.rapidandroid.activity.FormCreator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.receiver.SmsParseReceiver;
 import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
-import org.rapidsms.java.core.parser.service.ParsingService;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
-import sun.util.logging.resources.logging;
-
-import android.app.IntentService;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;

@@ -23,6 +23,7 @@ package org.rapidandroid.activity;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.WeakHashMap;
 
 import org.rapidandroid.ApplicationGlobals;
 import org.rapidandroid.R;
@@ -45,6 +46,7 @@ import org.rapidsms.java.core.model.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -170,7 +172,12 @@ public class Dashboard extends Activity {
 	boolean resetCursor = true;
 	Cursor mListviewCursor = null;
 	ArrayAdapter<String> mSpinnerAdapter;
-	
+	//DELETE AFTER TESTING COMPLETE
+	/**Definition for Weak Hashmap object for testing**/
+	public WeakHashMap< Integer, Dialog> managedDialogs = new WeakHashMap< Integer, Dialog>();
+	public AlertDialog deleteForm,eraseAlertDialog;
+	public int formId,eraseId;
+	/** END OF TEST VARIABLES**/
 	// private Date mStartDate = Constants.NULLDATE;
 	// private Date mEndDate = Constants.NULLDATE;
 
@@ -317,6 +324,8 @@ public class Dashboard extends Activity {
 					       });
 					
 					builder.create().show();
+					
+					
 				}
 				return false;
 			}
@@ -604,8 +613,14 @@ public class Dashboard extends Activity {
 	                dialog.cancel();
 	           }
 	       });
-	
+		/** DELETE AFTER TESTING IS OVER
+		 * Assigning the value of this dialog to weak hashmap
+		**/
+		deleteForm = deleteFormDialog.create();
+		managedDialogs.put(MENU_DELETE_FORM, deleteForm);
+		/**END OF TESTING**/
 		deleteFormDialog.create().show();
+		
 		}
 	}
 
@@ -725,8 +740,12 @@ public class Dashboard extends Activity {
 	                dialog.cancel();
 	           }
 	       });
-	
-		AlertDialog alert = eraseDataDialog.create();
+	/**DELETE After test
+	 * assigning the values of this dialog to the weakhashmap
+	 * **/
+	eraseAlertDialog = eraseDataDialog.create();
+	managedDialogs.put(MENU_ERASE_DATA, eraseAlertDialog);
+	/** END OF TEST**/
 		eraseDataDialog.show();
 	}
 	
@@ -1017,6 +1036,12 @@ public class Dashboard extends Activity {
 			}
 			resetCursor = false;
 		}
+	}
+	public int getEraseId(){
+		return this.MENU_ERASE_DATA;
+	}
+	public int getDeleteFormId(){
+		return this.MENU_DELETE_FORM;
 	}
 
 }

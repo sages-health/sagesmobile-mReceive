@@ -19,7 +19,7 @@ package org.rapidandroid.activity;
 
 import java.util.Date;
 
-
+import org.rapidandroid.R;
 import org.rapidandroid.activity.chart.ChartBroker;
 import org.rapidandroid.activity.chart.form.FormDataBroker;
 import org.rapidandroid.activity.chart.message.MessageDataBroker;
@@ -28,7 +28,7 @@ import org.rapidandroid.data.controller.MessageDataReporter;
 import org.rapidandroid.data.controller.ParsedDataReporter;
 import org.rapidsms.java.core.Constants;
 import org.rapidsms.java.core.model.Form;
-import org.rapidandroid.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,7 +36,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;

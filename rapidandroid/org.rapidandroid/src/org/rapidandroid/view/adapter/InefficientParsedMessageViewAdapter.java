@@ -21,6 +21,7 @@
 package org.rapidandroid.view.adapter;
 
 import java.util.HashMap;
+
 import org.rapidandroid.view.ParsedMessageView;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.Message;

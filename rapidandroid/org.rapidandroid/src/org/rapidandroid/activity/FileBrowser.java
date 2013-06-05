@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.rapidandroid.R;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;

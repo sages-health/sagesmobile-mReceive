@@ -22,10 +22,7 @@ package org.rapidandroid.receiver;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.SystemHealthTracking.SagesEventType;
@@ -33,7 +30,6 @@ import org.rapidandroid.activity.Dashboard;
 import org.rapidandroid.content.translation.MessageTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.MessageBodyParser;
-import org.rapidandroid.data.controller.WorktableDataLayer;
 import org.rapidandroid.data.controller.MessageBodyParser.SagesPdu;
 import org.rapidandroid.service.QueueAndPollService;
 import org.rapidsms.java.core.model.Message;
@@ -46,9 +42,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.telephony.SmsManager;
-import android.telephony.gsm.SmsMessage;
+//import android.telephony.gsm.SmsMessage;
+import android.telephony.SmsMessage;
 import android.util.Log;
 
 /**
@@ -171,6 +166,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
 		if (successfulSave) {
 			Intent broadcast = new Intent("org.rapidandroid.intents.SMS_SAVED");
+		
 			broadcast.putExtra("from", mesg.getOriginatingAddress());
 			broadcast.putExtra("body", mesg.getMessageBody());
 			broadcast.putExtra("msgid", Integer.valueOf(msgUri.getPathSegments().get(1)));
@@ -281,7 +277,9 @@ public class SmsReceiver extends BroadcastReceiver {
 	// source: http://www.devx.com/wireless/Article/39495/1954
 	public void onReceive(Context context, Intent intent) {
 		if (!intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {// {
+			Log.d("Test Intent","The intent was not a Telephony intent");
 			return;
+			
 		}
 		
 		healthTracker.logInfo(SagesEventType.SMS_RECEIVED);

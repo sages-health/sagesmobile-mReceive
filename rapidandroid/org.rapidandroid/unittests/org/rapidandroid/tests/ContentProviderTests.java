@@ -24,9 +24,7 @@ import org.rapidandroid.data.RapidSmsDBConstants;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
-
 import android.database.Cursor;
-
 import android.net.Uri;
 import android.test.AndroidTestCase;
 

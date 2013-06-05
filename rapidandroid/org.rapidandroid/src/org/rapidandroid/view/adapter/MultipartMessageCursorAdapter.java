@@ -5,7 +5,6 @@ package org.rapidandroid.view.adapter;
 
 import java.util.Date;
 
-import org.rapidandroid.view.adapter.MessageCursorAdapter.SimpleMessageView;
 import org.rapidsms.java.core.model.Message;
 
 import android.content.Context;
