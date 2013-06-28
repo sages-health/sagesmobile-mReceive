@@ -1,0 +1,64 @@
+Description
+---------------------
+The SAGES Mobile platform is part of the Suite for Automated
+Global Electronic bioSurveillance (SAGES).  SAGES provides a modular, flexible,
+open-source set of tools to aid in the creation of electronic disease 
+surveillance capabilities.  SAGES Mobile provides a colleciton of Android based
+applications that work in unison with a Java based ETL for mobile data collection
+into the SAGES suite. One of the key characteristics of the tools is the ability
+to collect data using SMS (text messages).
+
+You can learn more about SAGES Mobile and SAGES by visiting 
+http://www.jhuapl.edu/SAGES/.
+
+Components
+---------------------
+The SAGES Mobile platform leverages a number of other existing open
+source projects from other sources (project dependencies are documented in a
+separate file).
+
+The SAGES Mobile platform includes three modules:
+  - a form rendering Android mobile client for form based data entry
+    and data submission over SMS and data connections
+  - an Android mobile receiver for parsing SMS data from a mobile client
+  - a Java based ETL application which extracts data from the mobile
+    receiver and loads the informtation into a relational database
+
+Use and Deployment
+---------------------
+The SAGES Mobile platform is intended for use in the collection and submission 
+of bio-surveillance or health-related data.
+
+Deployment of the system requires:
+  - Android devices(2.3 and higher) for mobile clients
+  - Android devices (2.3) for the mobile receiver
+  - A Windows platform host computer for running the ETL
+
+SAGES Mobile Support
+---------------------
+If you would like to discuss disease surveillance with other SAGES Mobile users, 
+feel free to post a new topic to our discussion forum at 
+https://groups.google.com/forum/#!forum/sages-health-epi.
+If you need any technical support installing or using SAGES Mobile, please post
+your questions to https://groups.google.com/forum/#!forum/sages-health-support.
+
+SAGES Mobile Updates
+---------------------
+You can find the latest SAGES Mobile source tree, as well as a listing of fixed 
+issues and known issues, on our GitHub site at https://github.com/sages-health.
+
+License
+---------------------
+SAGES Mobile is distributed under the Apache License, Version 2.0.
+Please see the "LICENSE.txt" file for details.
+
+Copyright
+---------------------
+This software is Copyright(c) 2013 by The Johns Hopkins University / Applied
+Physics Laboratory.  All rights reserved.
+
+This material may be used, modified, or reproduced by or for the U.S.
+Government pursuant to the rights granted under the clauses at
+DFARS 252.227-7013/7014 or FAR 52.227-14.     
+
+For any other permissions, please contact the Legal Office at JHU/APL.
