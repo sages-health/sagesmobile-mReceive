@@ -63,7 +63,7 @@ public class CsvOutputScheduler extends Activity {
         preferences = RapidAndroidApplication.loadPreferences(this);
         final int formId = extras.getInt(FormReviewer.CallParams.REVIEW_FORM);
         boolean isAutoCsvOn = preferences.getBoolean(formId + TOGGLE_VAR, false);
-        int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 30);
+        int autoCsvFrequency = preferences.getInt(formId + FREQUENCY_VAR, 55);
         //boolean isDeleteOn = preferences.getBoolean(formId + DELETE_VAR, false);
         boolean isForwardingOn = preferences.getBoolean(formId + FORWARDING_VAR, false);
         String forwardingNums = preferences.getString(formId + FORWARDING_NUMS, "");
