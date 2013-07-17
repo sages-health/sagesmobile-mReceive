@@ -32,6 +32,7 @@ import org.rapidsms.java.core.model.Monitor;
 import org.rapidsms.java.core.parser.IParseResult;
 import org.rapidsms.java.core.parser.service.ParsingService;
 
+import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
