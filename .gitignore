@@ -6,5 +6,6 @@ rapidandroid/org.rapidandroid/project.properties
 rapidjava/org.rapidsms.java/bin/
 rapidjava/org.rapidsms.java/.settings/
 
+/rapidandroid/RapidAndroidTest/bin/
 sandbox/charttest/.classpath
 rapidjava/org.rapidsms.java/.classpath
