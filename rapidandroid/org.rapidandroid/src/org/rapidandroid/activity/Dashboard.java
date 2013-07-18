@@ -180,6 +180,7 @@ public class Dashboard extends Activity {
 	/** END OF TEST VARIABLES**/
 	// private Date mStartDate = Constants.NULLDATE;
 	// private Date mEndDate = Constants.NULLDATE;
+	private Menu contextMenu;
 
 	final Runnable mToastNotImplemented = new Runnable() {
 		public void run() {
@@ -629,6 +630,7 @@ public class Dashboard extends Activity {
 		// Flip the enabled status of menu items depending on selection of a
 		// form
 		super.onPrepareOptionsMenu(menu);
+		this.contextMenu = menu;
 
 		boolean formOptionsEnabled = false;
 		if (this.mChosenForm != null) {
@@ -879,6 +881,9 @@ public class Dashboard extends Activity {
 			mChosenForm = mAllForms[position];
 			resetCursor = true;
 			beginListViewReload();
+			if(this.contextMenu != null) {
+				onPrepareOptionsMenu(contextMenu);
+			}
 		}
 	}
 
