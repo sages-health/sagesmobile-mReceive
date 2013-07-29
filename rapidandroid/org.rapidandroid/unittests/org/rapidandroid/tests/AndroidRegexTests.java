@@ -17,7 +17,6 @@
 
 package org.rapidandroid.tests;
 
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +64,7 @@ public class AndroidRegexTests extends TestCase {
 	String[] custom1Messages = {"diah.2 head.44 tong.65", "car.12 house.44", "single.1"};
 	public void testCustom1() {
 		Vector<String> regexes = new Vector<String>();
-		HashMap<String, String> hackRegexHash = new HashMap<String, String>();
+//		HashMap<String, String> hackRegexHash = new HashMap<String, String>();
 		System.out.println("Begin test:  Custom 1");
 		// ^((([A-Za-z\d]+)\.\d+\s?){1,2}|(\.))($|\s)
 		regexes.add("(([A-Za-z\\d]+\\.\\d+\\s?){1,2}|(\\.))($|\\s)");
@@ -81,7 +80,7 @@ public class AndroidRegexTests extends TestCase {
 	
 	public void testFreeTexts() {
 		Vector<String> regexes = new Vector<String>();
-		HashMap<String, String> hackRegexHash = new HashMap<String, String>();
+//		HashMap<String, String> hackRegexHash = new HashMap<String, String>();
 		System.out.println("Begin test:  FreeTexts");
 		
 		regexes.add("^(([A-Za-z\\d\\s\\.]+)|(\\.))($|\\s)");

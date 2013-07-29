@@ -20,7 +20,7 @@ package org.rapidandroid.content.translation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.Locale;
 
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.SmsDbHelper;
@@ -31,6 +31,7 @@ import org.rapidsms.java.core.model.SimpleFieldType;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
 import org.rapidsms.java.core.parser.token.ITokenParser;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -51,6 +52,7 @@ import android.util.Log;
  *          returns the actual coremodel objects.
  */
 
+@SuppressLint("UseSparseArrays")
 public class ModelTranslator {
 
 	private static Context mContext;
@@ -60,7 +62,7 @@ public class ModelTranslator {
 	private static HashMap<String, Integer> typeColumnNamesToIndex;
 
 	private static HashMap<Integer, Form> formIdCache = new HashMap<Integer, Form>();
-	private static HashMap<Integer, Vector<Field>> fieldToFormHash = new HashMap<Integer, Vector<Field>>();
+//	private static HashMap<Integer, Vector<Field>> fieldToFormHash = new HashMap<Integer, Vector<Field>>();
 	private static HashMap<Integer, SimpleFieldType> fieldTypeHash = new HashMap<Integer, SimpleFieldType>();
 
 	private static SmsDbHelper mDbHelper;
@@ -118,7 +120,7 @@ public class ModelTranslator {
 				// updated table
 	
 				// rename table
-				SimpleDateFormat sdf = new SimpleDateFormat("HHmmss_ddMMyyyy");
+				SimpleDateFormat sdf = new SimpleDateFormat("HHmmss_ddMMyyyy", Locale.getDefault());
 				String newPrefix = f.getPrefix() + "_"
 						+ sdf.format(new Date(System.currentTimeMillis()));
 				db.execSQL("alter table formdata_" + f.getPrefix()	+ " rename to formdata_" + newPrefix);
@@ -315,11 +317,11 @@ public class ModelTranslator {
 		mContext = context;
 	}
 
-	private static void setContext(Context context) {
-		mContext = context.getApplicationContext();
-		// if (mContext == null){
-		// }
-	}
+//	private static void setContext(Context context) {
+//		mContext = context.getApplicationContext();
+//		// if (mContext == null){
+//		// }
+//	}
 
 	/**
 	 * Query all the model tables and generate the fully fleshed out Form
@@ -341,7 +343,7 @@ public class ModelTranslator {
 		if (mContext == null) {
 			Log.e("sages", "CONTEXT IS NULL WTH!?");
 		}
-		Context dummy = null;
+//		Context dummy = null;
 		// ContentResolver resolver = dummy.getContentResolver();
 		ContentResolver resolver = context.getContentResolver();
 		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null,
@@ -358,8 +360,8 @@ public class ModelTranslator {
 			String[] colnames = allformsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				formColumnNamesToIndex.put(colnames[i], new Integer(
-						allformsCursor.getColumnIndex(colnames[i])));
+				formColumnNamesToIndex.put(colnames[i], 
+						allformsCursor.getColumnIndex(colnames[i]));
 			}
 		}
 		int formcount = allformsCursor.getCount();
@@ -419,7 +421,7 @@ public class ModelTranslator {
 		if (mContext == null) {
 			Log.e("sages", "CONTEXT IS NULL WTH!?");
 		}
-		Context dummy = null;
+//		Context dummy = null;
 		// ContentResolver resolver = dummy.getContentResolver();
 		ContentResolver resolver = mContext.getContentResolver();
 		Cursor allformsCursor = resolver.query(getFormsUri, null, null, null,
@@ -436,8 +438,8 @@ public class ModelTranslator {
 			String[] colnames = allformsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				formColumnNamesToIndex.put(colnames[i], new Integer(
-						allformsCursor.getColumnIndex(colnames[i])));
+				formColumnNamesToIndex.put(colnames[i], 
+						allformsCursor.getColumnIndex(colnames[i]));
 			}
 		}
 		int formcount = allformsCursor.getCount();
@@ -517,7 +519,7 @@ public class ModelTranslator {
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
 				formColumnNamesToIndex.put(colnames[i],
-						new Integer(formCursor.getColumnIndex(colnames[i])));
+						formCursor.getColumnIndex(colnames[i]));
 			}
 		}
 
@@ -554,7 +556,7 @@ public class ModelTranslator {
 		// formId) { // hack
 		// way
 
-		Context c;
+//		Context c;
 
 		Uri fieldsUri = RapidSmsDBConstants.Field.CONTENT_URI;
 		Cursor fieldsCursor = mContext.getContentResolver().query(fieldsUri,
@@ -571,8 +573,8 @@ public class ModelTranslator {
 			String[] colnames = fieldsCursor.getColumnNames();
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
-				fieldColumnNamesToIndex.put(colnames[i], new Integer(
-						fieldsCursor.getColumnIndex(colnames[i])));
+				fieldColumnNamesToIndex.put(colnames[i], 
+						fieldsCursor.getColumnIndex(colnames[i]));
 			}
 		}
 		Field[] newfields = new Field[fieldsCursor.getCount()];
@@ -664,7 +666,7 @@ public class ModelTranslator {
 		// int type_id) { // hack
 		// way
 
-		Integer typeInt = new Integer(type_id);
+		Integer typeInt = type_id;
 		if (fieldTypeHash.containsKey(typeInt)) {
 			return fieldTypeHash.get(typeInt);
 		}
@@ -684,7 +686,7 @@ public class ModelTranslator {
 			int colcount = colnames.length;
 			for (int i = 0; i < colcount; i++) {
 				typeColumnNamesToIndex.put(colnames[i],
-						new Integer(typeCursor.getColumnIndex(colnames[i])));
+						typeCursor.getColumnIndex(colnames[i]));
 			}
 		}
 		if (typeCursor.getCount() != 1) {

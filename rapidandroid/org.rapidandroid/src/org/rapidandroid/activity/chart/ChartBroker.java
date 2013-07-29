@@ -22,6 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +54,7 @@ public abstract class ChartBroker {
 
 	private static final String CHART_FILE = "file:///android_asset/flot/html/basechart.html";
 	private static final String JAVASCRIPT_PROPERTYNAME = "graphdata";
-	private static final String EMPTY_FILE = "file:///android_asset/flot/html/empty.html";
+//	private static final String EMPTY_FILE = "file:///android_asset/flot/html/empty.html";
 
 	/**
 	 * Enumeration for display types (date) for level of bucketization
@@ -76,7 +77,7 @@ public abstract class ChartBroker {
 	protected SmsDbHelper rawDB;
 	protected WebView mAppView;
 
-	private int traceCount = 0;
+//	private int traceCount = 0;
 
 	protected String[] mVariableStrings;
 	protected int mChosenVariable = 0;
@@ -114,7 +115,7 @@ public abstract class ChartBroker {
 	};
 	// private boolean mChartPageLoaded;
 	// private boolean mAlreadyLoading;
-	private final DateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final DateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.getDefault());
 
 	protected ChartBroker(Activity activity, WebView appView, Date startDate, Date endDate) {
 		mParentActivity = activity;
@@ -197,17 +198,20 @@ public abstract class ChartBroker {
 		DateDisplayTypes dtype = getDisplayType(mStartDate, mEndDate);
 		switch (dtype) {
 			case Hourly:
-				df = new SimpleDateFormat("MM/dd HH:mm");
+				df = new SimpleDateFormat("MM/dd HH:mm",Locale.getDefault());
 				break;
 			case Daily:
-				df = new SimpleDateFormat("MM/dd");
+				df = new SimpleDateFormat("MM/dd",Locale.getDefault());
 				break;
 			case Weekly:
-				df = new SimpleDateFormat("MM/dd");
+				df = new SimpleDateFormat("MM/dd",Locale.getDefault());
+				break;
 			case Monthly:
-				df = new SimpleDateFormat("MM/yyyy");
+				df = new SimpleDateFormat("MM/yyyy",Locale.getDefault());
+				break;
 			case Yearly:
-				df = new SimpleDateFormat("yyyy");
+				df = new SimpleDateFormat("yyyy",Locale.getDefault());
+				break;
 		}
 		tl.append(df.format(mStartDate)).append(" - ");
 		tl.append(df.format(mEndDate));
@@ -430,7 +434,7 @@ public abstract class ChartBroker {
 		}
 		Calendar rawCal = Calendar.getInstance();
 		rawCal.setTime(rawDate);
-		Calendar calToReturn = Calendar.getInstance();
+//		Calendar calToReturn = Calendar.getInstance();
 		rawCal.set(Calendar.MINUTE, 0);
 		rawCal.set(Calendar.SECOND, 0);
 		switch (displayType) {
@@ -455,7 +459,7 @@ public abstract class ChartBroker {
 			default:
 				return rawCal.getTime();
 		}
-		Date toReturn = calToReturn.getTime();
+//		Date toReturn = calToReturn.getTime();
 		Date reallyToReturn = rawCal.getTime();
 		return reallyToReturn;
 

@@ -25,7 +25,6 @@ import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.receiver.SmsParseReceiver;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;

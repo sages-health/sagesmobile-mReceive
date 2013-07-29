@@ -35,7 +35,6 @@ import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 //import android.telephony.gsm.SmsMessage;
@@ -96,10 +95,10 @@ public class SmsReceiver extends BroadcastReceiver {
 			@Override
 			synchronized public void run() {
 				//Uri writeMessageUri = RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI;
-				long timeelapsed = 0;
+//				long timeelapsed = 0;
 				
 				while (/*timeelapsed <= 2000 120000 ||*/ QueueAndPollService.isDirty == true){
-					timeelapsed = new Date().getTime() - lastTimeRun;
+//					timeelapsed = new Date().getTime() - lastTimeRun;
 					Log.d("sages", i + "===HEY BOO, THIS IS MY THREAD THIS IS MY THREAD WOOT!");
 					i--;
 					Intent intentQueuePollTimer = new Intent(mContext, QueueAndPollService.class);
@@ -230,11 +229,11 @@ public class SmsReceiver extends BroadcastReceiver {
 		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.TX_TIMESTAMP, Message.SQLDateFormatter.format(date));
 		messageValues.put(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
 		
-		boolean successfulSave = false;
+		@SuppressWarnings("unused") //for debug
 		Uri msgUri = null;
+		
 		try {
 			msgUri = context.getContentResolver().insert(writeMessageUri, messageValues);
-			successfulSave = true;
 			Intent intentQueuePoll = new Intent(context, QueueAndPollService.class);
 			intentQueuePoll.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor.getID());
 			intentQueuePoll.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, Integer.valueOf(msgUri1.getPathSegments().get(1)));
@@ -248,28 +247,28 @@ public class SmsReceiver extends BroadcastReceiver {
 		}
 	}
 
-	private void DeleteSMSFromInbox(Context context, SmsMessage mesg) {
-		try {
-
-			StringBuilder sb = new StringBuilder();
-			sb.append("address='" + mesg.getOriginatingAddress() + "' AND ");
-			sb.append("body='" + mesg.getMessageBody() + "'");
-			// sb.append("time='" + mesg.getTimestamp() + "'"); //doesn't seem
-			// to be supported
-			Cursor c = context.getContentResolver().query(uriSms, null, sb.toString(), null, null);
-			c.moveToFirst();
-			// String id = c.getString(0);
-			int thread_id = c.getInt(1);
-			context.getContentResolver().delete(Uri.parse("content://sms/conversations/" + thread_id), null, null);
-			c.close();
-		} catch (Exception ex) {
-			// deletions don't work most of the time since the timing of the
-			// receipt and saving to the inbox
-			// makes it difficult to match up perfectly. the SMS might not be in
-			// the inbox yet when this receiver triggers!
-			Log.d("SmsReceiver", "Error deleting sms from inbox: " + ex.getMessage());
-		}
-	}
+//	private void DeleteSMSFromInbox(Context context, SmsMessage mesg) {
+//		try {
+//
+//			StringBuilder sb = new StringBuilder();
+//			sb.append("address='" + mesg.getOriginatingAddress() + "' AND ");
+//			sb.append("body='" + mesg.getMessageBody() + "'");
+//			// sb.append("time='" + mesg.getTimestamp() + "'"); //doesn't seem
+//			// to be supported
+//			Cursor c = context.getContentResolver().query(uriSms, null, sb.toString(), null, null);
+//			c.moveToFirst();
+//			// String id = c.getString(0);
+//			int thread_id = c.getInt(1);
+//			context.getContentResolver().delete(Uri.parse("content://sms/conversations/" + thread_id), null, null);
+//			c.close();
+//		} catch (Exception ex) {
+//			// deletions don't work most of the time since the timing of the
+//			// receipt and saving to the inbox
+//			// makes it difficult to match up perfectly. the SMS might not be in
+//			// the inbox yet when this receiver triggers!
+//			Log.d("SmsReceiver", "Error deleting sms from inbox: " + ex.getMessage());
+//		}
+//	}
 
 	@Override
 	// source: http://www.devx.com/wireless/Article/39495/1954

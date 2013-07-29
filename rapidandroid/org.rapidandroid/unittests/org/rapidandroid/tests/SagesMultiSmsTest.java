@@ -4,24 +4,22 @@
 package org.rapidandroid.tests;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.WorktableDataLayer;
 
-import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
-
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
 import android.test.AndroidTestCase;
+import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
 
 /**
  * @author POKUAM1
@@ -29,7 +27,7 @@ import android.test.AndroidTestCase;
  */
 public class SagesMultiSmsTest extends AndroidTestCase {
 
-	private Uri currUri;
+//	private Uri currUri;
 	
 	private void rollCalDate(Calendar cal, int day, int hour, int min, int sec){
 		cal.roll(Calendar.DATE, day);
@@ -41,13 +39,15 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 	/* (non-Javadoc)
 	 * @see android.test.AndroidTestCase#setUp()
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		
+		@SuppressWarnings("unused") // for debug
 		int val = getContext().getContentResolver().delete(RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI, "tx_id >= ?", new String[] {"100"});
 		Calendar c = new GregorianCalendar();
 		final Calendar cRef = c;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 		//c.roll(Calendar.MINUTE, 10);
 		//c.roll(Calendar.SECOND, 20);
 //		String dateStr = sdf.format(c.getTime()); 
@@ -149,8 +149,10 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 	/* (non-Javadoc)
 	 * @see android.test.AndroidTestCase#tearDown()
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		@SuppressWarnings("unused") // for debug
 		int val = getContext().getContentResolver().delete(RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI, "tx_id >= ?", new String[] {"100"});
 	}
 
@@ -162,7 +164,7 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 		initialValues.put(RapidSmsDBConstants.MultiSmsWorktable.TX_ID, tx_id);
 		initialValues.put(RapidSmsDBConstants.MultiSmsWorktable.TX_TIMESTAMP, tx_ts);
 		initialValues.put(RapidSmsDBConstants.MultiSmsWorktable.PAYLOAD, payload);
-		currUri = getContext().getContentResolver().insert(RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI, initialValues);
+		getContext().getContentResolver().insert(RapidSmsDBConstants.MultiSmsWorktable.CONTENT_URI, initialValues);
 	}
 
 	public void testCategorizeCompleteVsIncomplete(){
@@ -170,11 +172,11 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			WorktableDataLayer.setTimerThreshold(300);
 			Map<String, List<Long>> statusMap = WorktableDataLayer.categorizeCompleteVsIncomplete(getContext());
 			assertNotNull(statusMap);
-			List<Long> ids = Arrays.asList(new Long[]{new Long(100), new Long(111), new Long(4000), new Long(4001)});
+			List<Long> ids = Arrays.asList(new Long[]{100L, 111L, 4000L, 4001L});
 			assertTrue("Did not contain expected tx_ids",statusMap.get(WorktableDataLayer.label_complete).containsAll(ids));
 			assertEquals("Incorrect categorization of completes", ids, statusMap.get(WorktableDataLayer.label_complete));
 			
-			ids = Arrays.asList(new Long[]{new Long(333)});
+			ids = Arrays.asList(new Long[]{333L});
 			assertTrue(statusMap.get(WorktableDataLayer.label_incomplete).containsAll(ids));
 			assertEquals("Incorrect categorization of incompletes", ids, statusMap.get(WorktableDataLayer.label_incomplete));
 			
@@ -207,10 +209,10 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			Map<String, List<Long>> ttlMap = WorktableDataLayer.categorizeStaleVsLive(getContext(), null);
 			assertNotNull(ttlMap);
 			
-			List<Long> ids = Arrays.asList(new Long[]{new Long(100),new Long(111),new Long(4000),new Long(4001)});
+			List<Long> ids = Arrays.asList(new Long[]{100L,111L,4000L,4001L});
 			assertEquals("Wrong number of live data",ids, ttlMap.get(WorktableDataLayer.label_ttlLive));
 			
-			ids = Arrays.asList(new Long[]{new Long(333)});
+			ids = Arrays.asList(new Long[]{333L});
 			assertEquals("Wrong number of stale data", ids,ttlMap.get(WorktableDataLayer.label_ttlStale));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -229,7 +231,7 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			ttlMap = WorktableDataLayer.categorizeStaleVsLive(getContext(), null);
 			List<Long> staleTxIds = ttlMap.get(WorktableDataLayer.label_ttlStale);
 			
-			assertEquals("Wrong stale txIds categorized", Arrays.asList(new Long[]{new Long(333)}), staleTxIds);
+			assertEquals("Wrong stale txIds categorized", Arrays.asList(new Long[]{333L}), staleTxIds);
 			/** the transactional delete is rolled back **/
 
 			// begin sql transaction
@@ -284,14 +286,13 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 			List<Long> txIds =  statusMap.get(WorktableDataLayer.label_complete);
 			WorktableDataLayer.getConcatenatedMessagesForTxIds(getContext(), txIds);
 			
-			Map<Long, String> blobMap = WorktableDataLayer.getConcatenatedMessagesForTxIds(getContext(), txIds);
+			Map<Long, String> localBlobMap = WorktableDataLayer.getConcatenatedMessagesForTxIds(getContext(), txIds);
 			
-			assertNotNull(new ArrayList());
-			assertEquals(4, blobMap.size());
-			assertEquals("1of3_txid_1112of3_txid_1113of3_txid_111", blobMap.get(new Long(111)));
-			assertEquals("1of5_txid_1002of5_txid_1003of5_txid_1004of5_txid_1005of5_txid_100", blobMap.get(new Long(100)));
-			assertEquals("1of3_txid_40012of3_txid_40013of3_txid_4001", blobMap.get(new Long(4001)));
-			assertEquals("1of3_txid_40002of3_txid_40003of3_txid_4000", blobMap.get(new Long(4000)));
+			assertEquals(4, localBlobMap.size());
+			assertEquals("1of3_txid_1112of3_txid_1113of3_txid_111", localBlobMap.get(111L));
+			assertEquals("1of5_txid_1002of5_txid_1003of5_txid_1004of5_txid_1005of5_txid_100", localBlobMap.get(100L));
+			assertEquals("1of3_txid_40012of3_txid_40013of3_txid_4001", localBlobMap.get(4001L));
+			assertEquals("1of3_txid_40002of3_txid_40003of3_txid_4000", localBlobMap.get(4000L));
 		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -301,13 +302,15 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 	}
 
 	/** mocked blobs and transaction ids**/
+	@SuppressWarnings("serial")
 	private static final Map<Long, String> blobMap = new HashMap<Long, String>(){{
-		put(new Long(1),"#form1 val1a val2a val3a#form1 val1b val2b val3b#form1 val1c val2c val3c");
-		put(new Long(2),"#formA a1 a2 a3#formB b1 b2 b3#formC c1 c2 c3");
-		put(new Long(3),"#form4 val4a val4a val4a#form5 val5b val5b val5b#form6 val6c val6c val6c#formX x1 x2 x3#formY y1 y2 y3#formZ z1 z2 z3");
+		put(1L,"#form1 val1a val2a val3a#form1 val1b val2b val3b#form1 val1c val2c val3c");
+		put(2L,"#formA a1 a2 a3#formB b1 b2 b3#formC c1 c2 c3");
+		put(3L,"#form4 val4a val4a val4a#form5 val5b val5b val5b#form6 val6c val6c val6c#formX x1 x2 x3#formY y1 y2 y3#formZ z1 z2 z3");
 	}};
 	
 	/** mocked demoded blobs in String array to transaction ids **/
+	@SuppressWarnings("unused")
 	private static final Map<Long, String[]> demodedBlobs = Demodulator.deModulateBlobMap(blobMap);
 	String[] demodedBlobs1 = {"form1 val1a val2a val3a","form1 val1b val2b val3b","form1 val1c val2c val3c"};
 	String[] demodedBlobs2 = {"formA a1 a2 a3","formB b1 b2 b3","formC c1 c2 c3"};
@@ -315,8 +318,8 @@ public class SagesMultiSmsTest extends AndroidTestCase {
 	
 	public void testDemodulateBlob(){
 		Map<Long, String[]> demoded = Demodulator.deModulateBlobMap(blobMap);
-		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs1), StringUtils.join(demoded.get(new Long(1))));
-		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs2), StringUtils.join(demoded.get(new Long(2))));
-		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs3), StringUtils.join(demoded.get(new Long(3))));
+		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs1), StringUtils.join(demoded.get(1L)));
+		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs2), StringUtils.join(demoded.get(2L)));
+		assertEquals("Demodulation was wrong.",StringUtils.join(demodedBlobs3), StringUtils.join(demoded.get(3L)));
 	}
 }

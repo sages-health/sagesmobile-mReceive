@@ -222,7 +222,7 @@ public class ContentProviderTests extends AndroidTestCase {
 		currUri = getContext().getContentResolver().insert(RapidSmsDBConstants.Message.CONTENT_URI, initialValues);
 	}
 
-	private void test003InsertMessagesAndCountPerMonitor() {
+	public void test003InsertMessagesAndCountPerMonitor() {
 		String msg1 = "alert unlocked supply room at WSMA";
 		String date1 = "10/30/2008 19:51";
 		String phone1 = "251912149840";
@@ -329,7 +329,7 @@ public class ContentProviderTests extends AndroidTestCase {
 		cr.close();
 	}
 
-	private void testGetFormData() {
+	public void testGetFormData() {
 		// objective:
 		// get all the forms from the database
 		Uri query = RapidSmsDBConstants.Form.CONTENT_URI;
