@@ -20,6 +20,7 @@ package org.rapidandroid.view;
 import java.text.ParseException;
 import java.util.Date;
 
+import org.rapidandroid.R;
 import org.rapidsms.java.core.model.Message;
 
 import android.content.Context;
@@ -60,6 +61,10 @@ public class SummaryCursorView extends TableLayout {
 		super(context);
 		// 
 
+		float fontSizeFirstBar = getResources().getDimension(R.dimen.font_size_first_bar);
+		float fontSizeFullMessage = getResources().getDimension(R.dimen.font_size_full_message);
+		float fontSizeData = getResources().getDimension(R.dimen.font_size_data);
+		
 		mColMessage = formDataCursor.getColumnCount() - 3;
 		mColTime = formDataCursor.getColumnCount() - 2;
 		mColPhone = formDataCursor.getColumnCount() - 1;
@@ -70,7 +75,7 @@ public class SummaryCursorView extends TableLayout {
 		// First row, summary & sender
 		mMessageSummary = new TextView(getContext());
 		mMessageSummary.setPadding(3, 3, 3, 3);
-		mMessageSummary.setTextSize(16);
+		mMessageSummary.setTextSize(fontSizeFirstBar);
 		mMessageSummary.setGravity(Gravity.LEFT);
 
 		// addView(mMessageSummary, new TableLayout.LayoutParams());
@@ -78,7 +83,7 @@ public class SummaryCursorView extends TableLayout {
 
 		mMonitorString = new TextView(getContext());
 		mMonitorString.setPadding(3, 3, 8, 3);
-		mMonitorString.setTextSize(16);
+		mMonitorString.setTextSize(fontSizeFirstBar);
 		mMonitorString.setGravity(Gravity.RIGHT);
 
 		topRow.addView(mMonitorString);
@@ -87,7 +92,7 @@ public class SummaryCursorView extends TableLayout {
 		// Third row, actual message
 		mRawMessageRow = new TextView(getContext());
 		mRawMessageRow.setPadding(2, 2, 8, 2);
-		mRawMessageRow.setTextSize(12);
+		mRawMessageRow.setTextSize(fontSizeFullMessage);
 		// mRawMessageRow.setBackgroundColor(R.color.solid_green);
 		// addView(mRawMessageRow, new TableLayout.LayoutParams());
 		addView(mRawMessageRow);
@@ -112,7 +117,7 @@ public class SummaryCursorView extends TableLayout {
 			// row.setBackgroundResource(android.R.drawable.)
 
 			TextView txvFieldName = new TextView(getContext());
-			txvFieldName.setTextSize(14);
+			txvFieldName.setTextSize(fontSizeData);
 			// txvFieldName.setBackgroundColor(R.color.background_red);
 			// txvFieldName.setDrawingCacheBackgroundColor(R.color.background_red);
 			txvFieldName.setGravity(Gravity.LEFT);
@@ -121,7 +126,7 @@ public class SummaryCursorView extends TableLayout {
 
 			TextView txvFieldData = new TextView(getContext());
 			txvFieldData.setGravity(Gravity.LEFT);
-			txvFieldData.setTextSize(14);
+			txvFieldData.setTextSize(fontSizeData);
 			txvFieldData.setPadding(2, 2, 2, 2);
 			// txvFieldData.setBackgroundColor(R.color.background_red);
 			mFieldValues[i] = txvFieldData;
@@ -130,7 +135,7 @@ public class SummaryCursorView extends TableLayout {
 			row.addView(txvFieldData, 1);
 			mParsedDataRows[i] = row;
 
-			this.addView(row, new TableRow.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+			this.addView(row, new TableRow.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
 														android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
 
 		}

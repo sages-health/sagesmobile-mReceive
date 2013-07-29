@@ -1,0 +1,6 @@
+
+    <resources>
+        <dimen name="font_size_first_bar">16sp</dimen><dimen name="font_size_full_message">12sp</dimen><dimen name="font_size_data">14sp</dimen>
+        
+        
+    </resources>
