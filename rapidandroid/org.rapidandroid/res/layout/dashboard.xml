@@ -40,7 +40,7 @@
 	<ViewSwitcher android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:id="@+id/dashboard_switcher">
 		<ListView android:id="@+id/lsv_dashboardmessages"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"></ListView>
+			android:layout_width="match_parent" android:layout_height="match_parent"></ListView>
 		<TextView android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:id="@+id/dashboard_prog_loadingtext"
 			android:text="Loading..." android:textSize="18sp" android:padding="8dip"></TextView>
