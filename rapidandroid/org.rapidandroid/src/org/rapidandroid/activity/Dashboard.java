@@ -98,6 +98,14 @@ public class Dashboard extends Activity {
 		// TODO Auto-generated method stub
 		super.onRestart();
 		ApplicationGlobals.initGlobals(this);
+		if (this.mFormViewMode == Dashboard.LISTVIEW_MODE_SUMMARY_VIEW) {
+			this.mListviewCursor = null;
+			resetListAdapters();
+			fillCursorInBackground();
+			finishListViewReload();
+			loadListViewWithFormData();
+		}
+		
 	}
 
 	/*
@@ -379,7 +387,6 @@ public class Dashboard extends Activity {
 			}
 		});
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStop()
@@ -640,6 +647,11 @@ public class Dashboard extends Activity {
 		MenuItem editMenu = menu.findItem(MENU_FORM_REVIEW_ID);
 		editMenu.setEnabled(formOptionsEnabled);
 		MenuItem viewMenu = menu.findItem(MENU_CHARTS_ID);
+		viewMenu.setEnabled(formOptionsEnabled);
+		MenuItem eraseMenu = menu.findItem(MENU_ERASE_DATA);
+		eraseMenu.setEnabled(formOptionsEnabled);
+		MenuItem deleteMenu = menu.findItem(MENU_DELETE_FORM);
+		deleteMenu.setEnabled(formOptionsEnabled);
 
 		return true;
 	}
