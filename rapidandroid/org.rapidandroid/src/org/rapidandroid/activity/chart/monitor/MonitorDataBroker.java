@@ -76,13 +76,13 @@ public class MonitorDataBroker extends ChartBroker {
 	 */
 
 	@Override
-	public void setVariable(int id) {
+	public synchronized void setVariable(int id) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setRange(Date startTime, Date endTime) {
+	public synchronized void setRange(Date startTime, Date endTime) {
 		// TODO Auto-generated method stub
 
 	}

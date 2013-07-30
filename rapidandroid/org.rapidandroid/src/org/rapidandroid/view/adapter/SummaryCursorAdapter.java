@@ -18,10 +18,9 @@
 package org.rapidandroid.view.adapter;
 
 import java.util.HashMap;
-
 import org.rapidandroid.view.SummaryCursorView;
 import org.rapidsms.java.core.model.Form;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
@@ -36,6 +35,7 @@ public class SummaryCursorAdapter extends CursorAdapter {
 
 	// private int newCount = 0;
 	// private int bindCount = 0;
+	@SuppressWarnings("unused")
 	private int mLoadViewCount = 0;
 
 	@Override
@@ -71,6 +71,7 @@ public class SummaryCursorAdapter extends CursorAdapter {
 	 * @param context
 	 * @param c
 	 */
+	@SuppressLint("UseSparseArrays")
 	public SummaryCursorAdapter(Context context, Cursor c, Form f) {
 		super(context, c, false);
 		mForm = f;

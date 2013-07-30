@@ -71,7 +71,7 @@ public class RapidSmsContentProvider extends ContentProvider {
 
 	public static final Uri CONTENT_URI = Uri.parse("content://" + RapidSmsDBConstants.AUTHORITY);
 
-	private static final String TAG = "RapidSmsContentProvider";
+//	private static final String TAG = "RapidSmsContentProvider";
 
 	private SmsDbHelper mOpenHelper;
 
@@ -485,7 +485,7 @@ public class RapidSmsContentProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String where, String[] whereArgs) {
-		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+//		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
 		String table;
 		String finalWhere = "";
@@ -667,43 +667,40 @@ public class RapidSmsContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues initialValues, String selection, String[] selectionArgs) {
 		//TODO pokuam1
-		if (false)throw new IllegalArgumentException("Update not implemented");
-		else {
-			// Validate the requested uri
-			// if (sUriMatcher.match(uri) != MESSAGE || sUriMatcher.match(uri) !=
-			// MONITOR) {
-			// throw new IllegalArgumentException("Unknown URI " + uri);
-			// }
+		// Validate the requested uri
+		// if (sUriMatcher.match(uri) != MESSAGE || sUriMatcher.match(uri) !=
+		// MONITOR) {
+		// throw new IllegalArgumentException("Unknown URI " + uri);
+		// }
 
-			ContentValues values;
-			if (initialValues != null) {
-				values = new ContentValues(initialValues);
-			} else {
-				values = new ContentValues();
-			}
+		ContentValues values;
+		if (initialValues != null) {
+			values = new ContentValues(initialValues);
+		} else {
+			values = new ContentValues();
+		}
 
-			switch (sUriMatcher.match(uri)) {
-				case MESSAGE:
+		switch (sUriMatcher.match(uri)) {
+			case MESSAGE:
 //					return insertMessage(uri, values);
-					throw new IllegalArgumentException("Update not implemented");
-				case MONITOR:
+				throw new IllegalArgumentException("Update not implemented");
+			case MONITOR:
 //					return insertMonitor(uri, values);
-					throw new IllegalArgumentException("Update not implemented");
-				case FIELDTYPE:
-					return updateFieldType(uri, values, selection, selectionArgs);
-				case FIELD:
+				throw new IllegalArgumentException("Update not implemented");
+			case FIELDTYPE:
+				return updateFieldType(uri, values, selection, selectionArgs);
+			case FIELD:
 //					return insertField(uri, values);
-					throw new IllegalArgumentException("Update not implemented");
-				case FORM:
+				throw new IllegalArgumentException("Update not implemented");
+			case FORM:
 //					return insertForm(uri, values);
-					throw new IllegalArgumentException("Update not implemented");
-				case FORMDATA_ID:
+				throw new IllegalArgumentException("Update not implemented");
+			case FORMDATA_ID:
 //					return insertFormData(uri, values);
-					throw new IllegalArgumentException("Update not implemented");
-					// other stuffs not implemented for insertion yet.
-				default:
-					throw new IllegalArgumentException("Unknown URI " + uri);
-			}
+				throw new IllegalArgumentException("Update not implemented");
+				// other stuffs not implemented for insertion yet.
+			default:
+				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 	}
 

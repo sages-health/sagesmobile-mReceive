@@ -93,7 +93,7 @@ public class MessageParsingTests extends AndroidTestCase {
 
 		Form[] forms = ModelTranslator.getAllForms();
 
-		int allcount = 0;
+//		int allcount = 0;
 		for (int q = 0; q < forms.length; q++) {
 
 			Form form = forms[q];

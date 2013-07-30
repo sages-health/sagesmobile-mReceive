@@ -37,7 +37,7 @@ public class SystemHealthTracking {
 		SystemHealthTracking.loggingEnabled = loggingEnabled;
 	}
 
-	public SystemHealthTracking(Class clazz){
+	public SystemHealthTracking(Class<?> clazz){
 		this.logger = Logger.getLogger(clazz);
 	}
 	
@@ -86,22 +86,22 @@ public class SystemHealthTracking {
 		}
 	};
 
-	private static boolean mExternalStorageAvailable = false;
-	private static boolean mExternalStorageWriteable = false;
+//	private static boolean mExternalStorageAvailable = false;
+//	private static boolean mExternalStorageWriteable = false;
 	private static File sdcard = Environment.getExternalStorageDirectory();
 	private static String state = Environment.getExternalStorageState();
 	public static String logName = "sages_system_health.log";
-	private static File sdLogFile;
+//	private static File sdLogFile;
 	
 	public static void initDataStore(Context context) throws FileNotFoundException{
 		File sdFile = new File(sdcard.getAbsolutePath() + "/rapidandroid/logs/"+ logName);
 		
-		sdLogFile = sdFile;
+//		sdLogFile = sdFile;
 		boolean sdFileExists = sdFile.exists();
 		if (!sdFileExists){
 			if (Environment.MEDIA_MOUNTED.equals(state)) {
 			    // We can read and write the media
-			    mExternalStorageAvailable = mExternalStorageWriteable = true;
+//			    mExternalStorageAvailable = mExternalStorageWriteable = true;
 			    
 			    try {
 			    	File fileDir = new File(sdcard.getAbsolutePath() + "/rapidandroid/logs/");
@@ -114,12 +114,12 @@ public class SystemHealthTracking {
 				}
 			} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
 			    // We can only read the media
-			    mExternalStorageAvailable = true;
-			    mExternalStorageWriteable = false;
+//			    mExternalStorageAvailable = true;
+//			    mExternalStorageWriteable = false;
 			} else {
 			    // Something else is wrong. It may be one of many other states, but all we need
 			    //  to know is we can neither read nor write
-			    mExternalStorageAvailable = mExternalStorageWriteable = false;
+//			    mExternalStorageAvailable = mExternalStorageWriteable = false;
 			}
 		}
 	};

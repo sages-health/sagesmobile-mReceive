@@ -32,7 +32,6 @@ import org.rapidandroid.content.translation.ModelTranslator;
 import org.rapidandroid.data.SmsDbHelper;
 import org.rapidandroid.data.controller.DashboardDataLayer;
 import org.rapidandroid.data.controller.FormController;
-import org.rapidandroid.data.controller.MessageDataReporter;
 import org.rapidandroid.data.controller.ParsedDataReporter;
 import org.rapidandroid.view.SingleRowHeaderView;
 import org.rapidandroid.view.adapter.FormDataGridCursorAdapter;
@@ -127,7 +126,7 @@ public class Dashboard extends Activity {
 
 	private ViewSwitcher mViewSwitcher;
 	private TableLayout mHeaderTable;
-	private int traceCount = 0;
+//	private int traceCount = 0;
 
 	// private ProgressDialog mLoadingDialog;
 
@@ -142,6 +141,7 @@ public class Dashboard extends Activity {
 
 	private static final int MENU_CREATE_ID = Menu.FIRST;
 	private static final int MENU_FORM_REVIEW_ID = Menu.FIRST + 1;
+	@SuppressWarnings("unused")
 	private static final int MENU_CHANGE_DATERANGE = Menu.FIRST + 2;
 	private static final int MENU_CHARTS_ID = Menu.FIRST + 3;
 	private static final int MENU_GLOBAL_SETTINGS = Menu.FIRST + 4;
@@ -151,11 +151,11 @@ public class Dashboard extends Activity {
 	// private static final int MENU_EXIT = Menu.FIRST + 3; //waitaminute, we
 	// don't want to exit this thing, do we?
 
-	private static final String STATE_DATE_START = "startdate";
-	private static final String STATE_DATE_END = "enddate";
+//	private static final String STATE_DATE_START = "startdate";
+//	private static final String STATE_DATE_END = "enddate";
 	private static final String STATE_SPINNER_POSITION = "spinneritem";
-	private static final String STATE_SELECTED_FORM = "selectedform";
-	private static final String STATE_LSV_POSITION = "listposition";
+//	private static final String STATE_SELECTED_FORM = "selectedform";
+//	private static final String STATE_LSV_POSITION = "listposition";
 	private static final String STATE_LSV_VIEWMODE = "viewmode";
 	private static final String STATE_RAD_INDEX = "radselected";
 
@@ -318,7 +318,7 @@ public class Dashboard extends Activity {
 					       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {
 					               //Dashboard.this.finish();
-					               int rows = db.delete(table, whereClause, whereArgs);
+					               db.delete(table, whereClause, whereArgs);
 					               mListviewCursor = null;
 					               beginListViewReload();
 					               db.close();
@@ -480,9 +480,9 @@ public class Dashboard extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		Bundle extras = null;
+//		Bundle extras = null;
 		if (intent != null) {
-			extras = intent.getExtras(); // right now this is a case where we
+//			extras = intent.getExtras(); // right now this is a case where we
 			// don't do much activity back and
 			// forth
 		}
@@ -545,19 +545,19 @@ public class Dashboard extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
-		SystemHealthTracking healthTracker = new SystemHealthTracking(Dashboard.class);
+		SystemHealthTracking localHealthTracker = new SystemHealthTracking(Dashboard.class);
 		super.onOptionsItemSelected(item);
 		switch (item.getItemId()) {
 			case MENU_CREATE_ID:
-				healthTracker.logInfo("Create Form selected from menu.");
+				localHealthTracker.logInfo("Create Form selected from menu.");
 				startActivityFormCreate();
 				return true;
 			case MENU_FORM_REVIEW_ID:
-				healthTracker.logInfo("View Form for " + mChosenForm.getPrefix() + " was selected from menu.");
+				localHealthTracker.logInfo("View Form for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startActivityFormReview();
 				return true;
 			case MENU_ERASE_DATA:
-				healthTracker.logInfo("Erase all Data for " + mChosenForm.getPrefix() + " was selected from menu.");
+				localHealthTracker.logInfo("Erase all Data for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startDialogEraseData();
 				return true;
 
@@ -565,16 +565,16 @@ public class Dashboard extends Activity {
 				// startDateRangeActivity();
 				// return true;
 			case MENU_CHARTS_ID:
-				healthTracker.logInfo("Show Charts for " + mChosenForm.getPrefix() + " was selected from menu.");
+				localHealthTracker.logInfo("Show Charts for " + mChosenForm.getPrefix() + " was selected from menu.");
 				startActivityChart();
 				return true;
 			case MENU_GLOBAL_SETTINGS:
-				healthTracker.logInfo("Change Settings selected from menu.");
+				localHealthTracker.logInfo("Change Settings selected from menu.");
 				startActivityGlobalSettings();
 				return true;
 			// SAGES/pokuam1
 			case MENU_DELETE_FORM:
-				healthTracker.logInfo("Delete Form " + mChosenForm.getPrefix() + " was selected from menu.");
+				localHealthTracker.logInfo("Delete Form " + mChosenForm.getPrefix() + " was selected from menu.");
 				startDialogDeleteForm();
 				return true;
 		}
@@ -598,11 +598,11 @@ public class Dashboard extends Activity {
 			healthTracker.logInfo("Could not delete form "+ mChosenForm.getPrefix() + "--it still had data messages.");
 		} else {	
 		Builder deleteFormDialog = new AlertDialog.Builder(this);
-		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
-		final SQLiteDatabase db = dbHelper.getWritableDatabase();
-		final String table = "formdata_" + mChosenForm.getPrefix();
-		final String whereClause = null;
-		final String[] whereArgs = null;
+//		SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+//		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+//		final String table = "formdata_" + mChosenForm.getPrefix();
+//		final String whereClause = null;
+//		final String[] whereArgs = null;
 		final String formPrefix = mChosenForm.getPrefix();
 		deleteFormDialog.setMessage(R.string.confirm_delete)
 	       .setCancelable(false)
@@ -646,6 +646,7 @@ public class Dashboard extends Activity {
 
 		MenuItem editMenu = menu.findItem(MENU_FORM_REVIEW_ID);
 		editMenu.setEnabled(formOptionsEnabled);
+
 		MenuItem viewMenu = menu.findItem(MENU_CHARTS_ID);
 		viewMenu.setEnabled(formOptionsEnabled);
 		MenuItem eraseMenu = menu.findItem(MENU_ERASE_DATA);
@@ -677,31 +678,31 @@ public class Dashboard extends Activity {
 	// return true;
 	// }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated
-	private void startActivityDateRange() {
-		Intent i = new Intent(this, DateRange.class);
-		// Date endDate = java.sql.Date.
-		Date endDate = new Date();
-		if (mChosenForm != null) {
-			endDate = ParsedDataReporter.getOldestMessageDate(this, mChosenForm);
-			if (endDate.equals(Constants.NULLDATE)) {
-				Builder noDateDialog = new AlertDialog.Builder(this);
-				noDateDialog.setPositiveButton("Ok", null);
-				noDateDialog.setTitle("Alert");
-				noDateDialog.setMessage("This form has no messages or data to chart");
-				noDateDialog.show();
-				return;
-			}
-		} else {
-			endDate = MessageDataReporter.getOldestMessageDate(this);
-		}
-		i.putExtra(DateRange.CallParams.ACTIVITY_ARG_STARTDATE, endDate.getTime());
-		// startActivityForResult(i, ACTIVITY_DATERANGE);
-
-	}
+//	/**
+//	 * @deprecated
+//	 */
+//	@Deprecated
+//	private void startActivityDateRange() {
+//		Intent i = new Intent(this, DateRange.class);
+//		// Date endDate = java.sql.Date.
+//		Date endDate = new Date();
+//		if (mChosenForm != null) {
+//			endDate = ParsedDataReporter.getOldestMessageDate(this, mChosenForm);
+//			if (endDate.equals(Constants.NULLDATE)) {
+//				Builder noDateDialog = new AlertDialog.Builder(this);
+//				noDateDialog.setPositiveButton("Ok", null);
+//				noDateDialog.setTitle("Alert");
+//				noDateDialog.setMessage("This form has no messages or data to chart");
+//				noDateDialog.show();
+//				return;
+//			}
+//		} else {
+//			endDate = MessageDataReporter.getOldestMessageDate(this);
+//		}
+//		i.putExtra(DateRange.CallParams.ACTIVITY_ARG_STARTDATE, endDate.getTime());
+//		// startActivityForResult(i, ACTIVITY_DATERANGE);
+//
+//	}
 
 	/**
 	 * 
@@ -742,7 +743,8 @@ public class Dashboard extends Activity {
 	       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 	           public void onClick(DialogInterface dialog, int id) {
 	               //Dashboard.this.finish();
-	               int rows = db.delete(table, whereClause, whereArgs);
+	            @SuppressWarnings("unused")
+				int rows = db.delete(table, whereClause, whereArgs);
 	               db.close();
 	               dbHelper.close();
 	               mListviewCursor = null;
@@ -1026,7 +1028,7 @@ public class Dashboard extends Activity {
 	 * @param changedforms
 	 */
 	private void resetListAdapters() {
-		ListView lsv = (ListView) findViewById(R.id.lsv_dashboardmessages);
+//		ListView lsv = (ListView) findViewById(R.id.lsv_dashboardmessages);
 
 		if (this.headerView != null) {
 			mHeaderTable.removeAllViews();
@@ -1055,10 +1057,10 @@ public class Dashboard extends Activity {
 		}
 	}
 	public int getEraseId(){
-		return this.MENU_ERASE_DATA;
+		return Dashboard.MENU_ERASE_DATA;
 	}
 	public int getDeleteFormId(){
-		return this.MENU_DELETE_FORM;
+		return Dashboard.MENU_DELETE_FORM;
 	}
 
 }

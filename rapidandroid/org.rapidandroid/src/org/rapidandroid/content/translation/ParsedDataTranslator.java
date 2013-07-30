@@ -18,7 +18,6 @@
 package org.rapidandroid.content.translation;
 
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Vector;
 
 import org.rapidandroid.data.RapidSmsDBConstants;
@@ -61,7 +60,7 @@ public class ParsedDataTranslator {
 		cv.put(RapidSmsDBConstants.FormData.MESSAGE, message_id);
 		Field[] fields = f.getFields();
 		int len = fields.length;
-		Random r = new Random();
+//		Random r = new Random();
 
 		for (int i = 0; i < len; i++) {
 			Field field = fields[i];
@@ -72,6 +71,7 @@ public class ParsedDataTranslator {
 				cv.put(RapidSmsDBConstants.FormData.COLUMN_PREFIX + field.getName(), "");
 			}
 		}
+		@SuppressWarnings("unused")
 		Uri inserted = context.getContentResolver().insert(
 															Uri.parse(RapidSmsDBConstants.FormData.CONTENT_URI_PREFIX
 																	+ f.getFormId()), cv);

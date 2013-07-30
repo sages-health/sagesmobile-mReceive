@@ -115,6 +115,7 @@
 <string name="rad_last100">100 Dernière</string>
 <string name="rad_last500">500 Dernière</string>
 <string name="rad_all">Tous</string>
+<string name="description_switchMode">Switches modes TODO</string>
 <string name="glbsettings_inprogress_ack">Analyse des messages en cours</string>
 <string name="glbsettings_parse_ack">Message analysé avec succès, je vous remercie</string>
 <string name="glbsettings_noparse_ack">Essayez à nouveau</string>

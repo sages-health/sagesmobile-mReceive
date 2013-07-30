@@ -4,11 +4,10 @@
  */
 package org.rapidandroid.service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -16,29 +15,25 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.ApplicationGlobals;
-import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.activity.CsvOutputScheduler;
-import org.rapidandroid.content.translation.MessageTranslator;
-import org.rapidandroid.content.translation.ParsedDataTranslator;
 import org.rapidandroid.data.RapidSmsDBConstants;
 import org.rapidandroid.data.controller.WorktableDataLayer;
 import org.rapidandroid.receiver.SmsParseReceiver;
 import org.rapidandroid.receiver.SmsReceiver;
 import org.rapidandroid.receiver.SmsReplyReceiver;
 import org.rapidsms.java.core.model.Form;
-import org.rapidsms.java.core.model.Monitor;
 import org.rapidsms.java.core.parser.IParseResult;
 import org.rapidsms.java.core.parser.service.ParsingService;
 
-import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.telephony.SmsManager;
 import android.util.Log;
+import edu.jhuapl.sages.mobile.lib.rapidandroid.Demodulator;
 
 /**
  * Service to queue pieces of multi-part sms and poll until all received prior to the 
@@ -215,7 +210,7 @@ public class QueueAndPollService extends IntentService {
 					broadcast.putExtra("from", sender_phone_for_blobs);
 					broadcast.putExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, monitor_msg_id);
 					
-					parseOutcome = SmsParseUtility.parseOnCall(this, broadcast, this.forms, this.prefixes);
+					parseOutcome = SmsParseUtility.parseOnCall(this, broadcast, QueueAndPollService.forms, QueueAndPollService.prefixes);
 					long rowOutcome = parseOutcome.getLongExtra("rowid", -1);
 					Form formToCsvOutput = (Form)parseOutcome.getSerializableExtra("form");
 
@@ -299,6 +294,7 @@ public class QueueAndPollService extends IntentService {
 	protected void cleanupTimer(){
 		Map<String, List<Long>> statusMap = null;
 		Map<String, List<Long>> ttlMap = null;
+		@SuppressWarnings("unused")
 		List<Long> completed = null;
 		List<Long> incompleted = null;
 		
@@ -332,11 +328,11 @@ public class QueueAndPollService extends IntentService {
 					isEnded = true;
 					
 					int i = 1;
-					SmsManager smsManager = SmsManager.getDefault();
+					SmsManager localSmsManager = SmsManager.getDefault();
 					for (Long txId: ttlMap.get(WorktableDataLayer.label_ttlStale)){
 //						String sender_phone = "2404759981";
 						String sender_phone = phoneLookupMap.get(txId);
-						smsManager.sendTextMessage(sender_phone, null, i + "_NACK--txid=" + txId + " was stale", null, null);
+						localSmsManager.sendTextMessage(sender_phone, null, i + "_NACK--txid=" + txId + " was stale", null, null);
 						i++;
 					}				
 		} catch(Exception e) {
@@ -367,8 +363,8 @@ public static class SmsParseUtility {
 	private static Form[] forms = null;
 	
 
-	public synchronized static void initFormCache(Form[] forms, String[] prefixes) {
-		setFormsAndPrefixes(forms, prefixes);
+	public synchronized static void initFormCache(Form[] localForms, String[] localPrefixes) {
+		setFormsAndPrefixes(localForms, localPrefixes);
 //		forms = ModelTranslator.getAllForms();
 //		prefixes = new String[forms.length];
 //		for (int i = 0; i < forms.length; i++) {
@@ -380,7 +376,7 @@ public static class SmsParseUtility {
 		int len = prefixes.length;
 		for (int i = 0; i < len; i++) {
 			String prefix = prefixes[i];
-			if (message.toLowerCase().trim().startsWith(prefix + " ")) {
+			if (message.toLowerCase(Locale.getDefault()).trim().startsWith(prefix + " ")) {
 				return forms[i];
 			}
 		}
@@ -435,11 +431,11 @@ public static class SmsParseUtility {
 			outcome.putExtra("rowid", -1);
 			return outcome;
 		} else {
-			//TODO -- need to pull this out. it's a CRUD operation and will break things. wonder if can pass in db con?
-			if (false){
-				Monitor mon = MessageTranslator.GetMonitorAndInsertIfNew(context, intent.getStringExtra("from"));
-			}
-			// if(mon.getReplyPreference()) {
+//			//TODO -- need to pull this out. it's a CRUD operation and will break things. wonder if can pass in db con?
+//			if (false){
+//				Monitor mon = MessageTranslator.GetMonitorAndInsertIfNew(context, intent.getStringExtra("from"));
+//			}
+//			// if(mon.getReplyPreference()) {
 			if (ApplicationGlobals.doReplyOnParseInProgress()) {
 				// for debug purposes, we'll just ack every time.
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
@@ -461,7 +457,7 @@ public static class SmsParseUtility {
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
 					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
-					if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
+//					if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
 				}
 			   	healthTracker.logInfo( SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, t + " SmsParseReceiver.");
 			}
@@ -479,9 +475,9 @@ public static class SmsParseUtility {
 				return outcome;
 			}
 			
-			if (false){ //TODO SAGES/pokuam1: delete when fixed. Determine whether WorktableDataLayer is suitable 
-				ParsedDataTranslator.InsertFormData(context, form, msgid, results);
-			}
+//			if (false){ //TODO SAGES/pokuam1: delete when fixed. Determine whether WorktableDataLayer is suitable 
+//				ParsedDataTranslator.InsertFormData(context, form, msgid, results);
+//			}
 			
 			 rowid = WorktableDataLayer.InsertFormData(context, form, msgid, results);
 		   	 healthTracker.logInfo( SagesEventType.MULTIPART_SMS, t + " SmsParseReceiver.");

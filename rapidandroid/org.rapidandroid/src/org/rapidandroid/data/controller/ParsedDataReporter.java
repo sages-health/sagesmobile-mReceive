@@ -47,7 +47,7 @@ import android.util.Log;
  */
 public class ParsedDataReporter {
 
-	private String[] messageColumns = new String[] { "message_time", "monitor_id", "monitor_phone", "message_text" };
+//	private String[] messageColumns = new String[] { "message_time", "monitor_id", "monitor_phone", "message_text" };
 
 	public synchronized static Date getOldestMessageDate(Context context, Form f) {
 		SmsDbHelper mHelper = new SmsDbHelper(context);
@@ -209,9 +209,9 @@ public class ParsedDataReporter {
 					e.printStackTrace();
 				}
 			}
-			return success;
 			// compressFile(destinationfile);
 		}
+		return success;
 
 	}
 

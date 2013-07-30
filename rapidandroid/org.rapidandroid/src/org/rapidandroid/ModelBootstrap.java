@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,7 +37,7 @@ import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
-
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -50,6 +49,7 @@ import android.util.Log;
  * @author Daniel Myung dmyung@dimagi.com
  * @created Jan 27, 2009 Summary:
  */
+@SuppressLint("UseSparseArrays")
 public class ModelBootstrap {
 	private static SystemHealthTracking healthTracker = new SystemHealthTracking(ModelBootstrap.class);
 
@@ -71,18 +71,18 @@ public class ModelBootstrap {
 		MessageTranslator.updateMonitorHash(context);
 	}
 
-	private static boolean isFieldTypeTableEmpty() {
-		Uri fieldtypeUri = RapidSmsDBConstants.FieldType.CONTENT_URI;
-		Cursor fieldtypecheck = mContext.getContentResolver().query(fieldtypeUri, null, null, null, null);
-		if (fieldtypecheck.getCount() == 0) {
-			fieldtypecheck.close();
-			return true;
-		} else {
-			// not empty!
-			fieldtypecheck.close();
-			return false;
-		}
-	}
+//	private static boolean isFieldTypeTableEmpty() {
+//		Uri fieldtypeUri = RapidSmsDBConstants.FieldType.CONTENT_URI;
+//		Cursor fieldtypecheck = mContext.getContentResolver().query(fieldtypeUri, null, null, null, null);
+//		if (fieldtypecheck.getCount() == 0) {
+//			fieldtypecheck.close();
+//			return true;
+//		} else {
+//			// not empty!
+//			fieldtypecheck.close();
+//			return false;
+//		}
+//	}
 
 	private static String loadAssetFile(String filename) {
 		try {
@@ -152,11 +152,11 @@ public class ModelBootstrap {
 
 	private static void insertFieldTypesIntoDBIfNecessary() {
 
-		Iterator<?> it = fieldTypeHash.entrySet().iterator();
+		Iterator<Map.Entry<Integer, SimpleFieldType>> it = fieldTypeHash.entrySet().iterator();
 
 		// for(int i = 0; i < forms.size(); i++) {
 		while (it.hasNext()) {
-			Map.Entry<Integer, SimpleFieldType> pairs = (Map.Entry<Integer, SimpleFieldType>) it.next();
+			Map.Entry<Integer, SimpleFieldType> pairs = it.next();
 			SimpleFieldType thetype = pairs.getValue();
 			// make the URI and insert for the Fieldtype
 			Uri fieldtypeUri = Uri.parse(RapidSmsDBConstants.FieldType.CONTENT_URI_STRING + thetype.getId());
@@ -235,7 +235,7 @@ public class ModelBootstrap {
 					SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 																	jsonfields.getString("regex"),
 																	jsonfields.getString("name"));
-					fieldTypeHash.put(new Integer(pk), newtype);
+					fieldTypeHash.put(Integer.valueOf(pk), newtype);
 				} catch (JSONException e) {
 				}
 			}
@@ -262,7 +262,7 @@ public class ModelBootstrap {
 					SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 							jsonfields.getString("regex"),
 							jsonfields.getString("name"));
-					fieldTypeHash.put(new Integer(pk), newtype);
+					fieldTypeHash.put(Integer.valueOf(pk), newtype);
 				} catch (JSONException e) {
 				}
 			}
@@ -289,7 +289,7 @@ public class ModelBootstrap {
 										+ jsonfields.getString("regex") + "]");
 						SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 								jsonfields.getString("regex"), jsonfields.getString("name"));
-						fieldTypeHash.put(new Integer(pk), newtype);
+						fieldTypeHash.put(Integer.valueOf(pk), newtype);
 					} catch (JSONException e) {
 					}
 				}
@@ -332,7 +332,7 @@ public class ModelBootstrap {
 					int form_id = jsonfields.getInt("form");
 					Field newfield = new Field(pk, jsonfields.getInt("sequence"), jsonfields.getString("name"),
 							jsonfields.getString("prompt"),
-							fieldTypeHash.get(new Integer(jsonfields.getInt("fieldtype"))));
+							fieldTypeHash.get(Integer.valueOf(jsonfields.getInt("fieldtype"))));
 					
 					Integer formInt = Integer.valueOf(form_id);
 					if (!fieldToFormHash.containsKey(formInt)) {
@@ -372,7 +372,7 @@ public class ModelBootstrap {
 					int form_id = jsonfields.getInt("form");
 					Field newfield = new Field(pk, jsonfields.getInt("sequence"), jsonfields.getString("name"),
 												jsonfields.getString("prompt"),
-												fieldTypeHash.get(new Integer(jsonfields.getInt("fieldtype"))));
+												fieldTypeHash.get(Integer.valueOf(jsonfields.getInt("fieldtype"))));
 
 					Integer formInt = Integer.valueOf(form_id);
 					if (!fieldToFormHash.containsKey(formInt)) {
@@ -407,7 +407,7 @@ public class ModelBootstrap {
 					}
 
 					int pk = obj.getInt("pk");
-					Integer pkInt = new Integer(pk);
+					Integer pkInt = pk;
 					JSONObject jsonfields = obj.getJSONObject("fields");
 
 					Field[] fieldarr = new Field[fieldToFormHash.get(pkInt).size()];
@@ -451,7 +451,7 @@ public class ModelBootstrap {
 						}
 
 						int pk = obj.getInt("pk");
-						Integer pkInt = new Integer(pk);
+						Integer pkInt = pk;
 						curPkInt = pkInt;
 						JSONObject jsonfields = obj.getJSONObject("fields");
 
@@ -487,11 +487,11 @@ public class ModelBootstrap {
 		// check if tables exist
 		// else
 
-		Iterator<?> it = formIdCache.entrySet().iterator();
+		Iterator<Map.Entry<Integer, Form>> it = formIdCache.entrySet().iterator();
 
 		// for(int i = 0; i < forms.size(); i++) {
 		while (it.hasNext()) {
-			Map.Entry<Integer, Form> pairs = (Map.Entry<Integer, Form>) it.next();
+			Map.Entry<Integer, Form> pairs = it.next();
 			Form f = pairs.getValue();
 
 			Log.d("dimagi", "**** inserting form " + f.getFormName());
@@ -499,7 +499,7 @@ public class ModelBootstrap {
 			// insert the form first
 			Uri formUri = Uri.parse(RapidSmsDBConstants.Form.CONTENT_URI_STRING + f.getFormId());
 			Cursor crform = mContext.getContentResolver().query(formUri, null, null, null, null);
-			boolean newFormInserted = false;
+//			boolean newFormInserted = false;
 			if (crform.getCount() == 0) {
 				ModelTranslator.addFormToDatabase(f);
 			}
