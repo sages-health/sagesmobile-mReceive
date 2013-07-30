@@ -98,6 +98,14 @@ public class Dashboard extends Activity {
 		// TODO Auto-generated method stub
 		super.onRestart();
 		ApplicationGlobals.initGlobals(this);
+		if (this.mFormViewMode == Dashboard.LISTVIEW_MODE_SUMMARY_VIEW) {
+			this.mListviewCursor = null;
+			resetListAdapters();
+			fillCursorInBackground();
+			finishListViewReload();
+			loadListViewWithFormData();
+		}
+		
 	}
 
 	/*
@@ -180,6 +188,7 @@ public class Dashboard extends Activity {
 	/** END OF TEST VARIABLES**/
 	// private Date mStartDate = Constants.NULLDATE;
 	// private Date mEndDate = Constants.NULLDATE;
+	private Menu contextMenu;
 
 	final Runnable mToastNotImplemented = new Runnable() {
 		public void run() {
@@ -378,7 +387,6 @@ public class Dashboard extends Activity {
 			}
 		});
 	}
-
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onStop()
@@ -629,6 +637,7 @@ public class Dashboard extends Activity {
 		// Flip the enabled status of menu items depending on selection of a
 		// form
 		super.onPrepareOptionsMenu(menu);
+		this.contextMenu = menu;
 
 		boolean formOptionsEnabled = false;
 		if (this.mChosenForm != null) {
@@ -638,6 +647,11 @@ public class Dashboard extends Activity {
 		MenuItem editMenu = menu.findItem(MENU_FORM_REVIEW_ID);
 		editMenu.setEnabled(formOptionsEnabled);
 		MenuItem viewMenu = menu.findItem(MENU_CHARTS_ID);
+		viewMenu.setEnabled(formOptionsEnabled);
+		MenuItem eraseMenu = menu.findItem(MENU_ERASE_DATA);
+		eraseMenu.setEnabled(formOptionsEnabled);
+		MenuItem deleteMenu = menu.findItem(MENU_DELETE_FORM);
+		deleteMenu.setEnabled(formOptionsEnabled);
 
 		return true;
 	}
@@ -879,6 +893,9 @@ public class Dashboard extends Activity {
 			mChosenForm = mAllForms[position];
 			resetCursor = true;
 			beginListViewReload();
+			if(this.contextMenu != null) {
+				onPrepareOptionsMenu(contextMenu);
+			}
 		}
 	}
 
