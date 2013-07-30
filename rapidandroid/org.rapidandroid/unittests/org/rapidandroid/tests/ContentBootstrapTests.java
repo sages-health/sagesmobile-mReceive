@@ -27,7 +27,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +36,7 @@ import org.rapidsms.java.core.model.Field;
 import org.rapidsms.java.core.model.Form;
 import org.rapidsms.java.core.model.SimpleFieldType;
 import org.rapidsms.java.core.parser.service.ParsingService.ParserType;
-
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -89,15 +88,17 @@ public class ContentBootstrapTests extends AndroidTestCase {
 		String forms = loadAssetFile("definitions/forms.json");// "[{\"pk\": 1, \"model\": \"rapidandroid.form\", \"fields\": {\"parsemethod\": \"simpleregex\", \"prefix\": \"bednets\", \"description\": \"Bednet Distribution(supply)\", \"formname\": \"bednets\"}}, {\"pk\": 2, \"model\": \"rapidandroid.form\", \"fields\": {\"parsemethod\": \"simpleregex\", \"prefix\": \"nutrition\", \"description\": \"Nutrition Information (monitorin and evaluation)\", \"formname\": \"Nutrition\"}}]";
 		String types = loadAssetFile("definitions/fieldtypes.json");// "[{\"pk\": 1, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"word\", \"regex\": \"\\w+\", \"name\": \"word\"}}, {\"pk\": 2, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"number\", \"regex\": \"\\d+\", \"name\": \"number\"}}, {\"pk\": 3, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"float\", \"regex\": \"(\\d+{1,3})(?c:\\s*(kg|kilo|kilos|lb|lbs|pounds))\", \"name\": \"weight\"}}, {\"pk\": 4, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"integer\", \"regex\": \"(\\d+{1,3})(?:\\s*(cm|m|in))\", \"name\": \"height\"}}, {\"pk\": 5, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"float\", \"regex\": \"(\\d+\\:\\d+)|(\\d+\\/\\d+)\", \"name\": \"ratio\"}}, {\"pk\": 6, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"integer\", \"regex\": \"(\\d+{1,3})(?:\\s*(cm|mm|m|in|ft|feet|meter|meters))\", \"name\": \"length\"}}, {\"pk\": 7, \"model\": \"rapidandroid.fieldtype\", \"fields\": {\"datatype\": \"boolean\", \"regex\": \"(t|f|true|false|y|n|yes|no)\", \"name\": \"boolean\"}}]";
 
-		String formdefs = "";
+//		String formdefs = "";
 
+		@SuppressLint("UseSparseArrays")
 		HashMap<Integer, SimpleFieldType> typeHash = new HashMap<Integer, SimpleFieldType>();
-		HashMap<Integer, Field> fieldHash = new HashMap<Integer, Field>();
-		HashMap<Integer, Form> formHash = new HashMap<Integer, Form>();
+//		HashMap<Integer, Field> fieldHash = new HashMap<Integer, Field>();
+//		HashMap<Integer, Form> formHash = new HashMap<Integer, Form>();
+		@SuppressLint("UseSparseArrays")
 		HashMap<Integer, Vector<Field>> fieldToFormHash = new HashMap<Integer, Vector<Field>>();
 		Vector<Form> allforms = new Vector<Form>();
 
-		boolean fail = false;
+//		boolean fail = false;
 
 		parseFieldTypes(types, typeHash);
 		parseFields(fields, typeHash, fieldToFormHash);
@@ -175,13 +176,13 @@ public class ContentBootstrapTests extends AndroidTestCase {
 					}
 
 					int pk = obj.getInt("pk");
-					Integer pkInt = new Integer(pk);
+					Integer pkInt = Integer.valueOf(pk);
 					JSONObject jsonfields = obj.getJSONObject("fields");
 
 					// public Form(int id, String name, String prefix, String
 					// desc, String parsetype, Field[] fields)
 
-					int formcount = 0;
+//					int formcount = 0;
 					Field[] fieldarr = new Field[fieldToFormHash.get(pkInt).size()];
 					for (int q = 0; q < fieldarr.length; q++) {
 						fieldarr[q] = fieldToFormHash.get(pkInt).get(q);
@@ -230,7 +231,7 @@ public class ContentBootstrapTests extends AndroidTestCase {
 					// prompt, SimpleFieldType ftype) {
 					Field newfield = new Field(pk, jsonfields.getInt("sequence"), jsonfields.getString("name"),
 												jsonfields.getString("prompt"),
-												typeHash.get(new Integer(jsonfields.getInt("fieldtype"))));
+												typeHash.get(Integer.valueOf(jsonfields.getInt("fieldtype"))));
 
 					// fieldHash.put(new Integer(pk), newfield);
 					Integer formInt = Integer.valueOf(form_id);
@@ -298,7 +299,7 @@ public class ContentBootstrapTests extends AndroidTestCase {
 					SimpleFieldType newtype = new SimpleFieldType(pk, jsonfields.getString("datatype"),
 																	jsonfields.getString("regex"),
 																	jsonfields.getString("name"));
-					typeHash.put(new Integer(pk), newtype);
+					typeHash.put(Integer.valueOf(pk), newtype);
 
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

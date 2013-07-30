@@ -261,9 +261,13 @@ public class WorktableDataLayer {
 		while (cursor.moveToNext()){
 			long txId = cursor.getLong(col_tx_id);
 			String ttlTimer = cursor.getString(col_timer);
+			@SuppressWarnings("unused")
 			long diff = cursor.getLong(2);
+			@SuppressWarnings("unused")
 			String txtimestamp = cursor.getString(6);
+			@SuppressWarnings("unused")
 			String dateNow = cursor.getString(1);
+			@SuppressWarnings("unused")
 			String ttltimer = cursor.getString(0);
 			
 			// {ttl_timer=0, datetime('now','localtime')=1, _id=3, segment_number=4, tx_id=6, payload=8, tx_timestamp=7, DIFF=2, total_segments=5}
@@ -311,7 +315,7 @@ public class WorktableDataLayer {
 	 * @param list
 	 */
 	public static void deleteTxIds(Context context, List<Long> txIds) {
-		if (txIds == null && txIds.isEmpty()) return;
+		if (txIds == null || txIds.isEmpty()) return;
 		openDbInterfaces(context);
 //		mDb = mDbHelper.getWritableDatabase();
 		
@@ -323,6 +327,7 @@ public class WorktableDataLayer {
 		Log.d("WorktableDataLayer", "Delete string: " + str);
 		query.append(str);
 		String[] txIdsAsArray = txIdString.split(",");
+		@SuppressWarnings("unused")
 		int val = mDb.delete(sages_multisms_worktable, tx_id+ " IN (" + paramStr + ")", txIdsAsArray);
 	}
 	

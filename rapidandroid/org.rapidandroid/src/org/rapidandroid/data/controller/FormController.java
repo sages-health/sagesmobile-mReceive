@@ -24,28 +24,28 @@ public class FormController {
 	private static SmsDbHelper mDbHelper;
 	private static SQLiteDatabase mDb;
 	
-	/**
-	 * Not fully implemented, see {@link FormController}.deleteFormByPrefix()
-	 * @param context
-	 * @param id
-	 */
-	private static void deleteFormById(Context context, int id){
-		if (mDb != null) {
-			if (mDb.isOpen()) {
-				mDb.close();
-			}
-			mDb = null;
-		}
-		
-		if (mDbHelper != null) {
-			mDbHelper.close();
-			mDbHelper = null;
-		}
-		
-		mDbHelper = new SmsDbHelper(context);
-		mDb = mDbHelper.getWritableDatabase();
-		StringBuilder query = new StringBuilder();
-	}
+//	/**
+//	 * Not fully implemented, see {@link FormController}.deleteFormByPrefix()
+//	 * @param context
+//	 * @param id
+//	 */
+//	private static void deleteFormById(Context context, int id){
+//		if (mDb != null) {
+//			if (mDb.isOpen()) {
+//				mDb.close();
+//			}
+//			mDb = null;
+//		}
+//		
+//		if (mDbHelper != null) {
+//			mDbHelper.close();
+//			mDbHelper = null;
+//		}
+//		
+//		mDbHelper = new SmsDbHelper(context);
+//		mDb = mDbHelper.getWritableDatabase();
+//		StringBuilder query = new StringBuilder();
+//	}
 	
 	public static void deleteFormByPrefix(Context context, String formPrefix){
 		if (mDb != null) {

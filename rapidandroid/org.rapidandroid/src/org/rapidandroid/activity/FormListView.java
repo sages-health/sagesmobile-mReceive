@@ -24,6 +24,7 @@ public class FormListView extends Activity implements OnItemClickListener //, It
 //	private boolean fromLongClick;
 	private Form[] forms;
 
+	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -44,6 +45,7 @@ public class FormListView extends Activity implements OnItemClickListener //, It
 		setContentView(lv);
 	}
 
+	@Override
 	protected void onDestroy()
 	{
 		super.onDestroy();

@@ -153,7 +153,7 @@ public class FormReviewer extends Activity {
 			txv_prefix.setText(mForm.getPrefix());
 			txv_description.setText(mForm.getDescription());
 			txv_parsertype.setText(mForm.getParserType().toString());
-			int len = mForm.getFields().length;
+//			int len = mForm.getFields().length;
 
 			// lsv_fields.setAdapter(new ArrayAdapter<String>(this,
 			// android.R.layout.simple_list_item_1, fields));
@@ -440,8 +440,8 @@ public class FormReviewer extends Activity {
 		BufferedReader bufRdr = new BufferedReader(sr);
 
 		String line = null;
-		int row = 0;
-		int col = 0;
+//		int row = 0;
+//		int col = 0;
 		Vector<String[]> lines = new Vector<String[]>();
 		// read each line of text file
 		try {
@@ -511,13 +511,13 @@ public class FormReviewer extends Activity {
 	}
 	
 	private void doRandomizedInjection() {
-		Random r = new Random();
+		Random random = new Random();
 
 		// Debug.startMethodTracing("injection");
 		for (int i = 0; i < 100; i++) {
 
 			// first, let's get the
-			String token = phones[r.nextInt(phones.length)];// Long.toString(Math.abs(r.nextLong()),
+			String token = phones[random.nextInt(phones.length)];// Long.toString(Math.abs(r.nextLong()),
 															// 36);
 			Monitor monitor = MessageTranslator.GetMonitorAndInsertIfNew(this, token);
 
@@ -561,8 +561,8 @@ public class FormReviewer extends Activity {
 		cdr.set(Calendar.SECOND, 0);
 		long val2 = cdr.getTimeInMillis();
 
-		Random r = new Random();
-		long randomTS = (long) (r.nextDouble() * (val2 - val1)) + val1;
+		Random random = new Random();
+		long randomTS = (long) (random.nextDouble() * (val2 - val1)) + val1;
 		Date d = new Date(randomTS);
 		return d;
 	}

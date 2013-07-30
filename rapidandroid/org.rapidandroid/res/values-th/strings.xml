@@ -121,6 +121,7 @@
 <string name="rad_last100">ล่าสุด 100</string>
 <string name="rad_last500">ล่าสุด  500</string>
 <string name="rad_all">ทั้งหมด</string>
+<string name="description_switchMode">Switches modes TODO</string>
 <string name="glbsettings_title">RapidAndroid :: การตั้งค่าสากล</string>
 <string name="glbsettings_inprogress_ack">แยกข้อความในความคืบหน้า</string>
 <string name="glbsettings_parse_ack">ข้อความแจงประสบความสำเร็จขอขอบคุณ</string>

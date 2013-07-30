@@ -125,6 +125,7 @@
 <string name="rad_last100">Last 100</string>
 <string name="rad_last500">Last 500</string>
 <string name="rad_all">All</string>
+<string name="description_switchMode">Switches modes</string>
 <string name="glbsettings_title">RapidAndroid :: Global Settings</string>
 <string name="glbsettings_inprogress_ack">Message parsing in progress</string>
 <string name="glbsettings_parse_ack">Message parsed successfully, thank you</string>

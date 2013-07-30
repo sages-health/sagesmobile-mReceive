@@ -20,6 +20,7 @@ package org.rapidandroid.activity.chart.form;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,10 +70,10 @@ public class FormDataBroker extends ChartBroker {
 		if (fieldToPlot == null) {
 			// we're going to do all messages over timereturn;
 			allData = loadMessageOverTimeHistogram();
-		} else if (fieldToPlot.getFieldType().getParsedDataType().toLowerCase().equals("word")) {
+		} else if (fieldToPlot.getFieldType().getParsedDataType().toLowerCase(Locale.getDefault()).equals("word")) {
 			allData = loadHistogramFromField();
-		} else if (fieldToPlot.getFieldType().getParsedDataType().toLowerCase().equals("boolean")
-				|| fieldToPlot.getFieldType().getParsedDataType().toLowerCase().equals("yes/no")) {
+		} else if (fieldToPlot.getFieldType().getParsedDataType().toLowerCase(Locale.getDefault()).equals("boolean")
+				|| fieldToPlot.getFieldType().getParsedDataType().toLowerCase(Locale.getDefault()).equals("yes/no")) {
 			allData = loadBooleanPlot();
 		} else {
 			allData = loadNumericLine();
@@ -152,7 +153,7 @@ public class FormDataBroker extends ChartBroker {
 			} while (cr.moveToNext());
 
 			try {
-				String legend = this.getLegendString(displayType);
+//				String legend = this.getLegendString(displayType);
 				int[] yVals = getIntsFromList(yValsTrue);
 				JSONArray trueArray = getJSONArrayForValues(displayType, xValsTrue.toArray(new Date[0]), yVals);
 				yVals = getIntsFromList(yValsFalse);
@@ -419,7 +420,7 @@ public class FormDataBroker extends ChartBroker {
 	 */
 
 	@Override
-	public void setVariable(int id) {
+	public synchronized void setVariable(int id) {
 		// TODO Auto-generated method stub
 		if (id == 0) {
 			this.fieldToPlot = null;

@@ -53,12 +53,12 @@ public class MessageCursorAdapter extends CursorAdapter {
 			String message = cursor.getString(4);
 			boolean isoutgoing = Boolean.parseBoolean(cursor.getString(4));
 			Date hackDate = new Date();
-			boolean success = false;
+//			boolean success = false;
 			try {
 				hackDate = Message.SQLDateFormatter.parse(timestamp);
-				success = true;
+//				success = true;
 			} catch (Exception ex) {
-				success = false;
+//				success = false;
 			}
 
 			SimpleMessageView srv = (SimpleMessageView) view;
@@ -76,7 +76,7 @@ public class MessageCursorAdapter extends CursorAdapter {
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		int MonitorID = cursor.getInt(2);
-		String timestamp = cursor.getString(3);
+//		String timestamp = cursor.getString(3);
 		String message = cursor.getString(4);
 		boolean isoutgoing = Boolean.parseBoolean(cursor.getString(4));
 		Date hackDate = new Date();

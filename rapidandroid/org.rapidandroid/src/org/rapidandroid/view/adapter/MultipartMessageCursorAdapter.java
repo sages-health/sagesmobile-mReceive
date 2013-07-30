@@ -50,12 +50,12 @@ public class MultipartMessageCursorAdapter extends MessageCursorAdapter {
 			boolean isoutgoing = Boolean.parseBoolean(cursor.getString(13));//13
 			Date hackDate = new Date();
 			
-			boolean success = false;
+//			boolean success = false;
 			try {
 				hackDate = Message.SQLDateFormatter.parse(timestamp);
-				success = true;
+//				success = true;
 			} catch (Exception ex) {
-				success = false;
+//				success = false;
 			}
 
 			SimpleMessageView srv = (SimpleMessageView) view;
@@ -77,7 +77,7 @@ public class MultipartMessageCursorAdapter extends MessageCursorAdapter {
 //		String message = cursor.getString(5);//13
 //		boolean isoutgoing = Boolean.parseBoolean(cursor.getString(5));//13
 		int MonitorID = cursor.getInt(0);//0
-		String timestamp = cursor.getString(6);//6
+//		String timestamp = cursor.getString(6);//6
 		String message = cursor.getString(13);//13
 		boolean isoutgoing = Boolean.parseBoolean(cursor.getString(13));//13
 		Date hackDate = new Date();

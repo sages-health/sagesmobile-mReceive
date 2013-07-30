@@ -17,11 +17,11 @@
 			android:layout_weight="1">
 			<RadioButton android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/dashboard_rad_100"
-				android:text="@string/rad_last100" android:paddingRight="8px"
+				android:text="@string/rad_last100" android:paddingRight="8dp"
 				android:checked="true"></RadioButton>
 			<RadioButton android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:text="@string/rad_last500"
-				android:id="@+id/dashboard_rad_500" android:paddingRight="8px"></RadioButton>
+				android:id="@+id/dashboard_rad_500" android:paddingRight="8dp"></RadioButton>
 			<RadioButton android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/dashboard_rad_all"
 				android:text="@string/rad_all"></RadioButton>
@@ -29,7 +29,7 @@
 		</RadioGroup>
 		<ImageButton android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_weight="0"
-			android:id="@+id/btn_switch_mode"></ImageButton>
+			android:id="@+id/btn_switch_mode" android:contentDescription="@string/description_switchMode"></ImageButton>
 	</TableRow>
 	<TextView android:id="@+id/lbl_dashboardmessages"
 		android:layout_height="wrap_content" android:layout_width="fill_parent"

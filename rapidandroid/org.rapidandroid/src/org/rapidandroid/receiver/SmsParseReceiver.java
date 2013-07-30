@@ -17,11 +17,10 @@
 
 package org.rapidandroid.receiver;
 
-import java.util.Date;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.rapidandroid.ApplicationGlobals;
-import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.SystemHealthTracking.SagesEventType;
 import org.rapidandroid.activity.CsvOutputScheduler;
@@ -87,7 +86,7 @@ public class SmsParseReceiver extends BroadcastReceiver {
 		int len = prefixes.length;
 		for (int i = 0; i < len; i++) {
 			String prefix = prefixes[i];
-			if (message.toLowerCase().trim().startsWith(prefix + " ")) {
+			if (message.toLowerCase(Locale.getDefault()).trim().startsWith(prefix + " ")) {
 				return forms[i];
 			}
 		}
@@ -127,6 +126,7 @@ public class SmsParseReceiver extends BroadcastReceiver {
 			}
 			return;
 		} else {
+			@SuppressWarnings("unused")
 			Monitor mon = MessageTranslator.GetMonitorAndInsertIfNew(context, intent.getStringExtra("from"));
 			// if(mon.getReplyPreference()) {
 			if (ApplicationGlobals.doReplyOnParseInProgress()) {

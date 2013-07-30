@@ -117,6 +117,7 @@ public class MessageTranslator {
 		} else {
 			ContentValues cv = new ContentValues();
 			cv.put(RapidSmsDBConstants.Monitor.PHONE, phone);
+			@SuppressWarnings("unused")
 			Uri newUri = context.getContentResolver().insert(RapidSmsDBConstants.Monitor.CONTENT_URI, cv);
 			// updateMonitorHash(context);
 			return mMonitorHashByPhone.get(phone);

@@ -6,7 +6,7 @@ package org.rapidandroid.activity;
 import org.rapidandroid.R;
 import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -51,7 +51,8 @@ public class CsvOutputScheduler extends Activity {
 		private static final int MENU_DONE = Menu.FIRST;
 //TODO POKUAM1 - IF FORM IS DELETED, WE WOULD NEED TO BLOW THESE VALUES OUT OF THE SharedPreferences file.
 	    
-    @Override
+    @SuppressLint("CutPasteId")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("RapidAndroid:: CSV Scheduler & Forwarding");
@@ -152,7 +153,7 @@ public class CsvOutputScheduler extends Activity {
 				Log.d("Button."+t,"saving frequency to user settings.");
 				Log.d("Button."+t, "arg: " + view);
 				EditText frequencyVal = (EditText)findViewById(R.id.etx_outputFreq);
-		        EditText forwardingNumsTextField = (EditText)findViewById(R.id.etx_forwardingNums);
+//		        EditText forwardingNumsTextField = (EditText)findViewById(R.id.etx_forwardingNums);
 				Editor editor = preferences.edit();
 				editor.putInt(formId + FREQUENCY_VAR, Integer.parseInt(frequencyVal.getText().toString()));
 				editor.putString(formId + FORWARDING_NUMS, forwardingNumsTextField.getText().toString());
