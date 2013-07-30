@@ -300,7 +300,8 @@ public class Dashboard extends Activity {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapter, View view, int position, long row) {
-				if (adapter.getAdapter().getClass().equals(FormDataGridCursorAdapter.class)){
+				if (adapter.getAdapter().getClass().equals(FormDataGridCursorAdapter.class) ||
+						adapter.getAdapter().getClass().equals(SummaryCursorAdapter.class)){
 					
 					Object obj = adapter.getItemAtPosition(position);
 					long objlong = adapter.getItemIdAtPosition(position);
@@ -319,6 +320,43 @@ public class Dashboard extends Activity {
 					           public void onClick(DialogInterface dialog, int id) {
 					               //Dashboard.this.finish();
 					               db.delete(table, whereClause, whereArgs);
+					               mListviewCursor = null;
+					               beginListViewReload();
+					               db.close();
+					               healthTracker.logInfo("Deleted a record.");
+					           }
+					       })
+					       .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					                db.close();
+					           }
+					       });
+					
+					builder.create().show();
+					
+					
+				}
+				
+				if (adapter.getAdapter().getClass().equals(MessageCursorAdapter.class)){
+					
+					Object obj = adapter.getItemAtPosition(position);
+					long objlong = adapter.getItemIdAtPosition(position);
+					obj.toString();
+					
+					SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
+					final SQLiteDatabase db = dbHelper.getWritableDatabase();
+					final String table = "rapidandroid_message";
+					final String whereClause = "_id = ?";
+					final String[] whereArgs = {String.valueOf(objlong)};
+					
+					AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+					builder.setMessage(R.string.confirm_delete)
+					       .setCancelable(false)
+					       .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					               //Dashboard.this.finish();
+					               int rows = db.delete(table, whereClause, whereArgs);
 					               mListviewCursor = null;
 					               beginListViewReload();
 					               db.close();
@@ -557,7 +595,12 @@ public class Dashboard extends Activity {
 				startActivityFormReview();
 				return true;
 			case MENU_ERASE_DATA:
-				localHealthTracker.logInfo("Erase all Data for " + mChosenForm.getPrefix() + " was selected from menu.");
+				if(this.mChosenForm != null) {//TODO make this for all forms other then 'show all messages'
+					healthTracker.logInfo("Erase all Data for " + mChosenForm.getPrefix() + " was selected from menu.");
+				}
+				else {
+					healthTracker.logInfo("Erase all Data for rapidandroid_message was selected from menu.");
+				}
 				startDialogEraseData();
 				return true;
 
@@ -649,8 +692,6 @@ public class Dashboard extends Activity {
 
 		MenuItem viewMenu = menu.findItem(MENU_CHARTS_ID);
 		viewMenu.setEnabled(formOptionsEnabled);
-		MenuItem eraseMenu = menu.findItem(MENU_ERASE_DATA);
-		eraseMenu.setEnabled(formOptionsEnabled);
 		MenuItem deleteMenu = menu.findItem(MENU_DELETE_FORM);
 		deleteMenu.setEnabled(formOptionsEnabled);
 
@@ -734,7 +775,14 @@ public class Dashboard extends Activity {
 		Builder eraseDataDialog = new AlertDialog.Builder(this);
 		final SmsDbHelper dbHelper = new SmsDbHelper(Dashboard.this);
 		final SQLiteDatabase db = dbHelper.getWritableDatabase();
-		final String table = "formdata_" + mChosenForm.getPrefix();
+		final String table;
+		if(this.mChosenForm != null) {//TODO make this for all forms other then 'show all messages'
+			table = "formdata_" + mChosenForm.getPrefix();
+		}
+		else {
+			table = "rapidandroid_message";
+		}
+		
 		final String whereClause = null;
 		final String[] whereArgs = null;
 		
