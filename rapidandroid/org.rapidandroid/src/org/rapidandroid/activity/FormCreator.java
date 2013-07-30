@@ -21,15 +21,10 @@
 package org.rapidandroid.activity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Vector;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +44,6 @@ import org.rapidsms.java.core.parser.token.ITokenParser;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -61,14 +55,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Activity window for creating a new form.
@@ -106,9 +98,9 @@ public class FormCreator extends Activity {
 	private static final int DIALOG_CONFIRM_CLOSURE = 4;
 	private static final int DIALOG_FORM_CREATE_FAIL = 5;
 
-	private static final int DIALOGRESULT_CLOSE_INFORMATIONAL = 0;
-	private static final int DIALOGRESULT_OK_DONT_SAVE = 1;
-	private static final int DIALOGRESULT_CANCEL_KEEP_WORKING = 2;
+//	private static final int DIALOGRESULT_CLOSE_INFORMATIONAL = 0;
+//	private static final int DIALOGRESULT_OK_DONT_SAVE = 1;
+//	private static final int DIALOGRESULT_CANCEL_KEEP_WORKING = 2;
 
 	private static final String STATE_FORMNAME = "formname";
 	private static final String STATE_PREFIX = "prefix";
@@ -116,7 +108,7 @@ public class FormCreator extends Activity {
 	private static final String STATE_PARSER = "parser";
 
 	private ArrayList<Field> mCurrentFields;
-	private String[] fieldStrings;
+//	private String[] fieldStrings;
 
 	private IMessageParser[] mAllParsers = { new SimpleRegexParser(),
 			new StrictRegexParser() };
@@ -185,6 +177,7 @@ public class FormCreator extends Activity {
 				});
 	}
 
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 
@@ -220,7 +213,7 @@ public class FormCreator extends Activity {
 		EditText etxFormName = (EditText) findViewById(R.id.etx_formname);
 		EditText etxFormPrefix = (EditText) findViewById(R.id.etx_formprefix);
 		EditText etxDescription = (EditText) findViewById(R.id.etx_description);
-		ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
+//		ListView lsv = (ListView) findViewById(R.id.lsv_createfields);
 
 		try {
 			savedstate.put(STATE_FORMNAME, etxFormName.getText().toString());
@@ -305,17 +298,15 @@ public class FormCreator extends Activity {
 		int cnt = spin_forms.getCount();
 		for(int i=0;i<cnt;i++)
 		{
-			if(spin_forms.getItemAtPosition(i).toString().toLowerCase().contains(f.getParserType().name().toLowerCase()))
+			if(spin_forms.getItemAtPosition(i).toString().toLowerCase(Locale.getDefault()).contains(f.getParserType().name().toLowerCase(Locale.getDefault())))
 				spin_forms.setSelection(i);
 		}
 		
 		
 		// add fields
 		Field[] fields = f.getFields();
-		Arrays.sort(fields, new Comparator() {
-			public int compare(Object arg0, Object arg1) {
-				Field f1 = (Field) arg0;
-				Field f2 = (Field) arg1;
+		Arrays.sort(fields, new Comparator<Field>() {
+			public int compare(Field f1, Field f2) {
 				if (f1.getSequenceId() < f2.getSequenceId())
 					return -1;
 				else if (f1.getSequenceId() > f2.getSequenceId())
@@ -544,7 +535,7 @@ public class FormCreator extends Activity {
 		EditText etxFormPrefix = (EditText) findViewById(R.id.etx_formprefix);
 		// EditText etxDescription =
 		// (EditText)findViewById(R.id.etx_description);
-		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
+//		ListView lsvFields = (ListView) findViewById(R.id.lsv_createfields);
 
 		if (etxFormName.getText().length() == 0) {
 			return FormCreator.DIALOG_FORM_INVALID_NOFORMNAME;
@@ -581,7 +572,7 @@ public class FormCreator extends Activity {
 		Spinner spinnerParserType = (Spinner) findViewById(R.id.spinner_formparser);
 		int parserPosition = spinnerParserType.getSelectedItemPosition();
 
-		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase());
+		ParserType parserType = ParserType.valueOf(mAllParsers[parserPosition].getName().toUpperCase(Locale.getDefault()));
 
 		Form formToSave = new Form();
 		formToSave.setFormName(etxFormName.getText().toString().trim());
@@ -621,7 +612,7 @@ public class FormCreator extends Activity {
 			return true;
 		}
 
-		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//		AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
 		switch (item.getItemId()) {
 		// TODO: IMPLEMENT CONTEXT MENU
@@ -749,13 +740,14 @@ public class FormCreator extends Activity {
 
 	}
 
+	@Override
 	public void onBackPressed() {
 		AlertDialog dialog = new AlertDialog.Builder(this).create();
 
 		dialog.setMessage("Save Changes First?");
 		dialog.setButton(DialogInterface.BUTTON_POSITIVE, "Yes",
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(DialogInterface d, int which) {
 						doSave();
 						finish();
 					}
@@ -763,14 +755,14 @@ public class FormCreator extends Activity {
 
 		dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "No",
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(DialogInterface d, int which) {
 						finish();
 					}
 				});
 
 		dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(DialogInterface d, int which) {
 					}
 				});
 		dialog.show();

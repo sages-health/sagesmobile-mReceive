@@ -93,9 +93,9 @@ public class FileBrowser extends ListActivity {
 		return true;
 	}
 
-	private void browseToRoot() {
-		browseTo(new File("/"));
-	}
+//	private void browseToRoot() {
+//		browseTo(new File("/"));
+//	}
 
 	private void browseTo(final File aDirectory) {
 		if (aDirectory.isDirectory()) {

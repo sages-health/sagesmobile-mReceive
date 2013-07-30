@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -39,11 +40,8 @@ import org.rapidsms.java.core.parser.IParseResult;
 import org.rapidsms.java.core.parser.service.ParsingService;
 
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.telephony.gsm.SmsManager;
 import android.test.AndroidTestCase;
 
 /**
@@ -54,7 +52,7 @@ public class MessageCorpusTests extends AndroidTestCase {
 
 	private String[] prefixes = null;
 	private Form[] forms = null;
-	private Context mContext = null;
+//	private Context mContext = null;
 
 	private SmsDbHelper mHelper;
 
@@ -97,7 +95,6 @@ public class MessageCorpusTests extends AndroidTestCase {
 		super.tearDown();
 	}
 
-	@SuppressWarnings("finally")
 	private Vector<String[]> readRawMessages() {
 		String rawMessageText = loadAssetFile("testdata/rawdata.csv");
 		return readCsv(rawMessageText);
@@ -112,8 +109,8 @@ public class MessageCorpusTests extends AndroidTestCase {
 		BufferedReader bufRdr = new BufferedReader(sr);
 
 		String line = null;
-		int row = 0;
-		int col = 0;
+//		int row = 0;
+//		int col = 0;
 		Vector<String[]> lines = new Vector<String[]>();
 		// read each line of text file
 		try {
@@ -154,7 +151,7 @@ public class MessageCorpusTests extends AndroidTestCase {
 		int len = prefixes.length;
 		for (int i = 0; i < len; i++) {
 			String prefix = prefixes[i];
-			if (message.toLowerCase().trim().startsWith(prefix + " ")) {
+			if (message.toLowerCase(Locale.getDefault()).trim().startsWith(prefix + " ")) {
 				return forms[i];
 			}
 		}
@@ -210,11 +207,11 @@ public class MessageCorpusTests extends AndroidTestCase {
 		}
 	}
 
-	private void sendMessageViaSMS(Context context, String mesg) {
-		SmsManager smgr = SmsManager.getDefault();
-		Intent intent = new Intent();
-		smgr.sendTextMessage("5554", null, mesg, null, null);
-	}
+//	private void sendMessageViaSMS(Context context, String mesg) {
+//		SmsManager smgr = SmsManager.getDefault();
+//		Intent intent = new Intent();
+//		smgr.sendTextMessage("5554", null, mesg, null, null);
+//	}
 
 	public void testInsertDirect() {
 		Vector<String[]> rawMessages = readRawMessages();
@@ -301,7 +298,7 @@ public class MessageCorpusTests extends AndroidTestCase {
 
 			// this is cuz the answer data has a leading column
 			for (int j = 1; j < answers.length; j++) {
-				assertEquals(answers[j].trim().toLowerCase(), answercursor.getString(j + 1));
+				assertEquals(answers[j].trim().toLowerCase(Locale.getDefault()), answercursor.getString(j + 1));
 			}
 			answercursor.moveToNext();
 		}

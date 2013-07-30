@@ -55,9 +55,9 @@ public class SmsDbHelper extends SQLiteOpenHelper {
 
 	// private static final int DATABASE_VERSION_1 = 1; //version 1: initial
 	// version 1/22/2009
-	private static final int DATABASE_VERSION_2 = 2; // 2/6/2007, add receive_time
-													// column to message table
-	private static final int DATABASE_VERSION_3 = 3;  // 1/31/2012, create work_table for multipart sms
+//	private static final int DATABASE_VERSION_2 = 2; // 2/6/2007, add receive_time
+//													// column to message table
+//	private static final int DATABASE_VERSION_3 = 3;  // 1/31/2012, create work_table for multipart sms
 	private static final int DATABASE_VERSION = 3;  // 1/31/2012, create work_table for multipart sms
 	
 	// Sections lifted from the originating class SqliteOpenHelper.java

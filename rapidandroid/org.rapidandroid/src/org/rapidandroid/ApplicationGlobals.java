@@ -260,8 +260,8 @@ public class ApplicationGlobals {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return readobject;
 		}
+		return readobject;
 	}
 	
 

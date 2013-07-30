@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.rapidandroid" android:versionName="08.30.2012.01" android:versionCode="082012">
+	package="org.rapidandroid" android:versionName="08.30.2012.01" android:versionCode="082012" xmlns:tools="http://schemas.android.com/tools">
 
-			<uses-sdk android:minSdkVersion="4"></uses-sdk>
+	<uses-sdk android:minSdkVersion="10" android:targetSdkVersion="17"></uses-sdk>
 			
-	<application android:label="@string/app_name" android:name="RapidAndroidApplication" android:icon="@drawable/rapidandroid" android:debuggable="true">
+	<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
+	<uses-permission android:name="android.permission.READ_SMS"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>
+	<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
+	<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+	<application android:label="@string/app_name" android:name="RapidAndroidApplication" android:icon="@drawable/rapidandroid" android:debuggable="true" android:allowBackup="false">
 		<provider android:authorities="org.rapidandroid.provider.RapidSms" 
-							android:name=".content.RapidSmsContentProvider">
+							android:name=".content.RapidSmsContentProvider" tools:ignore="ExportedContentProvider">
 		</provider>
 				
 		
@@ -125,11 +133,4 @@
 			android:targetPackage="org.rapidandroid" android:label="Tests for Api Demos.">
 		</instrumentation>
 	
-		<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
-		<uses-permission android:name="android.permission.READ_SMS"></uses-permission>
-		<uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>
-		<uses-permission android:name="android.permission.READ_CONTACTS"></uses-permission>
-		<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
-		<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-		<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest> 

@@ -46,7 +46,7 @@ public class SingleRowHeaderView extends TableRow {
 	 */
 	public SingleRowHeaderView(Context context, Form f, int screenWidth) {
 		super(context);
-		int itemCounter = 0;
+//		int itemCounter = 0;
 
 		// mMessageIDCol = new TextView(context);
 		// mMessageIDCol.setText("ID |");
@@ -62,7 +62,7 @@ public class SingleRowHeaderView extends TableRow {
 		mColCount = f.getFields().length;
 		int width = screenWidth / mColCount;
 		Field[] fields = f.getFields();
-		String suffix = " | ";
+//		String suffix = " | ";
 		for (int i = 0; i < mColCount; i++) {
 			TextView coldata = new TextView(getContext());
 			coldata.setText(fields[i].getName());
