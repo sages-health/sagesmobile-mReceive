@@ -1,16 +1,31 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?><resources>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--
+		Copyright (C) 2009 University of Washington Licensed under the Apache
+		License, Version 2.0 (the "License"); you may not use this file except
+		in compliance with the License. You may obtain a copy of the License
+		at http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+		
+		Some translations were added or updated by JHU/APL
+	-->
+<resources>
 <string name="hello">Hola a todos, rapidandroid</string>
+<string name="not_implemented">Todavía no implementado </string>
 <string name="app_name">RapidAndroid</string>
 <string name="lbl_formname">Nombre</string>
 <string name="lbl_description">Descripción</string>
-<string name="lbl_formprefix">Prefijos</string>
+<string name="lbl_formprefix">Prefijo</string>
 <string name="lbl_formchoose">Formularios:</string>
-<string name="lbl_formparser">Analizador Tipo</string>
+<string name="lbl_formparser">Tipo de Analizador</string>
 <string name="lbl_form">Forma:</string>
 <string name="invalid_form_title">Formulario no es válido</string>
 
 
-<string name="invalid_form_Nofield_message">Debe tener al menos un campo para esta forma de ahorrar</string>
+<string name="invalid_form_Nofield_message">Para ahorrar esta forma, debe tener al menos una esfera</string>
 
 <string name="invalid_form_Noformname_message">Debe introducir un FormName</string>
 
@@ -23,12 +38,15 @@
 <string name="invalid_form_duplicate_formprefix">Duplicar Forma Prefijo</string>
 <string name="invalid_form_duplicate_formprefix_message">La forma de este prefijo ya existe</string>
 
-<string name="invalid_form_create_fail"> La Creación de formularios no</string>
+<string name="invalid_form_whitespace_formname_message">El Nombre del formulario no puede contenir un espacio</string>
+<string name="invalid_form_whitespace_formprefix_message">El prefijo de formulario no puedo contenir un espacio</string>
+
+<string name="invalid_form_create_fail"> La Creación de formularios no tiene éxito</string>
 <string name="invalid_form_create_fail_message">No se puede crear el formulario y sus tablas de apoyo. Compruebe los registros.</string>
-<string name="invalid_form_confirm_close">Confirmar Cierree</string>
+<string name="invalid_form_confirm_close">Confirmar Cierre</string>
 <string name="invalid_form_confirm_close_message">¿Está seguro que desea cerrar sin guardar los cambios?</string>
 
-<string name="prompt_backpressed_savechanges">Guardar cambios en primer lugar?</string>
+<string name="prompt_backpressed_savechanges">¿Primero, guardar cambios?</string>
 <string name="prompt_keep_working">No, sigue trabajando</string>
 
 
@@ -38,40 +56,41 @@
 <string name="dash_title">RapidAndroid :: Panel de información </string>
 <string name="lbl_dashboardmessages">Mensajes recientes:</string>
 <string name="dashboard_menu_create">Crear formulario</string>
-<string name="dashboard_menu_edit">Ver Formulario</string>
+<string name="dashboard_menu_edit">Ver el Formulario</string>
 <string name="dashboard_menu_erase_data">Borrar datos</string>
 <string name="dashboard_menu_delete_form">Borrar el Formulario</string>
 <string name="dashboard_menu_view">Mostrar gráficos</string>
+<string name="dashboard_txt_wait">Esperar Por favor...</string>
 <string name="formeditor_menu_cancel">cancelar</string>
 <string name="formeditor_menu_save">Ahorrar</string>
-<string name="formeditor_menu_add_field">Agregar campo</string>
+<string name="formeditor_menu_add_field">Agregar esfera</string>
 
-<string name="error_nofieldname_required"> Nombre: * Campo obligatorio</string>
-<string name="error_noprompt">Descripción: * Campo obligatorio</string>
-<string name="duplicate_fieldname"> * Nombre El campo debe ser único a esta forma</string>
+<string name="error_nofieldname_required"> Nombre * Esfera obligatoria</string>
+<string name="error_noprompt">Descripción: * Esfera obligatoria</string>
+<string name="duplicate_fieldname"> * Nombre de la esfera debe ser único a esta forma</string>
 
 <string name="lbl_scroll_parser">Analizar el modo de:</string>
 <string name="dashboard_menu_show_reports">Informes</string>
 <string name="menu_done">Terminado</string>
 <string name="lbl_fieldname">Nombre:</string>
 <string name="lbl_fieldprompt">Descripción:</string>
-<string name="lbl_fieldtypechoose">tipo de campo</string>
-<string name="lbl_fields">Campos:</string>
-<string name="formeditor_menu_edit_forms">Editar Campos</string>
+<string name="lbl_fieldtypechoose">Tipo de Esfera:</string>
+<string name="lbl_fields">Esferas:</string>
+<string name="formeditor_menu_edit_forms">Editar Esferas</string>
 
-<string name="addfield_scroll_word">word</string>
-<string name="addfield_scroll_number">number</string>
-<string name="addfield_scroll_weight">weight</string>
-<string name="addfield_scroll_height">height</string>
-<string name="addfield_scroll_ratio">ratio</string>
-<string name="addfield_scroll_length">length</string>
-<string name="addfield_scroll_t_f">True/False</string>
-<string name="addfield_scroll_date1">Date/dd.dd.dddd</string>
-<string name="addfield_scroll_date2">Date/dddd.dd.dd</string>
-<string name="addfield_scroll_alphanumeric">alphanumeric</string>
-<string name="addfield_scroll_freetext">freetext</string>
-<string name="addfield_scroll_tropicalfruit">tropical fruit</string>
-<string name="addfield_scroll_diseaselist">diseaselist/1 to 3</string>
+<string name="addfield_scroll_word">palabra</string>
+<string name="addfield_scroll_number">número</string>
+<string name="addfield_scroll_weight">Peso</string>
+<string name="addfield_scroll_height">Altura</string>
+<string name="addfield_scroll_ratio">Proporción</string>
+<string name="addfield_scroll_length">Longitud</string>
+<string name="addfield_scroll_t_f">Verdadero/Falso</string>
+<string name="addfield_scroll_date1">Fecha/ff.ff.ffff</string>
+<string name="addfield_scroll_date2">Fecha/ffff.ff.ff</string>
+<string name="addfield_scroll_alphanumeric">alfanumérico</string>
+<string name="addfield_scroll_freetext">texto libre</string>
+<string name="addfield_scroll_tropicalfruit">fruta tropical</string>
+<string name="addfield_scroll_diseaselist">lista de enfermedades/1 a 3</string>
 
 <string name="btn_finishaddfield">Agregar</string>
 <string name="btn_canceladdfield">Cancelar</string>
@@ -83,56 +102,58 @@
 
 <string name="no_msgs_to_chart">Esta forma no tiene mensajes o datos para trazar</string>
 <string name="no_data_to_chart">No hay datos para trazar.</string>
-<string name="chart_choose_field_title">Elija el campo</string>
+<string name="chart_choose_field_title">Elegir Esfera</string>
 <string name="messages_overtime">Mensajes a través del tiempo</string>
 
 <string name="formreview_menu_done">Hecho</string>
 <string name="formreview_menu_format">Mostrar Ejemplo</string>
 <string name="chart_menu_done">Hecho</string>
-<string name="chart_menu_change_variable">Cambio de variable</string>
+<string name="chart_menu_change_variable">Variable de Cambio</string>
 <string name="chart_menu_change_parameters">Cambiar intervalo de fechas</string>
-<string name="formreview_dump_csv">De salida CSV</string>
+<string name="formreview_dump_csv">Salida CSV</string>
 <string name="formreview_schedule_dump_csv">Horario de salida CSV</string>
 <string name="formreview_upload_csv">Subir Informe</string>
 <string name="formlistview_title">Los formularios creados</string>
-<string name="formreview_title">RapidAndroid :: Revise Forma</string>
+<string name="formreview_title">RapidAndroid :: Revisar Forma</string>
 <string name="formreview_sample_submission">Muestra de Sumisión</string>
 <string name="form_delete_message">No se puede eliminar un formulario que contiene datos o mensajes</string>
 <string name="lbl_enddate">Fecha de finalización:</string>
 <string name="lbl_startdate">Fecha de comienzo:</string>
-<string name="range_btn_lastweek">Semana pasada</string>
-<string name="range_btn_lastmonth">Mes pasado</string>
+<string name="range_btn_lastweek">Última Semana</string>
+<string name="range_btn_lastmonth">Último Mes</string>
 <string name="range_btn_lastday">Último día</string>
 <string name="messages_overtime_title">Mensajes a través del tiempo</string>
-<string name="select_daterange_title">Seleccione Intervalo de fechas</string>
+<string name="select_daterange_title">Seleccionar Intervalo de fechas</string>
 <string name="Illegal_arg_startdate">Esta actividad debe ser llamado con una fecha de inicio adecuada en el pasado.</string>
 
-<string name="lbl_totaldaterange">Daterange total:</string>
+<string name="lbl_totaldaterange">Intervalo total de fechas:</string>
 <string name="lbl_chart_chartsubject">Gráfico Asunto:</string>
 <string name="lbl_chart_datasummary">Resumen de datos:</string>
 <string name="lbl_chart_totalmessages">Total de mensajes:</string>
 <string name="btn_daterange_startdate">Fecha de comienzo</string>
 <string name="btn_daterange_enddate">Fecha de finalización</string>
-<string name="range_btn_lastthreemonth">Tres meses</string>
-<string name="btn_entire_range">Rango completo</string>
-<string name="rad_last100">Última 100</string>
-<string name="rad_last500">500</string>
+<string name="range_btn_lastthreemonth">Últimos Tres meses</string>
+<string name="btn_entire_range">Intervalo completo</string>
+<string name="rad_last100">Último 100</string>
+<string name="rad_last500">Último 500</string>
 <string name="rad_all">Todo</string>
+<string name="glbsettings_title">RapidAndroid :: Configuración global</string>
 <string name="glbsettings_inprogress_ack">Mensaje de análisis en progreso</string>
 <string name="glbsettings_parse_ack">Mensaje analizado correctamente, muchas gracias</string>
 <string name="glbsettings_noparse_ack">Inténtelo de nuevo</string>
-<string name="glb_chk_noparse_text">Réplica sobre la no analiza</string>
-<string name="glb_chk_parse_text">Réplica sobre la exitosa analiza</string>
-<string name="glb_chk_inprogress_text">Réplica sobre la analiza en el progreso</string>
+<string name="glb_chk_noparse_text">Responder sobre la no analiza</string>
+<string name="glb_chk_parse_text">Responder sobre la exitosa analiza</string>
+<string name="glb_chk_inprogress_text">Responder sobre la analiza en el progreso</string>
 <string name="glbsettings_heading">La configuración global de respuesta</string>
-<string name="glb_lbl_activeall">Activa todas las funciones de SMS</string>
+<string name="glb_lbl_activeall">Activar todas las funciones de SMS</string>
 <string name="glb_change_settings">Cambiar la configuración</string>
+<string name="glb_lbl_logging">Activar registro</string>
 <string name="numberHint">1 a 55</string>
-<string name="lbl_outputFreq">Período para la salida en cuestión de segundos \ n (1 a 55 son los valores válidos)</string>
+<string name="lbl_outputFreq">Período para la salida en cuestión de segundos \n(1 a 55 son los valores válidos)</string>
 <string name="settings_saved">Cambios guardados</string>
 <string name="refresh_cache">Actualizar la memoria caché</string>
 
-<string name="refresh">Actualizar</string>
+<string name="refresh">Refrescar</string>
 
 <string name="lbl_forwardingNums">SMS a plazo a estos números (separados por comas)</string>
 
@@ -142,12 +163,12 @@
 <string name="csv_title">RapidAndroid :: CSV Scheduler y reenvío</string>
 <string name="lbl_csv_update_settings">Actualizar la Configuración</string>
 <string name="csv_alert_message">Esta forma no tiene mensajes o datos a la salida. Por lo tanto, la salida sólo contendrá las cabeceras de las columnas.</string>
-<string name="prompt_csv_job_begun">Trabajo CSV salida ha comenzado</string>
+<string name="prompt_csv_job_begun">Salida de Trabajo CSV ha comenzado</string>
 <string name="prompt_csv_save_complete">CSV Guardar Completa</string>
-<string name="lbl_addfieldtitle">Agregar una prueba de campo</string>
+<string name="lbl_addfieldtitle">Agregar una prueba de esfera</string>
 
-<string name="prompt_graph_please_wait">Por favor, espere</string>
-<string name="prompt_graph_drawing">Dibujo gráfico..........</string>
+<string name="prompt_graph_please_wait">Esperar por favor</string>
+<string name="prompt_graph_drawing">Dibujando gráfico..........</string>
 <string name="prompt_graph_no_data">No hay datos</string>
-<string name="prompt_graph_nodata_message">Lo sentimos, no hubo datos para el intervalo de fechas seleccionado y variable.</string>
+<string name="prompt_graph_nodata_message">Lo siento, no hubo datos para el intervalo de fechas y variables seleccionadas.</string>
 </resources>
