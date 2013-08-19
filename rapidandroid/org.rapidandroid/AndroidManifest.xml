@@ -4,7 +4,7 @@
 
 			<uses-sdk android:minSdkVersion="4"></uses-sdk>
 			
-	<application android:label="@string/app_name" android:name="RapidAndroidApplication" android:icon="@drawable/rapidandroid" android:debuggable="true">
+	<application android:label="@string/app_name" android:name="RapidAndroidApplication" android:icon="@drawable/rapidandroid">
 		<provider android:authorities="org.rapidandroid.provider.RapidSms" 
 							android:name=".content.RapidSmsContentProvider">
 		</provider>

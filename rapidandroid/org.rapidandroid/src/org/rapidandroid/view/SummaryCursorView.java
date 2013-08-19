@@ -140,8 +140,9 @@ public class SummaryCursorView extends TableLayout {
 
 		}
 
-		this.setColumnStretchable(0, true);
-		this.setColumnStretchable(1, true);
+		this.setColumnShrinkable(0, true);
+		this.setColumnShrinkable(1, true);
+		
 		// this.setLayoutParams(new
 		// TableLayout.LayoutParams(LayoutParams.FILL_PARENT,
 		// LayoutParams.WRAP_CONTENT));

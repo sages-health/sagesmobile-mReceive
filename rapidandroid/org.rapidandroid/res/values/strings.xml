@@ -171,5 +171,7 @@
 <string name="prompt_graph_drawing">Drawing graph.........</string>
 <string name="prompt_graph_no_data">No data</string>
 <string name="prompt_graph_nodata_message">Sorry, there was no data for the selected variable and date range.</string>
+<string name="date_format">MM/dd/yy HH:mm:ss</string>
+<string name="status_on_failed_to_insert">Failed to Insert into Database</string>
 
 </resources>

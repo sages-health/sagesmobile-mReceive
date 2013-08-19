@@ -4,6 +4,8 @@
  */
 package org.rapidandroid.service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
 import org.rapidandroid.ApplicationGlobals;
+import org.rapidandroid.R;
 import org.rapidandroid.RapidAndroidApplication;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.SystemHealthTracking.SagesEventType;
@@ -423,13 +426,14 @@ public static class SmsParseUtility {
 		}
 
 		int msgid = intent.getIntExtra(RapidSmsDBConstants.MultiSmsWorktable.MONITOR_MSG_ID, 0);
-
+		String responseHeader = txId.toString()+"|"+(new SimpleDateFormat("EEE, MMMMMMM dd, yyyy HH:mm:ss")).format(new Date())+"|";
 		Form form = determineForm(sms_body);
-		if (form == null) {			
+		if (form == null) {	
+			
 			if (ApplicationGlobals.doReplyOnFail()) {
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseFailText() + ", form is null from txId("+ txId +").");
+				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, responseHeader + ApplicationGlobals.getParseFailText() + ", form is null from txId("+ txId +").");
 				context.sendBroadcast(broadcast);
 			}
 			outcome.putExtra("rowid", -1);
@@ -444,8 +448,8 @@ public static class SmsParseUtility {
 				// for debug purposes, we'll just ack every time.
 				Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 				broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseInProgressText());
-				//context.sendBroadcast(broadcast);
+				broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, responseHeader + ApplicationGlobals.getParseInProgressText());
+				context.sendBroadcast(broadcast);
 				outcome.putExtra("strategy_ReplyOnParseInProgress", broadcast);
 			
 
@@ -460,8 +464,8 @@ public static class SmsParseUtility {
 					// for debug purposes, we'll just ack every time.
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseSuccessText());
-					if (false){context.sendBroadcast(broadcast);} // TODO SAGES/pokuam1: figure strategy for this. 
+					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, responseHeader+ApplicationGlobals.getParseSuccessText());
+					context.sendBroadcast(broadcast);
 				}
 			   	healthTracker.logInfo( SagesEventType.MULTIPART_SMS_PARSE_SUCCESS, t + " SmsParseReceiver.");
 			}
@@ -473,7 +477,7 @@ public static class SmsParseUtility {
 				if (ApplicationGlobals.doReplyOnFail()){
 					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
 					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
-					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, ApplicationGlobals.getParseFailText(form) + ", null results from txId("+ txId +").");
+					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, responseHeader + ApplicationGlobals.getParseFailText(form) + ", null results from txId("+ txId +").");
 					context.sendBroadcast(broadcast);
 				}
 				return outcome;
@@ -485,6 +489,18 @@ public static class SmsParseUtility {
 			
 			 rowid = WorktableDataLayer.InsertFormData(context, form, msgid, results);
 		   	 healthTracker.logInfo( SagesEventType.MULTIPART_SMS, t + " SmsParseReceiver.");
+		   	 
+		   	 if(rowid == -1) { //TODO SAGES/filipdt1: error occurred. Should find out which error
+		   		healthTracker.logInfo( SagesEventType.MULTIPART_SMS_PARSE_FAIL, t + " SmsParseReceiver -- results of parse were null.");
+			   	 
+				if (ApplicationGlobals.doReplyOnFail()){
+					Intent broadcast = new Intent("org.rapidandroid.intents.SMS_REPLY");
+					broadcast.putExtra(SmsReplyReceiver.KEY_DESTINATION_PHONE, intent.getStringExtra("from"));
+					broadcast.putExtra(SmsReplyReceiver.KEY_MESSAGE, responseHeader + context.getString(R.string.status_on_failed_to_insert));
+					context.sendBroadcast(broadcast);
+				}
+				return outcome;
+		   	 }
 	
 			 outcome.putExtra("rowid", rowid);
 			 outcome.putExtra("form", form);

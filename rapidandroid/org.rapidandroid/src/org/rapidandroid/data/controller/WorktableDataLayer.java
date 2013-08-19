@@ -393,7 +393,7 @@ public class WorktableDataLayer {
 		/*Uri inserted = context.getContentResolver().insert(
 															Uri.parse(RapidSmsDBConstants.FormData.CONTENT_URI_PREFIX
 																	+ f.getFormId()), cv);*/
-		return mDb.insert(RapidSmsDBConstants.FormData.TABLE_PREFIX + f.getFormName(), null, cv);
+		return mDb.insert(RapidSmsDBConstants.FormData.TABLE_PREFIX + f.getPrefix(), null, cv);
 		//return true;
 	}
 
