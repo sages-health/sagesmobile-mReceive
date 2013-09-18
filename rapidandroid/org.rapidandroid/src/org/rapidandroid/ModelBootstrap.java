@@ -212,8 +212,9 @@ public class ModelBootstrap {
 	private static void loadFieldTypesFromAssets() {
 		String types = loadAssetFile("definitions/fieldtypes.json");
 		String customtypes = loadAssetFile("definitions/customfieldtypes.json");
-		// SAGES: loading the custom fieldtype files 
-		String externalcustomtypes = loadSdCardFile("/sdcard/rapidandroid/externalcustomfieldtypes.json");
+		// SAGES: loading the custom fieldtype files
+		String sdcard = RapidAndroidApplication.PATH_SDCARD;
+		String externalcustomtypes = loadSdCardFile(sdcard + "/rapidandroid/externalcustomfieldtypes.json");
 		
 		try {
 			JSONArray typesarray = new JSONArray(types);
@@ -312,7 +313,8 @@ public class ModelBootstrap {
 	 */
 	// TODO pokuam1 - refactor to reuse original method, see parseFieldsFromAssets()
 	private static void parseFieldsFromLoadableAssets() {
-		String sdcardFields = loadSdCardFile("/sdcard/rapidandroid/loadablefields.json");
+		String sdcard = RapidAndroidApplication.PATH_SDCARD;
+		String sdcardFields = loadSdCardFile(sdcard + "/rapidandroid/loadablefields.json");
 
 		if (sdcardFields != null){
 		try {
@@ -436,7 +438,8 @@ public class ModelBootstrap {
 	// TODO pokuam1 - refactor to reuse original method, see parseFormsFromAssets()
 	private static void parseFormsFromLoadableAssets() {
 		// String forms = loadAssetFile("definitions/forms.json");
-		String sdcardForms = loadSdCardFile("/sdcard/rapidandroid/loadableforms.json");
+		String sdcard = RapidAndroidApplication.PATH_SDCARD;
+		String sdcardForms = loadSdCardFile(sdcard + "/rapidandroid/loadableforms.json");
 
 		if (sdcardForms != null) {
 			try {

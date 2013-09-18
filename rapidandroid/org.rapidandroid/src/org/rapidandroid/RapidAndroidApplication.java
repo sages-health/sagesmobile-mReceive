@@ -41,6 +41,7 @@ public class RapidAndroidApplication extends Application {
 
 	public static final String DIR_RAPIDANDROID_LOGS = "rapidandroid/logs";
 	public static final String DIR_RAPIDANDROID_EXPORTS = "rapidandroid/exports";
+	public static final String PATH_SDCARD = Environment.getExternalStorageDirectory().getPath();
 
 	private void configureLog4j() {
         String fileName = Environment.getExternalStorageDirectory() + "/" + DIR_RAPIDANDROID_LOGS + "/"
@@ -164,7 +165,7 @@ public class RapidAndroidApplication extends Application {
 		File privateFile = new File("/data/data/org.rapidandroid/shared_prefs/"+prefsFileName +".xml");
 		boolean privateFileExists = privateFile.exists();
 		
-		File sdFile = new File("/sdcard/rapidandroid/"+prefsFileName + "Config.xml");
+		File sdFile = new File(PATH_SDCARD + "/rapidandroid/"+prefsFileName + "Config.xml");
 		boolean sdFileExists = sdFile.exists();
 		
 		if (privateFileExists && sdFileExists){
