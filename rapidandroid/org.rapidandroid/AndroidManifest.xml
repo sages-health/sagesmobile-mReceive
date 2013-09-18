@@ -125,6 +125,11 @@
 		<activity android:name=".activity.DateRange"></activity>
 		<activity android:name=".activity.GlobalSettings"></activity>
 
+		<activity 
+            android:name="edu.jhuapl.sages.mobile.lib.RapidAndroidSecuritySetupActivity"
+            android:label="RapidAndroid Security Setup">
+        </activity>
+        
 		<uses-library android:name="android.test.runner" />
 
 	</application>

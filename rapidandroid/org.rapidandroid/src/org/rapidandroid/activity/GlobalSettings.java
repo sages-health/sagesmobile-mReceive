@@ -24,7 +24,9 @@ import org.rapidandroid.R;
 import org.rapidandroid.SystemHealthTracking;
 import org.rapidandroid.receiver.SmsParseReceiver;
 
+import edu.jhuapl.sages.mobile.lib.RapidAndroidSecuritySetupActivity;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -56,6 +58,7 @@ public class GlobalSettings extends Activity {
 	public static final String LOG_DEBUG_KEY = "GlobalSettings";
 	
 	private static final int MENU_DONE = Menu.FIRST;
+	private static final int MENU_SECURITY = 2;
 	
 	private CheckBox mActiveSwitch;
 	private CheckBox mActiveLoggingSwitch;
@@ -180,6 +183,7 @@ public class GlobalSettings extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		menu.add(0, MENU_DONE, 0, R.string.formreview_menu_done).setIcon(android.R.drawable.ic_menu_close_clear_cancel);		
+		menu.add(1, MENU_SECURITY, 0, "Security Setup").setIcon(android.R.drawable.ic_partial_secure);		
 		return true;
 	}
 
@@ -195,10 +199,19 @@ public class GlobalSettings extends Activity {
 			case MENU_DONE:
 				finish();
 				break;
+			case MENU_SECURITY:
+				startActivitySecuritySetup();
+				break;
 		}
 		return true;
 	}
 
+	private void startActivitySecuritySetup() {
+		Intent i;
+		i = new Intent(this, RapidAndroidSecuritySetupActivity.class);
+		startActivity(i);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
