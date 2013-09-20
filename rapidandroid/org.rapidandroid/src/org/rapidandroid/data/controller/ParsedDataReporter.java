@@ -184,7 +184,7 @@ public class ParsedDataReporter {
 				sbrow = new StringBuilder();
 				for (int i = 0; i < colcount; i++) {
 					// sbrow.append(cr.getString(i) + ",");
-					sbrow.append(cr.getString(i));
+					sbrow.append(cr.getString(i).replaceAll("(\\r|\\n)", ""));
 					if (i < colcount - 1) {
 						sbrow.append(",");
 					} else {
