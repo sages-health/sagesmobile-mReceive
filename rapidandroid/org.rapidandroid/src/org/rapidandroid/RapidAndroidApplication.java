@@ -23,14 +23,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.log4j.Logger;
 import org.rapidandroid.activity.CsvOutputScheduler;
 
+import edu.jhuapl.sages.mobile.lib.OdkSecuritySetupActivity;
+import edu.jhuapl.sages.mobile.lib.RapidAndroidSecuritySetupActivity;
+import edu.jhuapl.sages.mobile.lib.SharedObjects;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -108,8 +115,34 @@ public class RapidAndroidApplication extends Application {
 		SystemHealthTracking healthTracker = new SystemHealthTracking(RapidAndroidApplication.class);
 		healthTracker.logInfo("RapidAndroid starting and using the new System Health Tracking Log");
 		ModelBootstrap.InitApplicationDatabase(this.getApplicationContext());
+		initSecurity();
+		Log.d("sages security", "initialized the security settings");
 		healthTracker.logInfo("Now launching the Dashboard.");
 	}
+	
+    protected void initSecurity(){
+        SharedPreferences securityPreferences = this.getSharedPreferences(RapidAndroidSecuritySetupActivity.RA_PREFS_FILE_NAME, 0);
+        //boolean isEncryptionOn = securityPreferences.getBoolean("ENCRYPTION_ON", false);
+        String aesKey = securityPreferences.getString("KEY_AESKEY", "no key set");
+        
+//        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(Collect.getInstance());
+//        settings.edit().putBoolean("ENCRYPTION_ON", isEncryptionOn).commit();
+        
+        	 try {
+        		if (!"no key set".equals(aesKey)){
+        		  SharedObjects.reinitCryptoEngine(aesKey);
+        		} else {
+        			SharedObjects so = new SharedObjects();
+        		}
+        	 } catch (NoSuchAlgorithmException e) {
+//                aeskeyview.setText("Error re-initializing system KEY from saved preferences");
+        		 e.printStackTrace();
+        	 } catch (NoSuchPaddingException e) {
+//                aeskeyview.setText("Error re-initializing system KEY from saved preferences");
+        		 e.printStackTrace();
+        	 }
+         
+    }
 	
 	/**
 	 * Copies source file contents into target file
