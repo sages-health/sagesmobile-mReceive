@@ -140,7 +140,11 @@ public class SmsParseReceiver extends BroadcastReceiver {
 			// TODO POKU "body" is the sms that we want to pass along
 			SharedPreferences pref = context.getSharedPreferences(CsvOutputScheduler.sharedPreferenceFilename, Context.MODE_PRIVATE);
 			Vector<IParseResult> results = ParsingService.ParseMessage(form, body);
-
+			
+			if (results != null){
+				ParsedDataTranslator.InsertFormData(context, form, msgid, results);
+			}
+			
 			// parse success reply
 			if (ApplicationGlobals.doReplyOnParse() && results != null) {
 				// for debug purposes, we'll just ack every time.
@@ -168,7 +172,6 @@ public class SmsParseReceiver extends BroadcastReceiver {
 				return;
 			}
 			
-			ParsedDataTranslator.InsertFormData(context, form, msgid, results);
 
 			// SAGES/pokuam1: broadcast for the automatic csv output service
 			Intent broadcastStartCsvOutput = new Intent("org.rapidandroid.intents.SMS_REPLY_CSV_GO");
