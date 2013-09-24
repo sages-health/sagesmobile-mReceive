@@ -25,10 +25,17 @@
 			</intent-filter>
 		</activity>
 		
-		<receiver android:name=".receiver.SmsReceiver">
-			<intent-filter>
+		<receiver android:name="edu.jhuapl.sages.mobile.lib.receiver.RapidAndroidSagesSmsReceiver">
+		    <intent-filter>
 				<action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
 			</intent-filter>
+		</receiver>
+		
+		<receiver android:name=".receiver.SmsReceiver">
+			<intent-filter>
+				<action android:name="edu.jhuapl.sages.mobile.lib.android.provider.Telephony.RAPIDANDROID_SMS_RECEIVED"></action>
+ 				<!--<action android:name="android.provider.Telephony.SMS_RECEIVED"></action>-->
+ 			</intent-filter>
 			<intent-filter>
  				<action android:name="android.intent.action.VIEW" />
         <action android:name="android.intent.action.EDIT" />
