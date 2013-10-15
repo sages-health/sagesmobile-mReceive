@@ -131,7 +131,7 @@ public class FormReviewer extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setTitle("RapidAndroid :: Review Form");
+		setTitle(getString(R.string.app_name) + " :: Review Form");
 		setContentView(R.layout.form_edit);
 
 		Bundle extras = getIntent().getExtras();

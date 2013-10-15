@@ -4,7 +4,7 @@
 <string name="not_implemented">ยังไม่ได้ใช้!</string>
 <string name="show_all_messages">แสดงข้อความทั้งหมด</string>
 <string name="show_all_multisms_messages">แสดงข้อความส่วนจากหลายส่วน</string>
-<string name="app_name">RapidAndroid</string>
+<string name="app_name">mReceive</string>
 <string name="lbl_formname">ชื่อ</string>
 <string name="lbl_description">ลักษณะ</string>
 <string name="lbl_formprefix">อุปสรรค</string>

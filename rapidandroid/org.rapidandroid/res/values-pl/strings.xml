@@ -4,7 +4,7 @@
 <string name="not_implemented">Jeszcze nie zaimplementowane!</string>
 <string name="show_all_messages">Pokaż wszystkie wiadomości</string>
 <string name="show_all_multisms_messages">Pokaż wiadomości wieloczęściowe</string>
-<string name="app_name">RapidAndroid</string>
+<string name="app_name">mReceive</string>
 <string name="lbl_formname">Nazwa</string>
 <string name="lbl_description">Opis</string>
 <string name="lbl_formprefix">Prefiks</string>

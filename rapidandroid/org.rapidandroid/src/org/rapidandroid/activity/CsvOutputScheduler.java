@@ -55,7 +55,7 @@ public class CsvOutputScheduler extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("RapidAndroid:: CSV Scheduler & Forwarding");
+        setTitle(getString(R.string.app_name) + ":: CSV Scheduler & Forwarding");
         setContentView(R.layout.schedule_csv_output);
         Bundle extras = getIntent().getExtras();
         

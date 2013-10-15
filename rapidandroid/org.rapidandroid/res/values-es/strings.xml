@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><resources>
 <string name="hello">Hola a todos, rapidandroid</string>
-<string name="app_name">RapidAndroid</string>
+<string name="app_name">mReceive</string>
 <string name="lbl_formname">Nombre</string>
 <string name="lbl_description">Descripción</string>
 <string name="lbl_formprefix">Prefijos</string>

@@ -50,7 +50,7 @@ public class GlobalSettings extends Activity {
 	/**
 	 * 
 	 */
-	private static final String ACTIVITY_TITLE_STRING = "RapidAndroid :: Global Settings";
+	private static final String ACTIVITY_TITLE_STRING = " :: Global Settings";
 	
 	/**
 	 * 
@@ -117,7 +117,7 @@ public class GlobalSettings extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
-		setTitle(ACTIVITY_TITLE_STRING);
+		setTitle(getString(R.string.app_name) + ACTIVITY_TITLE_STRING);
 		setContentView(R.layout.global_settings);
 
 		

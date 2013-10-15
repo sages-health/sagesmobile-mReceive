@@ -245,7 +245,7 @@ public class Dashboard extends Activity {
 		
 		healthTracker.logInfo("Dashboard creating.");
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setTitle("RapidAndroid :: Dashboard");
+		setTitle(getString(R.string.app_name) + " :: Dashboard");
 		setContentView(R.layout.dashboard);
 
 		this.initFormSpinner();
