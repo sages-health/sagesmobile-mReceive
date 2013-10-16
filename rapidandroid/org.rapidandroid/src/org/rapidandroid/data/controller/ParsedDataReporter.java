@@ -160,9 +160,10 @@ public class ParsedDataReporter {
 			File sdcard = Environment.getExternalStorageDirectory();
 			File destinationdir = new File(sdcard, RapidAndroidApplication.DIR_RAPIDANDROID_EXPORTS + "/"+ f.getPrefix() + "_exports");
 			destinationdir.mkdir();
-			Date now = new Date();
-			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.getYear()
-					+ now.getMonth() + now.getDate() + "-" + now.getHours() + now.getMinutes() + ".csv");
+			Calendar now = Calendar.getInstance();
+			File destinationfile = new File(destinationdir, "formdata_" + f.getPrefix() + now.get(Calendar.YEAR)
+					+  (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH) + 
+					"-" + now.get(Calendar.HOUR_OF_DAY) +  now.get(Calendar.MINUTE) + ".csv");
 			
 			destinationfile.createNewFile();
 			fOut = new FileOutputStream(destinationfile);
