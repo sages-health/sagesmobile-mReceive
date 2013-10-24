@@ -56,7 +56,7 @@ public class AlphaNumericInterpreter implements IParseInterpreter {
 		String unicodeBlockPullin = "\\p{In" + StringUtils.join(unicodeBlocks, "}\\p{In") + "}";
 		System.out.println("ALPHANUMERIC INTERPRETER: FOOBAR>> " + unicodeBlockPullin);
 		// MUST HAVE ZERO GROUPS AND OTHER TOKENIZING JUNK
-		mPattern = Pattern.compile("([A-Za-z\\d\\." + unicodeBlockPullin + "]+)\\.*");
+		mPattern = Pattern.compile("([A-Za-z\\d\\.\\-" + unicodeBlockPullin + "]+)\\.*");
 //		mPattern = Pattern.compile("[A-Za-z\\d]+\\.*");
 	}
 

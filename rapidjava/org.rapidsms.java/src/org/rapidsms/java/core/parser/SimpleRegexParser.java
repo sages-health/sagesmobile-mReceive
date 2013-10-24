@@ -85,6 +85,15 @@ public class SimpleRegexParser implements IMessageParser {
 			// "] on input: {" + input + "}");
 			IParseResult res = parser.Parse(input);
 
+			/*
+			System.out.println("input: " + input);
+			if (res==null) {
+				System.out.println("NULL parsed token ");
+			} else {
+				System.out.println("parsed token result: " + res.getParsedToken());
+			}
+ 			*/
+			
 			// ok, so we got the res, so we need to subtract the parsed string
 			// if at all possible.
 			if (res != null) {
