@@ -84,8 +84,8 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "alphanumeric", 
-			"regex": "^(([A-Za-z\\d\\.\\p{InLatin-1 Supplement}\\p{InHangul Compatibility Jamo}]+)|(\\.))($|\\s)",
-			"name": "alphanumeric"
+			"regex": "^(([A-Za-z\\d\\.\\-\\p{InLatin-1 Supplement}\\p{InHangul Compatibility Jamo}]+)|(\\.))($|\\s)",
+			"name": "alphanumeric v2"
 		}
 	}, 
 	{
@@ -93,8 +93,8 @@
 		"model": "rapidandroid.fieldtype", 
 		"fields": {
 			"datatype": "freetext", 
-			"regex": "^(('[A-Za-z\\d\\s\\.]*')|(\\.))($|\\s)",
-			"name": "freetext"
+			"regex": "^(('[A-Za-z\\d\\s\\.\\-]*')|(\\.))($|\\s)",
+			"name": "freetext v2"
 		}
 	}	
 ]
