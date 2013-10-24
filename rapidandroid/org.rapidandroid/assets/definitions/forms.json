@@ -7,5 +7,11 @@
 {"pk": 2, "model": "rapidandroid.form", 
  "fields": {"parsemethod": "simpleregex", 
  "prefix": "nutrition", "description": "Nutrition Information (monitorin and evaluation)", 
- "formname": "Nutrition"}}
+ "formname": "Nutrition"}},
+
+{"pk": 3, "model": "rapidandroid.form", 
+ "fields": {"parsemethod": "strictregex", 
+ "prefix": "oepatient", "description": "OE Individual Patient (demo example)", 
+ "formname": "Demo Patient v1"}},
+
 ]
